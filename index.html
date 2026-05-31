@@ -72,6 +72,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -204,28 +233,134 @@ ul.task-list li input[type="checkbox"] {
 <p>[Hier folgt weiterer Inhalt]</p>
 </section>
 </section>
-<section id="b.-mittlerer-datensatz-wenn-freundeskreise-kollidieren" class="level2">
-<h2 class="anchored" data-anchor-id="b.-mittlerer-datensatz-wenn-freundeskreise-kollidieren">3b. Mittlerer Datensatz (Wenn Freundeskreise kollidieren)</h2>
-<p>Jetzt betrachten wir nicht mehr nur Max, sondern viele überlagerte Freundeskreise gleichzeitig.</p>
-<section id="warum-gut-1" class="level3">
-<h3 class="anchored" data-anchor-id="warum-gut-1">Warum gut?</h3>
-<p>Jetzt werden größere Muster sichtbar: dichte Bereiche, Überlappungen von Kreisen und eine deutlich reichere Gesamtstruktur. Man sieht besser, dass soziale Netzwerke nicht nur aus isolierten Gruppen bestehen, sondern stark verflochten sein können.</p>
+<section id="b.-mittlerer-datensatz-ein-ganzes-netzwerk-statt-eines-freundeskreises" class="level2">
+<h2 class="anchored" data-anchor-id="b.-mittlerer-datensatz-ein-ganzes-netzwerk-statt-eines-freundeskreises">3b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)</h2>
+<p>Im kleinen Beispiel stand <em>eine</em> Person im Mittelpunkt: Max und sein Ego-Netz. Jetzt drehen wir die Perspektive um und betrachten ein <strong>vollständiges soziales Netzwerk ohne Mittelpunkt</strong> – das Wikipedia-Abstimmungsnetzwerk <code>wiki-Vote</code> mit rund <strong>7.000 Nutzer:innen und über 100.000 Beziehungen</strong>. Hier gibt es kein Zentrum, um das wir die Knoten anordnen könnten.</p>
+<section id="warum-ein-globales-layout-statt-eines-ego-layouts" class="level3">
+<h3 class="anchored" data-anchor-id="warum-ein-globales-layout-statt-eines-ego-layouts">Warum ein globales Layout statt eines Ego-Layouts?</h3>
+<p>Das egozentrische Layout aus 3a funktioniert nur, solange es einen klaren Mittelpunkt gibt. Bei einem Netzwerk dieser Größe gibt es viele gleichberechtigte Knoten, dichte Bereiche und sich überlappende Communities. Deshalb verwenden wir ein <strong>globales, kräftebasiertes Layout (ForceAtlas2)</strong>: Kanten ziehen verbundene Knoten zusammen, alle Knoten stoßen sich gegenseitig ab. So entstehen Cluster aus der Struktur heraus, ohne dass wir einen Mittelpunkt vorgeben.</p>
 </section>
 <section id="was-ist-das-problem-1" class="level3">
 <h3 class="anchored" data-anchor-id="was-ist-das-problem-1">Was ist das Problem?</h3>
-<p>Die Visualisierung wird dichter, Labels werden unlesbar, Kanten überdecken sich und Interaktion auf SVG-Basis wird schwerfälliger. Der Datensatz ist groß genug, dass die reine Detaildarstellung an Grenzen stößt.</p>
+<p>Genau hier zeigt sich die Grenze: Bei mehreren tausend Knoten und über hunderttausend Kanten wird die Darstellung schnell zum „Hairball”. Einzelne Kanten lassen sich kaum noch verfolgen, Labels überlagern sich, und ein SVG-/DOM-basiertes Layout würde unter der Knotenzahl einbrechen. Lesbarkeit entsteht nicht mehr durch jede Einzelkante, sondern erst durch <strong>Reduktion</strong>: Wir färben nach Community (Louvain) und skalieren die Knotengröße nach eingehenden Stimmen (In-Degree), damit zentrale Hubs sichtbar bleiben.</p>
 </section>
 <section id="layout-graphalg-1" class="level3">
 <h3 class="anchored" data-anchor-id="layout-graphalg-1">Layout + GraphAlg</h3>
-<p>Hier könnt ihr erklären, warum man stärker aggregieren, filtern oder Communities hervorheben muss. Technisch könnt ihr den Übergang zu Canvas motivieren, weil Rendering und Interaktion bei mehreren tausend Knoten anders gelöst werden müssen als im kleinen Ego-Netz.</p>
-<p>[Hier folgt weiterer Inhalt]</p>
+<p>Technisch motiviert diese Größenordnung den Wechsel zu <strong>Canvas</strong>: Statt tausender DOM-Knoten zeichnen wir alles in ein einziges <code>&lt;canvas&gt;</code>-Element und rendern nur bei Interaktion neu. Das Layout wird einmalig offline mit ForceAtlas2 vorberechnet, sodass die Seite sofort lädt; im Browser sorgt eine D3-Force-Simulation für Interaktivität (Ziehen, Nachbarschaft hervorheben, neu anordnen). Probiere es aus – fahre über Knoten, zoome hinein und beobachte, wie dicht das Netz wirklich ist:</p>
+<div class="force-graph" data-src="assets/data/social_graph.json">
+  <div class="fg-controls">
+    <div class="fg-control">
+      <label for="fg-charge">Abstoßung</label>
+      <input id="fg-charge" type="range" min="5" max="120" value="30" data-control="charge">
+    </div>
+    <div class="fg-control">
+      <label for="fg-distance">Kantenlänge</label>
+      <input id="fg-distance" type="range" min="5" max="120" value="30" data-control="distance">
+    </div>
+    <div class="fg-control">
+      <label for="fg-labels">Hub-Labels</label>
+      <input id="fg-labels" type="checkbox" data-control="labels">
+    </div>
+    <button type="button" data-control="resimulate">Neu anordnen</button>
+    <button type="button" data-control="reset">Ansicht zurücksetzen</button>
+  </div>
+  <div class="fg-canvas-wrap">
+    <canvas></canvas>
+    <div class="fg-tooltip"></div>
+  </div>
+  <div class="fg-status">Lade Graphdaten ...</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="assets/js/force-graph.js"></script>
+</section>
+<section id="so-liest-du-den-graphen" class="level3">
+<h3 class="anchored" data-anchor-id="so-liest-du-den-graphen">So liest du den Graphen</h3>
+<div class="callout callout-style-default callout-tip callout-titled" title="Schnell-Legende">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Schnell-Legende
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Farbe = Community.</strong> Jede Farbe ist eine automatisch gefundene Gruppe (siehe Louvain weiter unten) – Knoten, die untereinander dichter verbunden sind als mit dem Rest.</li>
+<li><strong>Knotengröße = eingehende Stimmen (In-Degree).</strong> Große Punkte sind Nutzer:innen, für die besonders viele andere abgestimmt haben – die „Hubs” des Netzwerks.</li>
+<li><strong>Maus über einen Knoten:</strong> Der Knoten und seine direkten Nachbarn bleiben farbig, alles andere wird ausgegraut; die roten Linien sind seine Kanten. Das Tooltip zeigt ID, Community, Stimmen und Nachbarzahl.</li>
+<li><strong>Mausrad = Zoom, Ziehen = Verschieben.</strong> Einzelne Knoten lassen sich mit gedrückter Maustaste festhalten und umherschieben.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="die-bedienelemente-erklärt" class="level3">
+<h3 class="anchored" data-anchor-id="die-bedienelemente-erklärt">Die Bedienelemente erklärt</h3>
+<ul>
+<li><strong>Abstoßung</strong> – wie stark sich alle Knoten gegenseitig wegdrücken (die „Many-Body”-Kraft). Höhere Werte spreizen das Netz weiter auseinander.</li>
+<li><strong>Kantenlänge</strong> – die Ruhelänge der „Federn” entlang der Kanten. Kürzere Kanten ziehen verbundene Knoten enger zusammen.</li>
+<li><strong>Hub-Labels</strong> – blendet die Nummern der <strong>12 Knoten mit den meisten eingehenden Stimmen</strong> ein. Da der Datensatz anonymisiert ist, sind das nur numerische IDs; sie zeigen aber, <em>wo</em> im Knäuel die zentralen Akteure sitzen.</li>
+<li><strong>Neu anordnen</strong> – „heizt” die laufende Simulation neu auf (siehe Kasten).</li>
+<li><strong>Ansicht zurücksetzen</strong> – stellt Zoom und Ausschnitt so ein, dass der ganze Graph wieder ins Bild passt.</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled" title="Warum bewegt „Neu anordnen“ so wenig?">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Warum bewegt „Neu anordnen“ so wenig?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Das ist Absicht – und selbst schon lehrreich. Zwei Effekte wirken zusammen:</p>
+<ol type="1">
+<li><strong>Der Graph startet bereits im Gleichgewicht.</strong> Die Positionen sind <em>nicht</em> im Browser berechnet, sondern offline mit ForceAtlas2 vorab optimiert. Da ForceAtlas2 fast dieselbe Physik nutzt wie die Browser-Simulation, sitzt das Layout schon in einem Energie-Minimum. „Neu anordnen” würfelt die Positionen <strong>nicht</strong> neu, sondern erwärmt nur die bestehende Anordnung – es gibt also kaum etwas zu verbessern.</li>
+<li><strong>Die Kräfte sind bewusst sanft eingestellt</strong> (schwache, in der Reichweite begrenzte Abstoßung, schwache Kanten), damit ein Netz mit über 100.000 Kanten flüssig bleibt und nicht „explodiert”. Der dichte Kern verhält sich dadurch wie ein <strong>starrer Körper</strong>. Die einzige Bewegung, die quasi keine Energie kostet, ist eine <strong>globale Drehung/Verschiebung</strong> des gesamten Klumpens – genau die leichte Rotation, die man sieht, bevor alles wieder einfriert.</li>
+</ol>
+<p>Wer ein echtes Neu-Berechnen sehen möchte, müsste die Startpositionen zufällig setzen und die Kräfte stärker wählen – dann „wächst” das Layout sichtbar aus dem Chaos zusammen.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="wie-das-layout-entsteht-forceatlas2-barnes-hut" class="level3">
+<h3 class="anchored" data-anchor-id="wie-das-layout-entsteht-forceatlas2-barnes-hut">Wie das Layout entsteht: ForceAtlas2 + Barnes-Hut</h3>
+<p>Ein kräftebasiertes („force-directed”) Layout behandelt den Graphen wie ein physikalisches System: <strong>Kanten sind Federn</strong>, die verbundene Knoten anziehen, und <strong>alle Knoten stoßen sich gegenseitig ab</strong> (wie gleichnamige Ladungen). Lässt man das System „ausschwingen”, wandern dicht verbundene Gruppen zusammen und schwach verbundene auseinander – Struktur wird sichtbar, ohne dass wir sie vorgeben.</p>
+<p>Der Knackpunkt ist die Abstoßung: Eigentlich müsste man <em>jedes</em> Knotenpaar vergleichen – bei 7.000 Knoten sind das rund 25 Millionen Paare pro Schritt (Aufwand <span class="math inline">\(O(n^2)\)</span>). ForceAtlas2 nutzt deshalb die <strong>Barnes-Hut-Näherung</strong>: Weit entfernte Knotengruppen werden zu einem Schwerpunkt zusammengefasst und nur einmal verrechnet. Das senkt den Aufwand auf <span class="math inline">\(O(n \log n)\)</span> und macht große Graphen überhaupt erst berechenbar.</p>
+<p>Weil diese Berechnung trotzdem einige Sekunden dauert, führen wir sie <strong>einmalig offline</strong> im Python-Skript aus und speichern die fertigen Koordinaten in einer JSON-Datei. Die Website lädt nur das Ergebnis und ist dadurch sofort da.</p>
+</section>
+<section id="communities-und-hubs-louvain-in-degree" class="level3">
+<h3 class="anchored" data-anchor-id="communities-und-hubs-louvain-in-degree">Communities und Hubs: Louvain + In-Degree</h3>
+<p>Farbe und Größe sind keine Deko, sondern zwei Analyse-Ebenen:</p>
+<ul>
+<li><strong>Communities (Farbe)</strong> kommen vom <strong>Louvain-Algorithmus</strong>. Er sucht eine Aufteilung in Gruppen mit möglichst hoher <em>Modularität</em> – also viele Kanten <em>innerhalb</em> der Gruppen und wenige <em>zwischen</em> ihnen. Hier entstehen 15 Communities. Das ist der „globale” Ordnungshinweis, der im Ego-Netz aus 3a noch nicht nötig war.</li>
+<li><strong>In-Degree (Größe)</strong> ist die Zahl der <strong>eingehenden</strong> Kanten – bei wiki-Vote also: Für wie viele Personen wurde abgestimmt? Große Knoten sind einflussreiche Hubs. (Bei gerichteten Netzen unterscheidet man In- und Out-Degree; fürs Layout behandeln wir die Kanten aber <strong>ungerichtet</strong>, um nicht über 100.000 Pfeilspitzen zeichnen zu müssen.)</li>
+</ul>
+</section>
+<section id="warum-canvas-statt-svg" class="level3">
+<h3 class="anchored" data-anchor-id="warum-canvas-statt-svg">Warum Canvas statt SVG?</h3>
+<p>In 3a (kleines Netz) war <strong>SVG</strong> ideal: Jeder Knoten ist ein eigenes DOM-Element, das man stylen und anklicken kann. Bei ~7.000 Knoten und ~100.000 Kanten wären das aber über hunderttausend DOM-Elemente – der Browser würde beim Zoomen und Scrollen einbrechen.</p>
+<p>Deshalb zeichnen wir hier auf ein <strong><code>&lt;canvas&gt;</code></strong>: eine einzige Zeichenfläche, auf die pro Bild alles in einem Durchgang gemalt wird (Kanten gebündelt, Knoten nach Farbe gruppiert). Das skaliert auf zehntausende Elemente. Der Preis: Es gibt keine einzelnen DOM-Knoten mehr, also müssen Interaktionen wie „über welchem Knoten ist die Maus?” selbst berechnet werden – dafür nutzen wir einen <strong>Quadtree</strong> (eine räumliche Suchstruktur), der den nächstgelegenen Knoten in <span class="math inline">\(O(\log n)\)</span> findet, statt alle 7.000 durchzuprobieren.</p>
+</section>
+<section id="die-physik-dahinter-d3-force-und-velocity-verlet" class="level3">
+<h3 class="anchored" data-anchor-id="die-physik-dahinter-d3-force-und-velocity-verlet">Die Physik dahinter: d3-force und Velocity-Verlet</h3>
+<p>Die Interaktivität im Browser liefert <strong>d3-force</strong>. Jeder Knoten hat eine Position <span class="math inline">\((x, y)\)</span> und eine Geschwindigkeit <span class="math inline">\((v_x, v_y)\)</span>. In jedem Simulationsschritt passiert:</p>
+<ol type="1">
+<li>Die Kräfte (Federn, Abstoßung, Zentrierung) verändern die <strong>Geschwindigkeiten</strong>.</li>
+<li>Eine <strong>Reibung</strong> (<code>velocityDecay</code>) bremst die Geschwindigkeiten, damit nichts ewig nachschwingt.</li>
+<li>Die <strong>Positionen</strong> werden um die Geschwindigkeit weitergeschoben.</li>
+</ol>
+<p>Dieses Integrationsverfahren heißt <strong>Velocity-Verlet</strong> – dasselbe Schema, mit dem auch Teilchensimulationen in der Physik rechnen; es ist stabil und günstig. Gesteuert wird alles über eine „Temperatur” <strong><code>alpha</code></strong>, die pro Schritt abklingt (<code>alphaDecay</code>) und die Kräfte mitskaliert: Das System startet „heiß” und beweglich und „friert” allmählich ein – im Kern ein <strong>Simulated Annealing</strong>. Genau deshalb kommt der Graph nach „Neu anordnen” nach kurzer Zeit von selbst zur Ruhe.</p>
 </section>
 </section>
 <section id="c.-großer-datensatz-vom-freundesnetz-zum-follow-graph" class="level2">
 <h2 class="anchored" data-anchor-id="c.-großer-datensatz-vom-freundesnetz-zum-follow-graph">3c. Großer Datensatz (Vom Freundesnetz zum Follow-Graph)</h2>
 <p>Beim Twitter-Netz wird aus einem lesbaren sozialen Bild schnell ein massives Strukturobjekt.</p>
-<section id="warum-gut-2" class="level3">
-<h3 class="anchored" data-anchor-id="warum-gut-2">Warum gut?</h3>
+<section id="warum-gut-1" class="level3">
+<h3 class="anchored" data-anchor-id="warum-gut-1">Warum gut?</h3>
 <p>Dieses Netzwerk zeigt sehr deutlich, wie sich Maßstab und Bedeutung gleichzeitig verändern. Ihr könnt hier nicht nur Größe thematisieren, sondern auch den Unterschied zwischen Freundschaft und Follow-Beziehung.</p>
 </section>
 <section id="was-ist-das-problem-2" class="level3">
