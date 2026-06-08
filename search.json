@@ -61,5 +61,383 @@
     "title": "Graphdatenvisualisierung",
     "section": "6. Fazit (Welche Visualisierung ist wann sinnvoll?)",
     "text": "6. Fazit (Welche Visualisierung ist wann sinnvoll?)\nEs gibt nicht die eine beste Graphvisualisierung. Was sinnvoll ist, hängt von Größe, Dichte, Richtung der Kanten, gewünschter Interaktion und der Rendering-Technologie im Web ab.\n[Hier folgt weiterer Inhalt]"
+  },
+  {
+    "objectID": "presentation/presentation.html#nodale-graphdatenvisualisierung",
+    "href": "presentation/presentation.html#nodale-graphdatenvisualisierung",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Nodale Graphdatenvisualisierung",
+    "text": "Nodale Graphdatenvisualisierung\nLayout-Algorithmen, Kraftmodelle und Web-Rendering\nVisual Computing · Vertiefung · HM München\n\nFolie 1/34 · 0:30 · Titel setzen, Team vorstellen."
+  },
+  {
+    "objectID": "presentation/presentation.html#lernziele",
+    "href": "presentation/presentation.html#lernziele",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Lernziele",
+    "text": "Lernziele\nNach dieser Präsentation könnt ihr …\n\nerklären, warum große Graphen ohne Layout-Algorithmen unlesbar werden\ndas Kraftmodell (Federn + Abstoßung) und Barnes–Hut skizzieren\nForceAtlas2, Louvain und d3-force in eurer Pipeline einordnen\nbegründen, wann SVG, Canvas oder WebGL sinnvoll sind\nState-of-the-Art (2016–2026) einordnen: GPU, WebGPU, ML-Layouts, VR\n\n\nFolie 2/34 · 0:45 · Messbare Outcomes — nicht vorlesen, nur skizzieren."
+  },
+  {
+    "objectID": "presentation/presentation.html#agenda-25-min",
+    "href": "presentation/presentation.html#agenda-25-min",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Agenda (25 Min)",
+    "text": "Agenda (25 Min)\n\n\n\nMin\nBlock\n\n\n\n\n0–6\nProblem, Motivation, Geschichte\n\n\n6–17\nKraftmodelle, FA2, Barnes–Hut, Louvain\n\n\n17–23\nSkalierung, Live-Demo\n\n\n23–27\nGrenzen, State of the Art 2016–2026\n\n\n27–30\nZusammenfassung, Quiz, Team\n\n\n\n\nFolie 3/34 · 0:45 · SOTA-Block (~4 Min) — in Dry-Run kürzbar auf Folien 24+30."
+  },
+  {
+    "objectID": "presentation/presentation.html#wann-wird-ein-graph-unlesbar",
+    "href": "presentation/presentation.html#wann-wird-ein-graph-unlesbar",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Wann wird ein Graph unlesbar?",
+    "text": "Wann wird ein Graph unlesbar?\n\nHairball vs. strukturiertes LayoutLesbarkeit ≠ Vollständigkeit — alle Knoten sichtbar heißt nicht, dass man Struktur erkennt.\n\nFolie 4/34 · 1:00 · Hairball vs. Force-Layout. Übergang: „Konkret an wiki-Vote …”"
+  },
+  {
+    "objectID": "presentation/presentation.html#use-case-wiki-vote-snap",
+    "href": "presentation/presentation.html#use-case-wiki-vote-snap",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Use-Case: wiki-Vote (SNAP)",
+    "text": "Use-Case: wiki-Vote (SNAP)\n\nKnoten = Wikipedia-Nutzer · Kanten = Admin-Wahlen\n~7.000 Knoten, ~100.000 Kanten\nZiel: Communities, Hubs, globale Struktur sichtbar machen\n\n\nwiki-Vote Sample (800 Knoten)\nFolie 5/34 · 1:15 · Orga: Use-Cases & Motivation. Farbe/Größe kommen später."
+  },
+  {
+    "objectID": "presentation/presentation.html#entwicklungsgeschichte",
+    "href": "presentation/presentation.html#entwicklungsgeschichte",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Entwicklungsgeschichte",
+    "text": "Entwicklungsgeschichte\n\n\n\nJahr\nMeilenstein\n\n\n\n\n1984\nEades — Feder-Heuristik (Eades 1984)\n\n\n1986\nBarnes–Hut — \\(O(n \\log n)\\) (Barnes and Hut 1986)\n\n\n1991\nFruchterman–Reingold (Fruchterman and Reingold 1991)\n\n\n2008\nLouvain — Communities (Blondel et al. 2008)\n\n\n2014\nForceAtlas2 (Jacomy et al. 2014)\n\n\nheute\nd3-force im Browser (Bostock 2016)\n\n\n\n\nFolie 6/34 · 1:00 · Verwandte Arbeiten (Orga). Nicht jede Methode im Detail."
+  },
+  {
+    "objectID": "presentation/presentation.html#brücke-zur-vorlesung-gestalt-layout",
+    "href": "presentation/presentation.html#brücke-zur-vorlesung-gestalt-layout",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Brücke zur Vorlesung: Gestalt → Layout",
+    "text": "Brücke zur Vorlesung: Gestalt → Layout\n\n\nGesetz der Nähe (vc_vis)\nNahe Elemente wirken zusammengehörig.\n\nKraft-Layout\nAlgorithmen konstruieren räumliche Nähe — verbundene Gruppen wandern zusammen.\n\n\nFolie 7/34 · 0:45 · Einzige vc_vis-Referenz. Kein Tufte/WWH."
+  },
+  {
+    "objectID": "presentation/presentation.html#graph-als-physikalisches-system",
+    "href": "presentation/presentation.html#graph-als-physikalisches-system",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Graph als physikalisches System",
+    "text": "Graph als physikalisches System\n\nKraftmodell: Federn + Abstoßung\nKanten = Federn (Anziehung)\nKnoten = gleichnamige Ladungen (Abstoßung)\nLayout = Kräftegleichgewicht\n\n\nFolie 8/34 · 1:00 · Noch keine Formeln — Intuition zuerst (Prof-Stil)."
+  },
+  {
+    "objectID": "presentation/presentation.html#federkraft-attraktion",
+    "href": "presentation/presentation.html#federkraft-attraktion",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Federkraft (Attraktion)",
+    "text": "Federkraft (Attraktion)\nIntuition: Nachbarn sollen nah beieinander liegen — aber nicht unendlich.\n\\[F_{ij}^{\\mathrm{attr}} = k \\cdot (d_{ij} - l) \\cdot \\vec{u}_{ij}\\]\n\\(d_{ij} = \\|\\mathbf{x}_i - \\mathbf{x}_j\\|\\), \\(\\vec{u}_{ij}\\) = Richtung von \\(i\\) nach \\(j\\)\n\nFolie 9/34 · 1:00 · Zu weit → Anziehung; zu nah entlang Kante → leichte Abstoßung."
+  },
+  {
+    "objectID": "presentation/presentation.html#abstoßung-gesamtkraft",
+    "href": "presentation/presentation.html#abstoßung-gesamtkraft",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Abstoßung & Gesamtkraft",
+    "text": "Abstoßung & Gesamtkraft\nIntuition: Ohne Abstoßung kollabieren alle Knoten im Zentrum.\n\\[F_{ij}^{\\mathrm{rep}} = \\frac{k_{\\mathrm{rep}}}{d_{ij}^{2}} \\cdot \\frac{\\mathbf{x}_i - \\mathbf{x}_j}{d_{ij}}\\]\n\\[\\mathbf{F}_i = \\sum_{j \\in N(i)} \\mathbf{F}_{ij}^{\\mathrm{attr}} + \\sum_{j \\neq i} \\mathbf{F}_{ij}^{\\mathrm{rep}}\\]\n\nFolie 10/34 · 1:00 · Many-Body: jedes Paar — das wird teuer (nächste Folie: Energie)."
+  },
+  {
+    "objectID": "presentation/presentation.html#energie-minimierung",
+    "href": "presentation/presentation.html#energie-minimierung",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Energie-Minimierung",
+    "text": "Energie-Minimierung\nIntuition: Kräfte sind der negative Gradient einer Energie \\(E\\).\n\\[E = \\sum_{(i,j)\\in E} \\frac{k}{2}(d_{ij} - l)^2 + \\sum_{i&lt;j} \\frac{k_{\\mathrm{rep}}}{d_{ij}}\\]\nEades (1984) · Fruchterman and Reingold (1991)\n\nFolie 11/34 · 1:00 · Layout = lokales Minimum von \\(E\\), nicht globales Optimum."
+  },
+  {
+    "objectID": "presentation/presentation.html#fruchtermanreingold-vs.-forceatlas2",
+    "href": "presentation/presentation.html#fruchtermanreingold-vs.-forceatlas2",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Fruchterman–Reingold vs. ForceAtlas2",
+    "text": "Fruchterman–Reingold vs. ForceAtlas2\nWas macht FA2? Kontinuierliches Layout für große reale Netzwerke.\n\n\n\nAspekt\nFR\nForceAtlas2\n\n\n\n\nAbstoßung\n\\(O(n^2)\\) alle Paare\nBarnes–Hut\n\n\nIntegration\nEuler + \\(T\\)\nVerlet + \\(\\alpha\\)\n\n\n\n\\(F_{ij}^{\\mathrm{rep}} = k \\frac{1 + w_{ij}}{d_{ij}}\\) (FA2, vereinfacht) · Jacomy et al. (2014)\n\nFolie 12/34 · 1:15 · FR = Klassiker; FA2 = unsere Offline-Pipeline."
+  },
+  {
+    "objectID": "presentation/presentation.html#barneshut-on2-to-on-log-n",
+    "href": "presentation/presentation.html#barneshut-on2-to-on-log-n",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Barnes–Hut: \\(O(n^2) \\to O(n \\log n)\\)",
+    "text": "Barnes–Hut: \\(O(n^2) \\to O(n \\log n)\\)\n\nBarnes–Hut QuadtreeBei \\(n = 7{,}000\\): ~25 Mio. Knotenpaare pro Schritt (naiv)\n\\[\\frac{w}{d} &lt; \\Theta \\Rightarrow \\text{ferne Zelle als Schwerpunkt approximieren}\\]\n\nFolie 13/34 · 1:15 · Barnes and Hut (1986) · \\(\\Theta\\) klein = genauer, groß = schneller."
+  },
+  {
+    "objectID": "presentation/presentation.html#offline-pipeline-website",
+    "href": "presentation/presentation.html#offline-pipeline-website",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Offline-Pipeline (Website)",
+    "text": "Offline-Pipeline (Website)\n\nDatenfluss & Algorithmenpreprocess_graph.py → ForceAtlas2 + Louvain → social_graph.json → d3-force (Canvas)\n\nFolie 14/34 · 1:00 · Orga: Funktionsprinzip unter der Haube. Offline = schneller Seitenstart."
+  },
+  {
+    "objectID": "presentation/presentation.html#layout-parameter",
+    "href": "presentation/presentation.html#layout-parameter",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Layout-Parameter",
+    "text": "Layout-Parameter\n\nAbstoßung & KantenlängeGleicher Graph — verschiedene Abstoßung und Kantenlänge (wie in der Demo).\n\nFolie 15/34 · 0:45 · Foreshadow Live-Demo-Slider."
+  },
+  {
+    "objectID": "presentation/presentation.html#d3-force-velocity-verlet-alpha-decay",
+    "href": "presentation/presentation.html#d3-force-velocity-verlet-alpha-decay",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "d3-force: Velocity-Verlet & \\(\\alpha\\)-Decay",
+    "text": "d3-force: Velocity-Verlet & \\(\\alpha\\)-Decay\n\nEnergieabfall & Temperatur\\[\\mathbf{v}_{t+\\frac{\\Delta t}{2}} = \\mathbf{v}_t + \\frac{\\Delta t}{2}\\mathbf{a}_t, \\quad \\mathbf{x}_{t+\\Delta t} = \\mathbf{x}_t + \\Delta t \\cdot \\mathbf{v}_{t+\\frac{\\Delta t}{2}}\\]\n\\[\\alpha_{t+1} = \\alpha_t(1-\\rho), \\quad \\mathbf{F}_i^{\\mathrm{eff}} = \\alpha \\cdot \\mathbf{F}_i\\]\n\nFolie 16/34 · 1:15 · Simulated Annealing — erklärt warum „Neu anordnen” wenig bewegt (FA2-Startlayout)."
+  },
+  {
+    "objectID": "presentation/presentation.html#louvain-hubs-visuelles-encoding",
+    "href": "presentation/presentation.html#louvain-hubs-visuelles-encoding",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Louvain & Hubs (visuelles Encoding)",
+    "text": "Louvain & Hubs (visuelles Encoding)\n\nLouvain-Communities\\[Q = \\frac{1}{2m} \\sum_{ij} \\left[ A_{ij} - \\frac{k_i k_j}{2m} \\right] \\delta(c_i, c_j)\\]\nFarbe = Louvain · Größe = In-Degree · Blondel et al. (2008)\n\nFolie 17/34 · 1:00 · \\(Q &gt; 0\\) = mehr innere als erwartete Kanten. 15 Communities im Datensatz."
+  },
+  {
+    "objectID": "presentation/presentation.html#komplexität-überblick",
+    "href": "presentation/presentation.html#komplexität-überblick",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Komplexität (Überblick)",
+    "text": "Komplexität (Überblick)\n\n\n\nAlgorithmus\nPro Iteration\nGesamt (typ.)\n\n\n\n\nFR (naiv)\n\\(O(n^2)\\)\n\\(O(n^3)\\)\n\n\nFA2 + Barnes–Hut\n\\(O(n \\log n)\\)\n\\(O(n^2 \\log n)\\)\n\n\nd3-force\n\\(O(n \\log n)\\)\ninteraktiv\n\n\nLouvain\n—\n\\(O(n \\log n)\\)\n\n\nSVG vs. Canvas\nDOM vs. Pixel\nsiehe nächste Folie\n\n\n\n\nFolie 18/34 · 0:45 · Rendering-Kosten separat betrachten."
+  },
+  {
+    "objectID": "presentation/presentation.html#svg-canvas-webgl",
+    "href": "presentation/presentation.html#svg-canvas-webgl",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "SVG → Canvas → WebGL",
+    "text": "SVG → Canvas → WebGL\n\nRendering-Stufen\n\n\nAbschnitt\nGröße\nTechnologie\n\n\n\n\n3a Ego-Netz\n~350\nSVG / DOM\n\n\n3b wiki-Vote\n~7.000\nCanvas\n\n\n3c Follow-Graph\n\\(10^6+\\)\nWebGL (geplant)\n\n\n\n\nFolie 19/34 · 1:00 · Website-Skalierung in einem Bild — 3a/3c nur erwähnen."
+  },
+  {
+    "objectID": "presentation/presentation.html#quadtree-interaktion-auf-canvas",
+    "href": "presentation/presentation.html#quadtree-interaktion-auf-canvas",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Quadtree: Interaktion auf Canvas",
+    "text": "Quadtree: Interaktion auf Canvas\n\nQuadtree Hit-TestingKein DOM pro Knoten → räumliche Suche in \\(O(\\log n)\\) statt 7.000 Distanztests.\n\nFolie 20/34 · 0:45 · Aus Website Abschnitt 3b — Quadtree in force-graph.js."
+  },
+  {
+    "objectID": "presentation/presentation.html#live-demo-wiki-vote-website-3b",
+    "href": "presentation/presentation.html#live-demo-wiki-vote-website-3b",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Live-Demo — wiki-Vote (Website 3b)",
+    "text": "Live-Demo — wiki-Vote (Website 3b)\n\nDemoJetzt live: Interaktiver Graph — Hover, Zoom, Slider, „Neu anordnen”\n\nFolie 21/34 · 0:30 · Browser öffnen (quarto preview oder deployed site)."
+  },
+  {
+    "objectID": "presentation/presentation.html#demo-skript-4-min",
+    "href": "presentation/presentation.html#demo-skript-4-min",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Demo-Skript (4 Min)",
+    "text": "Demo-Skript (4 Min)\n\n\n\nZeit\nAktion\n\n\n\n\n0:00\nGesamtgraph — Farbe = Louvain, Größe = In-Degree\n\n\n0:40\nHover Hub — Nachbarschaft + rote Kanten\n\n\n1:20\nZoom in den Hairball-Kern\n\n\n2:00\nSlider Abstoßung ↑\n\n\n2:40\nSlider Kantenlänge ↓\n\n\n3:10\nNeu anordnen — \\(\\alpha\\)-Erwärmung\n\n\n3:40\nHub-Labels einblenden\n\n\n\n\nFolie 22/34 · 3:30 · Orga: Live-Demo. Bei Netzproblemen: fig08 + fig07 als Fallback."
+  },
+  {
+    "objectID": "presentation/presentation.html#grenzen-unser-ansatz",
+    "href": "presentation/presentation.html#grenzen-unser-ansatz",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Grenzen (unser Ansatz)",
+    "text": "Grenzen (unser Ansatz)\n\nHairball bleibt bei sehr dichten Graphen — Filter/Aggregation nötig\nLokale Minima — kein garantiertes globales Optimum\nGerichtete Kanten — 100k Pfeile unlesbar → ungerichtete Projektion fürs Layout\n\n\nFolie 23/34 · 0:45 · Orga: Grenzen. Übergang: „Was passiert jenseits unseres Stacks?”"
+  },
+  {
+    "objectID": "presentation/presentation.html#forschungsfeld-heute",
+    "href": "presentation/presentation.html#forschungsfeld-heute",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Forschungsfeld heute",
+    "text": "Forschungsfeld heute\nMeta-Survey „Are We There Yet?“ (2023): Netzwerk-Visualisierung fragmentiert in (Nobre et al. 2023)\n\nLarge graphs — Skalierung (unser Schwerpunkt)\nDynamic / multivariate / geospatial — weiter offen\nTaxonomie: pre-/in-/post-layout Optimierung (Wang et al. 2023)\n\n\nFolie 24/34 · 0:50 · Web Research Agent. Quellen in briefings/web-research-sota-2016-2026.md"
+  },
+  {
+    "objectID": "presentation/presentation.html#gpu-layout-jenseits-von-wiki-vote",
+    "href": "presentation/presentation.html#gpu-layout-jenseits-von-wiki-vote",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "GPU: Layout jenseits von wiki-Vote",
+    "text": "GPU: Layout jenseits von wiki-Vote\n\n\n\n\n\n\n\n\nAnsatz\nIdee\nGrößenordnung\n\n\n\n\nRAPIDS cuGraph FA2\nCUDA ForceAtlas2, zero-copy GPU pipeline\nbis ~50M Knoten\n\n\nGraphWaGu\nWebGPU: FR + Barnes–Hut parallel im Browser\n100k Knoten @ ≥10 FPS\n\n\nRTX „Springs”\nAbstoßung via Ray-Tracing statt Quadtree\n4–13× vs. CUDA BH\n\n\n\nLinsenmaier et al. (2020) · Pandey et al. (2023) · Wald et al. (2020)\n\nFolie 25/34 · 1:00 · Vergleich zu unserem offline FA2 + Canvas."
+  },
+  {
+    "objectID": "presentation/presentation.html#browser-ökosystem-webgl-webgpu",
+    "href": "presentation/presentation.html#browser-ökosystem-webgl-webgpu",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Browser-Ökosystem: WebGL → WebGPU",
+    "text": "Browser-Ökosystem: WebGL → WebGPU\n\n\n\nTool\nJahr\nLayout\nRender\n\n\n\n\nNetV.js\n2020\nextern (D3)\nWebGL\n\n\nUnser 3b\n2026\noffline FA2 + d3-force\nCanvas\n\n\nGraphWaGu / GraphGPU\n2023+\nWebGPU compute\nWebGPU\n\n\nCosmograph\n2023+\nFA im Browser\nGPU + DuckDB\n\n\n\nGraphistry: Server-GPU + Arrow → WebGL-Stream (bis ~8M Kanten) (Graphistry Inc. 2020)\n\nFolie 26/34 · 0:55 · Wir sind didaktische Zwischenstufe vor WebGPU-All-in-One."
+  },
+  {
+    "objectID": "presentation/presentation.html#hairball-reduzieren-jenseits-von-layout",
+    "href": "presentation/presentation.html#hairball-reduzieren-jenseits-von-layout",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Hairball reduzieren — jenseits von Layout",
+    "text": "Hairball reduzieren — jenseits von Layout\nWenn Kraft allein nicht reicht (2018–2020):\n\nEdge Cutting — skelettartiges Layout durch gezieltes Kantenentfernen (Edge et al. 2018)\nEdge Bundling (SBED) — ähnlichkeitsbasiert, multiscale Overview (Nocaj and Brandes 2020)\nChordLink — Node-link + Chord-Diagramme für dichte Communities (Angori et al. 2019)\n\nErgänzt Louvain-Farben — nicht Ersatz für FA2.\n\nFolie 27/34 · 0:55 · Post-layout / hybrid — passt zu Website-Abschnitt 3c Reduktion."
+  },
+  {
+    "objectID": "presentation/presentation.html#ml-layouts-gnn-dimensionality-reduction",
+    "href": "presentation/presentation.html#ml-layouts-gnn-dimensionality-reduction",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "ML-Layouts: GNN & Dimensionality Reduction",
+    "text": "ML-Layouts: GNN & Dimensionality Reduction\n\n\n\n\n\n\n\n\nMethode\nJahr\nKernidee\n\n\n\n\nDRGraph\n2020\nDR + negative sampling, \\(O(n)\\), multilevel (Zhu et al. 2020)\n\n\n(DNN)²\n2021\nGCN optimiert Layout-Loss direkt (Bacciu et al. 2021)\n\n\nNeuLay\n2023\nGNN beschleunigt FDL 10–100×, oft klarere Communities (Toth et al. 2023)\n\n\n\nTrend: Physik (FA2) + Lernen (GNN) — nicht entweder/oder.\n\nFolie 28/34 · 1:00 · Nature Communications 2023 — starker Anker für „Ausblick”."
+  },
+  {
+    "objectID": "presentation/presentation.html#immersiv-multilevel",
+    "href": "presentation/presentation.html#immersiv-multilevel",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Immersiv & Multilevel",
+    "text": "Immersiv & Multilevel\n\nMultilevel FDP (Multi-GiLA, MuGDAD): Coarsening → Platzierung → Verfeinerung für Cluster (Di Battista et al. 2016)\nVR Graph Analytics: GAV-VR Framework (2023), egocentrische Navigation, ästhetik-gesteuerte Viewpoints (Kerle-Malcharek et al. 2023)\n3D-Layouts: NeuLay legte Internet-Topologie in 3D aus (Toth et al. 2023)\n\n\nFolie 29/34 · 0:50 · Optional kürzen bei Zeitdruck."
+  },
+  {
+    "objectID": "presentation/presentation.html#wo-stehen-wir",
+    "href": "presentation/presentation.html#wo-stehen-wir",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Wo stehen wir?",
+    "text": "Wo stehen wir?\n\n\n\n\nUnser Projekt\nSOTA 2016–26\n\n\n\n\nLayout\nFA2 offline + d3-force\ncuGraph, WebGPU, NeuLay GNN\n\n\nSkalierung\n~7k (Canvas)\n100k–50M (GPU)\n\n\nHairball\nLouvain + In-Degree\n+ Cutting, Bundling, Hybrid\n\n\nRendering\nCanvas 2D\nWebGL / WebGPU\n\n\nImmersiv\n—\nVR-Frameworks\n\n\n\n\nFolie 30/34 · 0:45 · Brücke zurück zur Zusammenfassung — nicht unter Wert verkaufen."
+  },
+  {
+    "objectID": "presentation/presentation.html#zusammenfassung",
+    "href": "presentation/presentation.html#zusammenfassung",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Zusammenfassung",
+    "text": "Zusammenfassung\n\nPhysik simulieren · N-Körper approximieren · Communities färben · passend rendern\n\n\nKraft-Layouts machen Struktur räumlich lesbar\nBarnes–Hut + offline FA2 machen große Graphen berechenbar\nLouvain + In-Degree kodieren Bedeutung\nCanvas + Quadtree halten Interaktion flüssig\n\n\nFolie 31/34 · 0:45 · Merksatz wiederholen."
+  },
+  {
+    "objectID": "presentation/presentation.html#lernzielabfrage-quiz",
+    "href": "presentation/presentation.html#lernzielabfrage-quiz",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Lernzielabfrage (Quiz)",
+    "text": "Lernzielabfrage (Quiz)\n\nWarum braucht ForceAtlas2 Barnes–Hut?\nWas bedeutet hohe Modularität \\(Q\\)?\nWarum Canvas statt SVG bei wiki-Vote?\nWas steuert \\(\\alpha\\) in d3-force?\n\n\nFolie 32/34 · 1:00 · Antworten: (1) \\(O(n^2)\\to O(n\\log n)\\) (2) mehr innere Kanten (3) kein 100k-DOM (4) Kühlparameter. Bonus: „Was ist NeuLay?” → GNN-beschleunigtes FDL."
+  },
+  {
+    "objectID": "presentation/presentation.html#arbeitsaufteilung",
+    "href": "presentation/presentation.html#arbeitsaufteilung",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Arbeitsaufteilung",
+    "text": "Arbeitsaufteilung\n\n\n\nPerson\nPräsentation\nWebseite\nCode / Daten\n\n\n\n\nSara\n…\n…\n…\n\n\nSilvia\n…\n…\n…\n\n\nAdam\n…\n…\n…\n\n\n\n\nFolie 33/34 · 0:30 · Orga-Pflicht — vor Abgabe ausfüllen!"
+  },
+  {
+    "objectID": "presentation/presentation.html#fragen",
+    "href": "presentation/presentation.html#fragen",
+    "title": "Nodale Graphdatenvisualisierung",
+    "section": "Fragen?",
+    "text": "Fragen?\nGraphdatenvisualisierung · SNAP wiki-Vote\n\nFolie 34a · Peer-Review: „WebGPU vs. Canvas?” / „Wann GNN statt FA2?”"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#lernziele",
+    "href": "presentation/presentation-slides.html#lernziele",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Lernziele",
+    "text": "Lernziele\nNach dieser Präsentation könnt ihr …\n\nerklären, warum große Graphen ohne Layout-Algorithmen unlesbar werden\ndas Kraftmodell (Federn + Abstoßung) und die Barnes-Hut-Näherung skizzieren\nForceAtlas2, Louvain und d3-force in eure Pipeline einordnen\nbegründen, wann SVG, Canvas oder WebGL sinnvoll sind"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#agenda-25-min",
+    "href": "presentation/presentation-slides.html#agenda-25-min",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Agenda (25 Min)",
+    "text": "Agenda (25 Min)\n\n\n\nBlock\nInhalt\n\n\n\n\nProblem & Motivation\nHairball, wiki-Vote\n\n\nBrücke\nGestalt → Layout (1 Folie)\n\n\nKern\nKraftmodelle, Barnes-Hut, FA2, Louvain\n\n\nLive-Demo\nInteraktive Website (Abschnitt 3b)\n\n\nAusblick\nSkalierung, Grenzen, Quiz"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#wann-wird-ein-graph-unlesbar",
+    "href": "presentation/presentation-slides.html#wann-wird-ein-graph-unlesbar",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Wann wird ein Graph unlesbar?",
+    "text": "Wann wird ein Graph unlesbar?\n\n\n\nHairball vs. strukturiertes Layout"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#use-case-soziale-netzwerke",
+    "href": "presentation/presentation-slides.html#use-case-soziale-netzwerke",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Use-Case: Soziale Netzwerke",
+    "text": "Use-Case: Soziale Netzwerke\n\nKnoten = Akteure, Kanten = Beziehungen\nZiel: Struktur sichtbar machen - Communities, Hubs, Brücken\nBeispiel: wiki-Vote (~7.000 Nutzer, ~100.000 Kanten, SNAP)\n\n\n\n\nwiki-Vote Sample"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#entwicklungsgeschichte-kurzüberblick",
+    "href": "presentation/presentation-slides.html#entwicklungsgeschichte-kurzüberblick",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Entwicklungsgeschichte (Kurzüberblick)",
+    "text": "Entwicklungsgeschichte (Kurzüberblick)\n\n\n\nJahr\nMeilenstein\n\n\n\n\n1984\nEades - Feder-Heuristik\n\n\n1991\nFruchterman-Reingold\n\n\n1986\nBarnes-Hut\n\n\n2008\nLouvain\n\n\n2014\nForceAtlas2\n\n\nheute\nd3-force, Canvas, WebGL"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#gestalt-layout",
+    "href": "presentation/presentation-slides.html#gestalt-layout",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Gestalt → Layout",
+    "text": "Gestalt → Layout\nGesetz der Nähe (Vorlesung): Nahe Elemente = zusammengehörig.\nKraft-Layout: Algorithmen konstruieren diese Nähe durch Positionierung."
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#graph-als-physikalisches-system",
+    "href": "presentation/presentation-slides.html#graph-als-physikalisches-system",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Graph als physikalisches System",
+    "text": "Graph als physikalisches System\n\n\n\nKraftmodell\n\n\n\nAttraktion entlang Kanten (Federn)\nAbstoßung zwischen allen Knoten\nLayout = Kräftegleichgewicht"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#feder--und-abstoßungskräfte",
+    "href": "presentation/presentation-slides.html#feder--und-abstoßungskräfte",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Feder- und Abstoßungskräfte",
+    "text": "Feder- und Abstoßungskräfte\n\\[F_{ij}^{\\mathrm{attr}} = k \\cdot (d_{ij} - l) \\cdot \\vec{u}_{ij}\\]\n\\[F_{ij}^{\\mathrm{rep}} = \\frac{k_{\\mathrm{rep}}}{d_{ij}^{2}} \\cdot \\frac{\\mathbf{x}_i - \\mathbf{x}_j}{d_{ij}}\\]"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#energie-formulierung",
+    "href": "presentation/presentation-slides.html#energie-formulierung",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Energie-Formulierung",
+    "text": "Energie-Formulierung\n\\[E = \\sum_{(i,j)\\in E} \\frac{k}{2}(d_{ij} - l)^2 + \\sum_{i&lt;j} \\frac{k_{\\mathrm{rep}}}{d_{ij}}\\]\nReferenz: Eades 1984, Fruchterman-Reingold 1991"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#fr-vs.-forceatlas2",
+    "href": "presentation/presentation-slides.html#fr-vs.-forceatlas2",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "FR vs. ForceAtlas2",
+    "text": "FR vs. ForceAtlas2\n\n\n\nAspekt\nFR\nFA2\n\n\n\n\nAbstoßung\n\\(O(n^2)\\)\nBarnes-Hut\n\n\nIntegration\nEuler + \\(T\\)\nVerlet + \\(\\alpha\\)"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#barnes-hut",
+    "href": "presentation/presentation-slides.html#barnes-hut",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Barnes-Hut",
+    "text": "Barnes-Hut\n\n\n\nBarnes-Hut\n\n\n\\(\\Theta\\)-Kriterium: Zelle approximieren wenn \\(w/d &lt; \\Theta\\)"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#pipeline",
+    "href": "presentation/presentation-slides.html#pipeline",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Pipeline",
+    "text": "Pipeline\n\n\n\nPipeline\n\n\npreprocess_graph.py → FA2 + Louvain → JSON → d3-force Canvas"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#parameter-effekte",
+    "href": "presentation/presentation-slides.html#parameter-effekte",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Parameter-Effekte",
+    "text": "Parameter-Effekte\n\n\n\nSmall multiples"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#velocity-verlet-alpha-decay",
+    "href": "presentation/presentation-slides.html#velocity-verlet-alpha-decay",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Velocity-Verlet & alpha-Decay",
+    "text": "Velocity-Verlet & alpha-Decay\n\n\n\nEnergy decay"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#louvain-hubs",
+    "href": "presentation/presentation-slides.html#louvain-hubs",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Louvain & Hubs",
+    "text": "Louvain & Hubs\n\n\n\nLouvain\n\n\n\\[Q = \\frac{1}{2m} \\sum_{ij} \\left[ A_{ij} - \\frac{k_i k_j}{2m} \\right] \\delta(c_i, c_j)\\]"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#svg-canvas-webgl",
+    "href": "presentation/presentation-slides.html#svg-canvas-webgl",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "SVG → Canvas → WebGL",
+    "text": "SVG → Canvas → WebGL\n\n\n\nTiers"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#website-abschnitt-3b",
+    "href": "presentation/presentation-slides.html#website-abschnitt-3b",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Website Abschnitt 3b",
+    "text": "Website Abschnitt 3b\n\n\n\nDemo"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#zusammenfassung",
+    "href": "presentation/presentation-slides.html#zusammenfassung",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Zusammenfassung",
+    "text": "Zusammenfassung\nPhysik simulieren · N-Körper approximieren · Communities färben · passend rendern"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#quiz",
+    "href": "presentation/presentation-slides.html#quiz",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Quiz",
+    "text": "Quiz\n\nWarum Barnes-Hut?\nWas bedeutet hohes \\(Q\\)?\nWarum Canvas statt SVG?\nWas steuert \\(\\alpha\\)?"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#arbeitsaufteilung",
+    "href": "presentation/presentation-slides.html#arbeitsaufteilung",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Arbeitsaufteilung",
+    "text": "Arbeitsaufteilung\nSara | … |\nSilvia | … |\nAdam | … |"
   }
 ]
