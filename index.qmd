@@ -186,6 +186,236 @@ Hier passt die Argumentation für WebGL/GPU sehr gut. Inhaltlich könnt ihr zus�
 
 [Hier folgt weiterer Inhalt]
 
+## 3d. Moderne Ansätze: Graph Neural Networks (GNNs) für das Layouting
+
+Während klassische, physikbasierte Layouts wie ForceAtlas2 (siehe 3b) hervorragend für mittlere Graphen funktionieren, stoßen sie bei extrem großen Netzwerken (hunderttausende Knoten) an ihre Grenzen. Die Berechnung der Abstoßungskräfte zwischen allen Knotenpaaren skaliert quadratisch $\mathcal{O}(|V|^2)$, und selbst mit Barnes-Hut-Näherung $\mathcal{O}(|V| \log |V|)$ erfordert es hunderte Iterationen, bis das System zur Ruhe kommt.
+
+Hier kommen **Graph Neural Networks (GNNs)** ins Spiel. Algorithmen wie *CoRe-GD* oder *DeepDrawing* verlagern den Rechenaufwand in eine **Trainingsphase**. Ein neuronales Netz lernt, die optimalen 2D-Koordinaten direkt aus der Graphentopologie vorherzusagen. Nach dem Training ist die Vorhersage (Inferenz) extrem schnell und skaliert linear mit der Anzahl der Knoten und Kanten: $\mathcal{O}(|V| + |E|)$.
+
+### Die Mathematik: Message Passing Framework
+
+Der Kern eines jeden GNNs ist das **Message Passing**. Anstatt den Graphen als feste Matrix zu betrachten, kommunizieren die Knoten miteinander. Jeder Knoten $v$ hat einen Feature-Vektor $h_v^{(l)}$ in Schicht $l$.
+
+In jeder Schicht des Netzwerks passieren zwei Dinge:
+
+1. **Aggregation (Nachrichten sammeln):** Ein Knoten sammelt die Informationen seiner direkten Nachbarn $\mathcal{N}(v)$.
+   $$ m_v^{(l)} = \text{AGGREGATE}\left( \{ h_u^{(l-1)} \mid u \in \mathcal{N}(v) \} \right) $$
+   *Die Aggregationsfunktion kann eine einfache Summe, ein Durchschnitt oder eine Maximumsfunktion sein.*
+
+2. **Update (Zustand aktualisieren):** Der Knoten kombiniert seine eigene bisherige Information mit den gesammelten Nachrichten, um seinen neuen Zustand zu berechnen, typischerweise mit einer nicht-linearen Aktivierungsfunktion $\sigma$ (wie ReLU) und lernbaren Gewichtsmatrizen $W$ und $B$.
+   $$ h_v^{(l)} = \sigma \left( W \cdot m_v^{(l)} + B \cdot h_v^{(l-1)} \right) $$
+
+Nach mehreren solchen Schichten hat jeder Knoten Informationen aus einer größeren Nachbarschaft gesammelt. Die finale Schicht gibt dann die 2D-Koordinaten $(x, y)$ aus.
+
+### Die Loss-Funktion: Stress Majorization
+
+Um das GNN zu trainieren, braucht es ein Ziel. Moderne GNN-Layouts nutzen häufig die **Stress-Minimierung**. Der "Stress" misst, wie stark die euklidische Distanz im 2D-Layout $||p_u - p_v||_2$ von der theoretischen kürzesten Pfaddistanz $d_{u,v}$ im Graphen abweicht. Die Loss-Funktion $\mathcal{L}$ summiert diesen Fehler (gewichtet mit $w_{u,v}$, oft $d_{u,v}^{-2}$):
+
+$$ \mathcal{L} = \sum_{u \neq v} w_{u,v} \left( ||p_u - p_v||_2 - d_{u,v} \right)^2 $$
+
+Das Netzwerk passt seine Gewichte so an, dass dieser Stress minimal wird.
+
+### Interaktiver Message-Passing-Simulator
+
+Probiere das Message Passing selbst aus! Klicke auf "Nächster Schritt", um zu sehen, wie Knoten A die Informationen (Features) seiner Nachbarn sammelt und seinen eigenen Wert aktualisiert. (Wir verwenden hier als Aggregation die **Summe** und als Update eine einfache Addition der Nachbarsumme zum eigenen Wert).
+
+```{=html}
+<div class="gnn-playground" style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; background: #fafafa; text-align: center; margin: 20px 0;">
+    <svg id="gnn-svg" width="400" height="250" style="background: white; border-radius: 4px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);"></svg>
+    <div style="margin-top: 15px; font-weight: bold; min-height: 24px;" id="gnn-status">Schritt 0: Initialer Zustand</div>
+    <div style="margin-top: 10px;">
+        <button id="gnn-step-btn" class="btn btn-primary">Nächster Schritt</button>
+        <button id="gnn-reset-btn" class="btn btn-secondary">Zurücksetzen</button>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const svg = document.getElementById("gnn-svg");
+    const status = document.getElementById("gnn-status");
+    const stepBtn = document.getElementById("gnn-step-btn");
+    const resetBtn = document.getElementById("gnn-reset-btn");
+
+    const nodes = {
+        A: {x: 200, y: 125, val: 2, el: null, textEl: null},
+        B: {x: 80, y: 50, val: 5, el: null, textEl: null},
+        C: {x: 80, y: 200, val: 3, el: null, textEl: null},
+        D: {x: 320, y: 125, val: 7, el: null, textEl: null}
+    };
+    const edges = [ ['B', 'A'], ['C', 'A'], ['D', 'A'] ];
+
+    let step = 0;
+    let messages = [];
+
+    function init() {
+        svg.innerHTML = '';
+        step = 0;
+        nodes.A.val = 2;
+        status.innerText = "Schritt 0: Initialer Zustand";
+        stepBtn.disabled = false;
+
+        // Draw edges
+        edges.forEach(e => {
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", nodes[e[0]].x);
+            line.setAttribute("y1", nodes[e[0]].y);
+            line.setAttribute("x2", nodes[e[1]].x);
+            line.setAttribute("y2", nodes[e[1]].y);
+            line.setAttribute("stroke", "#ccc");
+            line.setAttribute("stroke-width", "2");
+            svg.appendChild(line);
+        });
+
+        // Draw nodes
+        Object.keys(nodes).forEach(k => {
+            const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            circle.setAttribute("cx", nodes[k].x);
+            circle.setAttribute("cy", nodes[k].y);
+            circle.setAttribute("r", "20");
+            circle.setAttribute("fill", k === 'A' ? "#ff7f0e" : "#1f77b4");
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            text.setAttribute("x", nodes[k].x);
+            text.setAttribute("y", nodes[k].y + 5);
+            text.setAttribute("text-anchor", "middle");
+            text.setAttribute("fill", "white");
+            text.setAttribute("font-family", "sans-serif");
+            text.setAttribute("font-weight", "bold");
+            text.textContent = nodes[k].val;
+            
+            g.appendChild(circle);
+            g.appendChild(text);
+            svg.appendChild(g);
+            nodes[k].el = circle;
+            nodes[k].textEl = text;
+        });
+    }
+
+    function doStep() {
+        if (step === 0) {
+            status.innerHTML = "Schritt 1: <b>Aggregation</b> - Nachbarn senden ihre Werte an Knoten A.";
+            edges.forEach(e => {
+                const src = nodes[e[0]];
+                const target = nodes[e[1]];
+                const msg = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                msg.setAttribute("cx", src.x);
+                msg.setAttribute("cy", src.y);
+                msg.setAttribute("r", "8");
+                msg.setAttribute("fill", "#2ca02c");
+                svg.appendChild(msg);
+                
+                const animX = document.createElementNS("http://www.w3.org/2000/svg", "animate");
+                animX.setAttribute("attributeName", "cx");
+                animX.setAttribute("to", target.x);
+                animX.setAttribute("dur", "1s");
+                animX.setAttribute("fill", "freeze");
+                
+                const animY = document.createElementNS("http://www.w3.org/2000/svg", "animate");
+                animY.setAttribute("attributeName", "cy");
+                animY.setAttribute("to", target.y);
+                animY.setAttribute("dur", "1s");
+                animY.setAttribute("fill", "freeze");
+
+                msg.appendChild(animX);
+                msg.appendChild(animY);
+                animX.beginElement();
+                animY.beginElement();
+                messages.push(msg);
+            });
+            step++;
+        } else if (step === 1) {
+            messages.forEach(m => m.remove());
+            messages = [];
+            const sum = nodes.B.val + nodes.C.val + nodes.D.val;
+            status.innerHTML = `Schritt 2: <b>Update</b> - Knoten A addiert die empfangenen Werte (${nodes.B.val} + ${nodes.C.val} + ${nodes.D.val} = ${sum}) zu seinem eigenen Wert.`;
+            nodes.A.val += sum;
+            nodes.A.textEl.textContent = nodes.A.val;
+            
+            // Highlight animation for update
+            nodes.A.el.setAttribute("r", "25");
+            setTimeout(() => nodes.A.el.setAttribute("r", "20"), 300);
+            
+            stepBtn.disabled = true;
+            step++;
+        }
+    }
+
+    stepBtn.addEventListener("click", doStep);
+    resetBtn.addEventListener("click", init);
+    init();
+});
+</script>
+```
+
+### Didaktik-Check: Hast du es verstanden?
+
+Teste dein Wissen über GNNs für das Graph-Layouting!
+
+```{=html}
+<style>
+.quiz-container { background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #dee2e6; margin-bottom: 20px; }
+.quiz-question { font-weight: bold; margin-bottom: 10px; }
+.quiz-options { display: flex; flex-direction: column; gap: 8px; }
+.quiz-btn { text-align: left; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; background: white; cursor: pointer; transition: background 0.2s; }
+.quiz-btn:hover { background: #e9ecef; }
+.quiz-btn.correct { background: #d4edda; border-color: #c3e6cb; color: #155724; }
+.quiz-btn.wrong { background: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+.quiz-feedback { margin-top: 10px; font-size: 0.9em; font-weight: bold; min-height: 20px;}
+</style>
+
+<div class="quiz-container">
+    <div class="quiz-question">1. Warum sind GNN-basierte Layouts für große Graphen oft schneller in der Inferenz als physikalische Simulationen wie ForceAtlas2?</div>
+    <div class="quiz-options" id="q1-options">
+        <button class="quiz-btn" onclick="checkAnswer('q1', this, false)">A) Weil sie im Browser auf Canvas statt auf SVG rendern.</button>
+        <button class="quiz-btn" onclick="checkAnswer('q1', this, true, 'Richtig! Die Inferenz (Vorhersage nach dem Training) skaliert linear mit der Graphengröße, während Simulationen quadratische Komplexität haben.')">B) Weil die Inferenzzeit nach dem Training linear zur Graphengröße skaliert, statt quadratisch.</button>
+        <button class="quiz-btn" onclick="checkAnswer('q1', this, false)">C) Weil GNNs nur kleine Subgraphen visualisieren können.</button>
+    </div>
+    <div class="quiz-feedback" id="q1-feedback"></div>
+</div>
+
+<div class="quiz-container">
+    <div class="quiz-question">2. Welche zwei Schritte bilden den Kern des Message Passing in einem GNN?</div>
+    <div class="quiz-options" id="q2-options">
+        <button class="quiz-btn" onclick="checkAnswer('q2', this, false)">A) Abstoßung (Repulsion) und Anziehung (Attraction).</button>
+        <button class="quiz-btn" onclick="checkAnswer('q2', this, false)">C) Filtern und Sortieren der Knoten.</button>
+        <button class="quiz-btn" onclick="checkAnswer('q2', this, true, 'Korrekt! In der Aggregationsphase werden Nachrichten von Nachbarn gesammelt, in der Update-Phase wird der eigene Knotenzustand aktualisiert.')">B) Aggregation (Sammeln) und Update (Aktualisieren).</button>
+    </div>
+    <div class="quiz-feedback" id="q2-feedback"></div>
+</div>
+
+<div class="quiz-container">
+    <div class="quiz-question">3. Was minimiert die Loss-Funktion bei GNN-Layouts typischerweise?</div>
+    <div class="quiz-options" id="q3-options">
+        <button class="quiz-btn" onclick="checkAnswer('q3', this, false)">A) Die Anzahl der gekreuzten Kanten im fertigen Layout.</button>
+        <button class="quiz-btn" onclick="checkAnswer('q3', this, true, 'Genau! Der Stress misst die Abweichung zwischen euklidischer Distanz im Bild und der tatsächlichen Pfaddistanz im Graphen.')">B) Den "Stress", also die Differenz zwischen geometrischer Distanz und kürzester Pfaddistanz.</button>
+        <button class="quiz-btn" onclick="checkAnswer('q3', this, false)">C) Die Ladezeit der Website.</button>
+    </div>
+    <div class="quiz-feedback" id="q3-feedback"></div>
+</div>
+
+<script>
+function checkAnswer(qId, btn, isCorrect, feedbackText = '') {
+    // Disable all buttons in this question
+    const options = document.getElementById(qId + '-options').children;
+    for(let opt of options) {
+        opt.disabled = true;
+        opt.style.cursor = 'default';
+    }
+    
+    const feedbackEl = document.getElementById(qId + '-feedback');
+    if(isCorrect) {
+        btn.classList.add('correct');
+        feedbackEl.innerText = feedbackText;
+        feedbackEl.style.color = '#155724';
+    } else {
+        btn.classList.add('wrong');
+        feedbackEl.innerText = "Leider falsch. Lade die Seite neu, um es noch einmal zu probieren!";
+        feedbackEl.style.color = '#721c24';
+    }
+}
+</script>
+```
+
 ## 4. How to handle (Rezeptbuch)
 Wenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral.
 
