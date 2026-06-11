@@ -60,19 +60,151 @@ Das folgende ist nur zur Vorschau:
     });
 </script>
 ```
-## 3a. Kleiner Datensatz (Max und seine 347 Freunde)
-Das ist Max. Max hat rund 350 Facebook-Freunde. Wie kann man diesen Freundeskreis so darstellen, dass Gruppen, Nachbarschaften und Verbindungen verständlich bleiben?
+## 3a. Kleiner Datensatz: Wer begegnet wem in Les Misérables?
+Zum Einstieg betrachten wir kein riesiges soziales Netzwerk, sondern ein kleines Beziehungsgeflecht aus einer Geschichte. Der Datensatz zeigt Figuren aus Victor Hugos Roman Les Misérables; jede Kante verbindet zwei Figuren, die im selben Kapitel gemeinsam auftreten. So entsteht ein kleines, aber bereits strukturiertes Netzwerk aus Haupt- und Nebenfiguren.
 
-### Warum gut?
-Kleine Netzwerke sind noch direkt lesbar, man kann einzelne Knoten identifizieren und Interaktionen wie Hover, Highlighting oder Nachbarschaftsansichten gut einsetzen. Ego-Netzwerke sind dafür besonders passend, weil lokale soziale Struktur sichtbar wird.
+### Warum ist das gut?
+Dieser Datensatz ist klein genug, dass man noch einzelne Knoten, Gruppen und auffällige Figuren direkt erkennen kann. Genau deshalb eignet er sich gut für eine erste interaktive Visualisierung: Man kann hovern, Nachbarn hervorheben, Labels einblenden und beobachten, wie ein Layout aus einem abstrakten Netz eine lesbare Struktur macht. Force-Directed-Darstellungen mit D3 werden genau für solche Netzwerke häufig verwendet.
 
 ### Was ist das Problem?
-Selbst bei wenigen hundert Knoten kann ein ungeeignetes Layout schnell chaotisch wirken. Viele Kanten erzeugen visuelle Überlagerung, und ohne gute Positionierung sieht man kaum Communities oder zentrale Personen.
+Auch ein kleines Netzwerk ist nicht automatisch verständlich. Wenn man die Figuren zufällig platziert, entstehen Liniengewirr und Überlagerungen, und Beziehungen zwischen wichtigen Figuren gehen in der Darstellung unter. Das Problem ist also nicht nur die Datenmenge, sondern die Frage, wie man Beziehungen räumlich so anordnet, dass Nähe auch inhaltlich lesbar wird.
 
 ### Layout + GraphAlg
-Hier könnt ihr einen force-directed Ansatz als Hauptbeispiel nehmen und daneben z. B. radial oder community-basiert vergleichen. Für diese Größenordnung ist SVG gut geeignet, weil DOM-basierte Interaktion und feine Gestaltung noch praktikabel sind.
+Für diesen ersten Teil verwenden wir ein Force-Directed-Layout. Dabei stoßen sich alle Knoten gegenseitig ab, während Kanten verbundene Figuren zueinander ziehen; so bildet sich schrittweise eine Anordnung, in der häufig gemeinsam auftretende Figuren näher beieinander liegen. D3s d3-force bietet dafür genau die passenden Bausteine wie forceLink, forceManyBody und forceCenter.
 
-[Hier folgt weiterer Inhalt]
+### Was lernen wir daraus?
+Schon bei einem kleinen Graphen sieht man: Eine Visualisierung zeigt Beziehungen nicht einfach „neutral“, sondern übersetzt sie in Raum. Das Layout macht Cluster, zentrale Figuren und dichte Beziehungen sichtbar und ist damit selbst ein Teil der Analyse.
+
+```{=html}
+<div class="small-graph-block">
+  <div class="sg-controls" style="display:flex; gap:12px; flex-wrap:wrap; margin:1rem 0;">
+    <label><input type="checkbox" id="sg-labels"> Labels anzeigen</label>
+    <button id="sg-reset" type="button">Layout neu starten</button>
+  </div>
+
+  <div style="border:0.5px solid #d3d1c7; border-radius:8px; padding:0.5rem; background:#fcfbf8;">
+    <svg id="small-graph" viewBox="0 0 900 560" style="width:100%; height:auto; display:block;"></svg>
+  </div>
+
+  <p style="font-size:12px; color:#888; margin-top:8px;">
+    Figuren aus <em>Les Misérables</em> · Hover hebt Nachbarn hervor · Ziehen verschiebt Knoten
+  </p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script>
+(async function () {
+  const width = 900, height = 560;
+  const svg = d3.select("#small-graph");
+  const data = await d3.json("assets/data/les_miserables.json");
+
+  const color = d3.scaleOrdinal(d3.schemeTableau10);
+
+  const link = svg.append("g")
+    .attr("stroke", "#b8b6ae")
+    .attr("stroke-opacity", 0.6)
+    .selectAll("line")
+    .data(data.links)
+    .join("line")
+    .attr("stroke-width", d => Math.sqrt(d.value || 1));
+
+  const node = svg.append("g")
+    .selectAll("circle")
+    .data(data.nodes)
+    .join("circle")
+    .attr("r", 6)
+    .attr("fill", d => color(d.group))
+    .attr("stroke", "#fff")
+    .attr("stroke-width", 1.5);
+
+  const label = svg.append("g")
+    .selectAll("text")
+    .data(data.nodes)
+    .join("text")
+    .text(d => d.name)
+    .attr("font-size", 11)
+    .attr("fill", "#444")
+    .attr("dx", 8)
+    .attr("dy", 3)
+    .style("display", "none");
+
+  const simulation = d3.forceSimulation(data.nodes)
+    .force("link", d3.forceLink(data.links).distance(38))
+    .force("charge", d3.forceManyBody().strength(-120))
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("collide", d3.forceCollide(10));
+
+  const linked = new Set(
+    data.links.flatMap(d => [
+      `${d.source.name}-${d.target.name}`,
+      `${d.target.name}-${d.source.name}`
+    ])
+  );
+
+  function isNeighbor(a, b) {
+    return a.name === b.name || linked.has(`${a.name}-${b.name}`);
+  }
+
+  node
+    .on("mouseover", function(event, d) {
+      node.attr("opacity", o => isNeighbor(d, o) ? 1 : 0.15);
+      link.attr("stroke-opacity", o => (o.source === d || o.target === d) ? 0.9 : 0.08)
+          .attr("stroke", o => (o.source === d || o.target === d) ? "#b54a3a" : "#b8b6ae");
+      label.style("display", o => isNeighbor(d, o) ? "block" : "none");
+    })
+    .on("mouseout", function() {
+      node.attr("opacity", 1);
+      link.attr("stroke-opacity", 0.6).attr("stroke", "#b8b6ae");
+      if (!document.getElementById("sg-labels").checked) label.style("display", "none");
+    })
+    .call(d3.drag()
+      .on("start", dragstarted)
+      .on("drag", dragged)
+      .on("end", dragended));
+
+  simulation.on("tick", () => {
+    link
+      .attr("x1", d => d.source.x)
+      .attr("y1", d => d.source.y)
+      .attr("x2", d => d.target.x)
+      .attr("y2", d => d.target.y);
+
+    node
+      .attr("cx", d => d.x)
+      .attr("cy", d => d.y);
+
+    label
+      .attr("x", d => d.x)
+      .attr("y", d => d.y);
+  });
+
+  document.getElementById("sg-labels").addEventListener("change", e => {
+    label.style("display", e.target.checked ? "block" : "none");
+  });
+
+  document.getElementById("sg-reset").addEventListener("click", () => {
+    simulation.alpha(1).restart();
+  });
+
+  function dragstarted(event, d) {
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+  }
+
+  function dragged(event, d) {
+    d.fx = event.x;
+    d.fy = event.y;
+  }
+
+  function dragended(event, d) {
+    if (!event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+  }
+})();
+</script>
+```
 
 ## 3b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)
 Im kleinen Beispiel stand *eine* Person im Mittelpunkt: Max und sein Ego-Netz. Jetzt drehen wir die Perspektive um und betrachten ein **vollständiges soziales Netzwerk ohne Mittelpunkt** – das Wikipedia-Abstimmungsnetzwerk `wiki-Vote` mit rund **7.000 Nutzer:innen und über 100.000 Beziehungen**. Hier gibt es kein Zentrum, um das wir die Knoten anordnen könnten.
@@ -202,4 +334,3 @@ Wenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. W
 Es gibt nicht die eine beste Graphvisualisierung. Was sinnvoll ist, hängt von Größe, Dichte, Richtung der Kanten, gewünschter Interaktion und der Rendering-Technologie im Web ab.
 
 [Hier folgt weiterer Inhalt]
-
