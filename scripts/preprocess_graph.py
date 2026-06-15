@@ -1,17 +1,18 @@
 """Preprocess the SNAP wiki-Vote social graph into a compact JSON for the
-D3 canvas force-directed visualization used in section 3b of the website.
+D3 canvas stress-layout visualization used in section 3b of the website.
 
 Pipeline:
   1. Read the edge list (skips `#` comment lines, tab/space separated).
   2. Build an UNDIRECTED graph (the directed votes are collapsed so the
-     force layout does not have to draw ~104k arrowheads) and keep the
+     layout does not have to draw ~104k arrowheads) and keep the
      largest connected component.
   3. Remap the sparse SNAP node ids to a contiguous 0..N-1 range.
   4. Compute per-node in-degree (votes received) on the original directed
      graph, used for node sizing so hubs stand out.
   5. Detect communities with Louvain on the undirected projection, used for
      node coloring (the global-structure cue that replaces the ego cue of 3a).
-  6. Compute a global ForceAtlas2 layout and normalize coordinates.
+  6. Compute a global stress-majorization layout (NetworkX energy method) and
+     normalize coordinates.
   7. Write nodes (id, x, y, group, deg) and links (index pairs) to JSON.
 
 Run once locally (deps in requirements.txt) and commit the resulting JSON;
@@ -28,13 +29,13 @@ from pathlib import Path
 
 import networkx as nx
 import community as community_louvain
-from fa2 import ForceAtlas2
 
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "wiki-Vote.txt.gz"
 OUT = ROOT / "assets" / "data" / "social_graph.json"
 
-FA2_ITERATIONS = 2000
+STRESS_ITERATIONS = 500
+STRESS_THRESHOLD = 1e-4
 LAYOUT_SCALE = 1000.0  # half-width/height of the normalized coordinate box
 
 
@@ -60,20 +61,13 @@ def largest_component_undirected(digraph: nx.DiGraph) -> nx.Graph:
 
 
 def compute_layout(graph: nx.Graph) -> dict[int, tuple[float, float]]:
-    """Global ForceAtlas2 layout, with degree-scaled repulsion for spread."""
-    forceatlas2 = ForceAtlas2(
-        outboundAttractionDistribution=True,
-        edgeWeightInfluence=1.0,
-        jitterTolerance=1.0,
-        barnesHutOptimize=True,
-        barnesHutTheta=1.2,
-        scalingRatio=2.0,
-        strongGravityMode=False,
-        gravity=1.0,
-        verbose=False,
-    )
-    return forceatlas2.forceatlas2_networkx_layout(
-        graph, pos=None, iterations=FA2_ITERATIONS
+    """Global stress layout via NetworkX energy optimization."""
+    return nx.spring_layout(
+        graph,
+        method="energy",
+        iterations=STRESS_ITERATIONS,
+        threshold=STRESS_THRESHOLD,
+        seed=42,
     )
 
 
@@ -113,7 +107,7 @@ def main() -> None:
     num_communities = len(set(partition.values()))
     print(f"  {num_communities} communities")
 
-    print(f"Computing ForceAtlas2 layout ({FA2_ITERATIONS} iterations) ...")
+    print(f"Computing stress layout (energy method, {STRESS_ITERATIONS} iterations) ...")
     positions = normalize(compute_layout(graph))
 
     # in-degree (votes received) from the original directed graph, for sizing
