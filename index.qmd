@@ -18,19 +18,7 @@ Eine Graphvisualisierung ist nicht automatisch gut, nur weil alle Knoten und Kan
 
 [hier Abbildung von Silvia hin]
 
-## 3a. Kleiner Datensatz (Max und seine 347 Freunde)
-Das ist Max. Max hat rund 350 Facebook-Freunde. Wie kann man diesen Freundeskreis so darstellen, dass Gruppen, Nachbarschaften und Verbindungen verständlich bleiben?
-
-### Warum gut?
-Kleine Netzwerke sind noch direkt lesbar, man kann einzelne Knoten identifizieren und Interaktionen wie Hover, Highlighting oder Nachbarschaftsansichten gut einsetzen. Ego-Netzwerke sind dafür besonders passend, weil lokale soziale Struktur sichtbar wird.
-
-### Was ist das Problem?
-Selbst bei wenigen hundert Knoten kann ein ungeeignetes Layout schnell chaotisch wirken. Viele Kanten erzeugen visuelle Überlagerung, und ohne gute Positionierung sieht man kaum Communities oder zentrale Personen.
-
-### Layout + GraphAlg
-Hier könnt ihr einen force-directed Ansatz als Hauptbeispiel nehmen und daneben z. B. radial oder community-basiert vergleichen. Für diese Größenordnung ist SVG gut geeignet, weil DOM-basierte Interaktion und feine Gestaltung noch praktikabel sind.
-
-[Hier folgt weiterer Inhalt]
+## 3a. Kleiner Datensatz
 
 ## 3b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)
 Im kleinen Beispiel stand *eine* Person im Mittelpunkt: Max und sein Ego-Netz. Jetzt drehen wir die Perspektive um und betrachten ein **vollständiges soziales Netzwerk ohne Mittelpunkt** – das Wikipedia-Abstimmungsnetzwerk `wiki-Vote` mit rund **7.000 Nutzer:innen und über 100.000 Beziehungen**. Hier gibt es kein Zentrum, um das wir die Knoten anordnen könnten.
