@@ -16,50 +16,8 @@ Aber wie zeigt man so etwas im Web so, dass man noch wirklich etwas erkennt?
 ## 2. Problemstellung (Wann wird ein Graph unlesbar?)
 Eine Graphvisualisierung ist nicht automatisch gut, nur weil alle Knoten und Kanten sichtbar sind. Mit wachsender Größe ändern sich Lesbarkeit, Interaktion und die geeignete Web-Technologie grundlegend.
 
-Das folgende ist nur zur Vorschau:
-```{=html}
+[hier Abbildung von Silvia hin]
 
-<script src="https://cdn.babylonjs.com/babylon.js"></script>
-
-<div style="width: 100%; height: 400px; position: relative; margin: 20px 0;">
-    <canvas id="renderCanvas" style="width: 100%; height: 100%; touch-action: none; border: 1px solid #ddd; display: block; border-radius: 8px;"></canvas>
-</div>
-
-<script>
-    window.addEventListener('DOMContentLoaded', function() {
-        const canvas = document.getElementById("renderCanvas");
-        if (!canvas) return;
-
-        const engine = new BABYLON.Engine(canvas, true);
-
-        const createScene = function () {
-            const scene = new BABYLON.Scene(engine);
-            scene.clearColor = new BABYLON.Color3(0.95, 0.95, 0.95);
-
-            const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI/4, Math.PI/3, 5, BABYLON.Vector3.Zero(), scene);
-            camera.attachControl(canvas, true);
-
-            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-            
-            const box = BABYLON.MeshBuilder.CreateBox("box", {size: 1.5}, scene);
-            const material = new BABYLON.StandardMaterial("mat", scene);
-            material.diffuseColor = new BABYLON.Color3(0.1, 0.4, 0.8);
-            box.material = material;
-
-            scene.registerBeforeRender(function () {
-                box.rotation.y += 0.01;
-                box.rotation.x += 0.005;
-            });
-
-            return scene;
-        };
-
-        const scene = createScene();
-        engine.runRenderLoop(() => scene.render());
-        window.addEventListener("resize", () => engine.resize());
-    });
-</script>
-```
 ## 3a. Kleiner Datensatz (Max und seine 347 Freunde)
 Das ist Max. Max hat rund 350 Facebook-Freunde. Wie kann man diesen Freundeskreis so darstellen, dass Gruppen, Nachbarschaften und Verbindungen verständlich bleiben?
 
@@ -186,17 +144,11 @@ Hier passt die Argumentation für WebGL/GPU sehr gut. Inhaltlich könnt ihr zus�
 
 [Hier folgt weiterer Inhalt]
 
-## 4. How to handle (Rezeptbuch)
-Wenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral.
-
+## 4. GNN (Graph Neural Network)
 [Hier folgt weiterer Inhalt]
 
-## 5. Add-on: Suchspiel (Kannst du den richtigen Knoten finden?)
-1. Finde einen Hub
-2. Finde eine Brücke zwischen zwei Gruppen
-3. Finde einen Knoten mit vielen eingehenden Verbindungen
-
-[Hier könnte man die Interaktion einbauen für das Suchspiel]
+## 5. How to handle (Rezeptbuch)
+Wenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral.
 
 ## 6. Fazit (Welche Visualisierung ist wann sinnvoll?)
 Es gibt nicht die eine beste Graphvisualisierung. Was sinnvoll ist, hängt von Größe, Dichte, Richtung der Kanten, gewünschter Interaktion und der Rendering-Technologie im Web ab.
