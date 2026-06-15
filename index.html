@@ -175,22 +175,8 @@ window.Quarto = {
 <p>Eine Graphvisualisierung ist nicht automatisch gut, nur weil alle Knoten und Kanten sichtbar sind. Mit wachsender Größe ändern sich Lesbarkeit, Interaktion und die geeignete Web-Technologie grundlegend.</p>
 <p>[hier Abbildung von Silvia hin]</p>
 </section>
-<section id="a.-kleiner-datensatz-max-und-seine-347-freunde" class="level2">
-<h2 class="anchored" data-anchor-id="a.-kleiner-datensatz-max-und-seine-347-freunde">3a. Kleiner Datensatz (Max und seine 347 Freunde)</h2>
-<p>Das ist Max. Max hat rund 350 Facebook-Freunde. Wie kann man diesen Freundeskreis so darstellen, dass Gruppen, Nachbarschaften und Verbindungen verständlich bleiben?</p>
-<section id="warum-gut" class="level3">
-<h3 class="anchored" data-anchor-id="warum-gut">Warum gut?</h3>
-<p>Kleine Netzwerke sind noch direkt lesbar, man kann einzelne Knoten identifizieren und Interaktionen wie Hover, Highlighting oder Nachbarschaftsansichten gut einsetzen. Ego-Netzwerke sind dafür besonders passend, weil lokale soziale Struktur sichtbar wird.</p>
-</section>
-<section id="was-ist-das-problem" class="level3">
-<h3 class="anchored" data-anchor-id="was-ist-das-problem">Was ist das Problem?</h3>
-<p>Selbst bei wenigen hundert Knoten kann ein ungeeignetes Layout schnell chaotisch wirken. Viele Kanten erzeugen visuelle Überlagerung, und ohne gute Positionierung sieht man kaum Communities oder zentrale Personen.</p>
-</section>
-<section id="layout-graphalg" class="level3">
-<h3 class="anchored" data-anchor-id="layout-graphalg">Layout + GraphAlg</h3>
-<p>Hier könnt ihr einen force-directed Ansatz als Hauptbeispiel nehmen und daneben z. B. radial oder community-basiert vergleichen. Für diese Größenordnung ist SVG gut geeignet, weil DOM-basierte Interaktion und feine Gestaltung noch praktikabel sind.</p>
-<p>[Hier folgt weiterer Inhalt]</p>
-</section>
+<section id="a.-kleiner-datensatz" class="level2">
+<h2 class="anchored" data-anchor-id="a.-kleiner-datensatz">3a. Kleiner Datensatz</h2>
 </section>
 <section id="b.-mittlerer-datensatz-ein-ganzes-netzwerk-statt-eines-freundeskreises" class="level2">
 <h2 class="anchored" data-anchor-id="b.-mittlerer-datensatz-ein-ganzes-netzwerk-statt-eines-freundeskreises">3b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)</h2>
@@ -199,12 +185,12 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="warum-ein-globales-layout-statt-eines-ego-layouts">Warum ein globales Layout statt eines Ego-Layouts?</h3>
 <p>Das egozentrische Layout aus 3a funktioniert nur, solange es einen klaren Mittelpunkt gibt. Bei einem Netzwerk dieser Größe gibt es viele gleichberechtigte Knoten, dichte Bereiche und sich überlappende Communities. Deshalb verwenden wir ein <strong>globales, kräftebasiertes Layout (ForceAtlas2)</strong>: Kanten ziehen verbundene Knoten zusammen, alle Knoten stoßen sich gegenseitig ab. So entstehen Cluster aus der Struktur heraus, ohne dass wir einen Mittelpunkt vorgeben.</p>
 </section>
-<section id="was-ist-das-problem-1" class="level3">
-<h3 class="anchored" data-anchor-id="was-ist-das-problem-1">Was ist das Problem?</h3>
+<section id="was-ist-das-problem" class="level3">
+<h3 class="anchored" data-anchor-id="was-ist-das-problem">Was ist das Problem?</h3>
 <p>Genau hier zeigt sich die Grenze: Bei mehreren tausend Knoten und über hunderttausend Kanten wird die Darstellung schnell zum „Hairball”. Einzelne Kanten lassen sich kaum noch verfolgen, Labels überlagern sich, und ein SVG-/DOM-basiertes Layout würde unter der Knotenzahl einbrechen. Lesbarkeit entsteht nicht mehr durch jede Einzelkante, sondern erst durch <strong>Reduktion</strong>: Wir färben nach Community (Louvain) und skalieren die Knotengröße nach eingehenden Stimmen (In-Degree), damit zentrale Hubs sichtbar bleiben.</p>
 </section>
-<section id="layout-graphalg-1" class="level3">
-<h3 class="anchored" data-anchor-id="layout-graphalg-1">Layout + GraphAlg</h3>
+<section id="layout-graphalg" class="level3">
+<h3 class="anchored" data-anchor-id="layout-graphalg">Layout + GraphAlg</h3>
 <p>Technisch motiviert diese Größenordnung den Wechsel zu <strong>Canvas</strong>: Statt tausender DOM-Knoten zeichnen wir alles in ein einziges <code>&lt;canvas&gt;</code>-Element und rendern nur bei Interaktion neu. Das Layout wird einmalig offline mit ForceAtlas2 vorberechnet, sodass die Seite sofort lädt; im Browser sorgt eine D3-Force-Simulation für Interaktivität (Ziehen, Nachbarschaft hervorheben, neu anordnen). Probiere es aus – fahre über Knoten, zoome hinein und beobachte, wie dicht das Netz wirklich ist:</p>
 <div class="force-graph" data-src="assets/data/social_graph.json">
   <div class="fg-controls">
@@ -318,16 +304,16 @@ window.Quarto = {
 <section id="c.-großer-datensatz-vom-freundesnetz-zum-follow-graph" class="level2">
 <h2 class="anchored" data-anchor-id="c.-großer-datensatz-vom-freundesnetz-zum-follow-graph">3c. Großer Datensatz (Vom Freundesnetz zum Follow-Graph)</h2>
 <p>Beim Twitter-Netz wird aus einem lesbaren sozialen Bild schnell ein massives Strukturobjekt.</p>
-<section id="warum-gut-1" class="level3">
-<h3 class="anchored" data-anchor-id="warum-gut-1">Warum gut?</h3>
+<section id="warum-gut" class="level3">
+<h3 class="anchored" data-anchor-id="warum-gut">Warum gut?</h3>
 <p>Dieses Netzwerk zeigt sehr deutlich, wie sich Maßstab und Bedeutung gleichzeitig verändern. Ihr könnt hier nicht nur Größe thematisieren, sondern auch den Unterschied zwischen Freundschaft und Follow-Beziehung.</p>
 </section>
-<section id="was-ist-das-problem-2" class="level3">
-<h3 class="anchored" data-anchor-id="was-ist-das-problem-2">Was ist das Problem?</h3>
+<section id="was-ist-das-problem-1" class="level3">
+<h3 class="anchored" data-anchor-id="was-ist-das-problem-1">Was ist das Problem?</h3>
 <p>Einzelne Knoten sind kaum noch direkt lesbar, Pfeile oder Richtungen lassen sich nicht mehr für jede Kante sinnvoll zeigen, und klassische Browser-Darstellung kommt an Performance-Grenzen. Die Herausforderung ist jetzt nicht mehr nur Zeichnen, sondern sinnvolle Reduktion.</p>
 </section>
-<section id="layout-graphalg-2" class="level3">
-<h3 class="anchored" data-anchor-id="layout-graphalg-2">Layout + GraphAlg</h3>
+<section id="layout-graphalg-1" class="level3">
+<h3 class="anchored" data-anchor-id="layout-graphalg-1">Layout + GraphAlg</h3>
 <p>Hier passt die Argumentation für WebGL/GPU sehr gut. Inhaltlich könnt ihr zusätzlich auf In-Degree/Out-Degree, Hubs, Communities, Filterung und Abstraktion eingehen, weil bei dieser Größenordnung nicht mehr jede Einzelkante der eigentliche Erkenntnisträger ist.</p>
 <p>[Hier folgt weiterer Inhalt]</p>
 </section>

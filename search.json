@@ -21,11 +21,11 @@
     "text": "2. Problemstellung (Wann wird ein Graph unlesbar?)\nEine Graphvisualisierung ist nicht automatisch gut, nur weil alle Knoten und Kanten sichtbar sind. Mit wachsender Größe ändern sich Lesbarkeit, Interaktion und die geeignete Web-Technologie grundlegend.\n[hier Abbildung von Silvia hin]"
   },
   {
-    "objectID": "index.html#a.-kleiner-datensatz-max-und-seine-347-freunde",
-    "href": "index.html#a.-kleiner-datensatz-max-und-seine-347-freunde",
+    "objectID": "index.html#a.-kleiner-datensatz",
+    "href": "index.html#a.-kleiner-datensatz",
     "title": "Graphdatenvisualisierung",
-    "section": "3a. Kleiner Datensatz (Max und seine 347 Freunde)",
-    "text": "3a. Kleiner Datensatz (Max und seine 347 Freunde)\nDas ist Max. Max hat rund 350 Facebook-Freunde. Wie kann man diesen Freundeskreis so darstellen, dass Gruppen, Nachbarschaften und Verbindungen verständlich bleiben?\n\nWarum gut?\nKleine Netzwerke sind noch direkt lesbar, man kann einzelne Knoten identifizieren und Interaktionen wie Hover, Highlighting oder Nachbarschaftsansichten gut einsetzen. Ego-Netzwerke sind dafür besonders passend, weil lokale soziale Struktur sichtbar wird.\n\n\nWas ist das Problem?\nSelbst bei wenigen hundert Knoten kann ein ungeeignetes Layout schnell chaotisch wirken. Viele Kanten erzeugen visuelle Überlagerung, und ohne gute Positionierung sieht man kaum Communities oder zentrale Personen.\n\n\nLayout + GraphAlg\nHier könnt ihr einen force-directed Ansatz als Hauptbeispiel nehmen und daneben z. B. radial oder community-basiert vergleichen. Für diese Größenordnung ist SVG gut geeignet, weil DOM-basierte Interaktion und feine Gestaltung noch praktikabel sind.\n[Hier folgt weiterer Inhalt]"
+    "section": "3a. Kleiner Datensatz",
+    "text": "3a. Kleiner Datensatz"
   },
   {
     "objectID": "index.html#b.-mittlerer-datensatz-ein-ganzes-netzwerk-statt-eines-freundeskreises",
