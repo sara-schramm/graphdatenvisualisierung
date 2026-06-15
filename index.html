@@ -43,7 +43,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-94b323657c735dfe3b1bf6ebb2c33a55.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-bba5ebae505b5c03f3f0d8040a416a6b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -173,48 +173,7 @@ window.Quarto = {
 <section id="problemstellung-wann-wird-ein-graph-unlesbar" class="level2">
 <h2 class="anchored" data-anchor-id="problemstellung-wann-wird-ein-graph-unlesbar">2. Problemstellung (Wann wird ein Graph unlesbar?)</h2>
 <p>Eine Graphvisualisierung ist nicht automatisch gut, nur weil alle Knoten und Kanten sichtbar sind. Mit wachsender Größe ändern sich Lesbarkeit, Interaktion und die geeignete Web-Technologie grundlegend.</p>
-<p>Das folgende ist nur zur Vorschau:</p>
-
-<script src="https://cdn.babylonjs.com/babylon.js"></script>
-
-<div style="width: 100%; height: 400px; position: relative; margin: 20px 0;">
-    <canvas id="renderCanvas" style="width: 100%; height: 100%; touch-action: none; border: 1px solid #ddd; display: block; border-radius: 8px;"></canvas>
-</div>
-
-<script>
-    window.addEventListener('DOMContentLoaded', function() {
-        const canvas = document.getElementById("renderCanvas");
-        if (!canvas) return;
-
-        const engine = new BABYLON.Engine(canvas, true);
-
-        const createScene = function () {
-            const scene = new BABYLON.Scene(engine);
-            scene.clearColor = new BABYLON.Color3(0.95, 0.95, 0.95);
-
-            const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI/4, Math.PI/3, 5, BABYLON.Vector3.Zero(), scene);
-            camera.attachControl(canvas, true);
-
-            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-            
-            const box = BABYLON.MeshBuilder.CreateBox("box", {size: 1.5}, scene);
-            const material = new BABYLON.StandardMaterial("mat", scene);
-            material.diffuseColor = new BABYLON.Color3(0.1, 0.4, 0.8);
-            box.material = material;
-
-            scene.registerBeforeRender(function () {
-                box.rotation.y += 0.01;
-                box.rotation.x += 0.005;
-            });
-
-            return scene;
-        };
-
-        const scene = createScene();
-        engine.runRenderLoop(() => scene.render());
-        window.addEventListener("resize", () => engine.resize());
-    });
-</script>
+<p>[hier Abbildung von Silvia hin]</p>
 </section>
 <section id="a.-kleiner-datensatz-max-und-seine-347-freunde" class="level2">
 <h2 class="anchored" data-anchor-id="a.-kleiner-datensatz-max-und-seine-347-freunde">3a. Kleiner Datensatz (Max und seine 347 Freunde)</h2>
@@ -373,19 +332,13 @@ window.Quarto = {
 <p>[Hier folgt weiterer Inhalt]</p>
 </section>
 </section>
-<section id="how-to-handle-rezeptbuch" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-handle-rezeptbuch">4. How to handle (Rezeptbuch)</h2>
-<p>Wenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral.</p>
+<section id="gnn-graph-neural-network" class="level2">
+<h2 class="anchored" data-anchor-id="gnn-graph-neural-network">4. GNN (Graph Neural Network)</h2>
 <p>[Hier folgt weiterer Inhalt]</p>
 </section>
-<section id="add-on-suchspiel-kannst-du-den-richtigen-knoten-finden" class="level2">
-<h2 class="anchored" data-anchor-id="add-on-suchspiel-kannst-du-den-richtigen-knoten-finden">5. Add-on: Suchspiel (Kannst du den richtigen Knoten finden?)</h2>
-<ol type="1">
-<li>Finde einen Hub</li>
-<li>Finde eine Brücke zwischen zwei Gruppen</li>
-<li>Finde einen Knoten mit vielen eingehenden Verbindungen</li>
-</ol>
-<p>[Hier könnte man die Interaktion einbauen für das Suchspiel]</p>
+<section id="how-to-handle-rezeptbuch" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-handle-rezeptbuch">5. How to handle (Rezeptbuch)</h2>
+<p>Wenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral.</p>
 </section>
 <section id="fazit-welche-visualisierung-ist-wann-sinnvoll" class="level2">
 <h2 class="anchored" data-anchor-id="fazit-welche-visualisierung-ist-wann-sinnvoll">6. Fazit (Welche Visualisierung ist wann sinnvoll?)</h2>

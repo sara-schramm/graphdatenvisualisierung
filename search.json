@@ -18,7 +18,7 @@
     "href": "index.html#problemstellung-wann-wird-ein-graph-unlesbar",
     "title": "Graphdatenvisualisierung",
     "section": "2. Problemstellung (Wann wird ein Graph unlesbar?)",
-    "text": "2. Problemstellung (Wann wird ein Graph unlesbar?)\nEine Graphvisualisierung ist nicht automatisch gut, nur weil alle Knoten und Kanten sichtbar sind. Mit wachsender Größe ändern sich Lesbarkeit, Interaktion und die geeignete Web-Technologie grundlegend.\nDas folgende ist nur zur Vorschau:"
+    "text": "2. Problemstellung (Wann wird ein Graph unlesbar?)\nEine Graphvisualisierung ist nicht automatisch gut, nur weil alle Knoten und Kanten sichtbar sind. Mit wachsender Größe ändern sich Lesbarkeit, Interaktion und die geeignete Web-Technologie grundlegend.\n[hier Abbildung von Silvia hin]"
   },
   {
     "objectID": "index.html#a.-kleiner-datensatz-max-und-seine-347-freunde",
@@ -42,18 +42,18 @@
     "text": "3c. Großer Datensatz (Vom Freundesnetz zum Follow-Graph)\nBeim Twitter-Netz wird aus einem lesbaren sozialen Bild schnell ein massives Strukturobjekt.\n\nWarum gut?\nDieses Netzwerk zeigt sehr deutlich, wie sich Maßstab und Bedeutung gleichzeitig verändern. Ihr könnt hier nicht nur Größe thematisieren, sondern auch den Unterschied zwischen Freundschaft und Follow-Beziehung.\n\n\nWas ist das Problem?\nEinzelne Knoten sind kaum noch direkt lesbar, Pfeile oder Richtungen lassen sich nicht mehr für jede Kante sinnvoll zeigen, und klassische Browser-Darstellung kommt an Performance-Grenzen. Die Herausforderung ist jetzt nicht mehr nur Zeichnen, sondern sinnvolle Reduktion.\n\n\nLayout + GraphAlg\nHier passt die Argumentation für WebGL/GPU sehr gut. Inhaltlich könnt ihr zusätzlich auf In-Degree/Out-Degree, Hubs, Communities, Filterung und Abstraktion eingehen, weil bei dieser Größenordnung nicht mehr jede Einzelkante der eigentliche Erkenntnisträger ist.\n[Hier folgt weiterer Inhalt]"
   },
   {
+    "objectID": "index.html#gnn-graph-neural-network",
+    "href": "index.html#gnn-graph-neural-network",
+    "title": "Graphdatenvisualisierung",
+    "section": "4. GNN (Graph Neural Network)",
+    "text": "4. GNN (Graph Neural Network)\n[Hier folgt weiterer Inhalt]"
+  },
+  {
     "objectID": "index.html#how-to-handle-rezeptbuch",
     "href": "index.html#how-to-handle-rezeptbuch",
     "title": "Graphdatenvisualisierung",
-    "section": "4. How to handle (Rezeptbuch)",
-    "text": "4. How to handle (Rezeptbuch)\nWenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral.\n[Hier folgt weiterer Inhalt]"
-  },
-  {
-    "objectID": "index.html#add-on-suchspiel-kannst-du-den-richtigen-knoten-finden",
-    "href": "index.html#add-on-suchspiel-kannst-du-den-richtigen-knoten-finden",
-    "title": "Graphdatenvisualisierung",
-    "section": "5. Add-on: Suchspiel (Kannst du den richtigen Knoten finden?)",
-    "text": "5. Add-on: Suchspiel (Kannst du den richtigen Knoten finden?)\n\nFinde einen Hub\nFinde eine Brücke zwischen zwei Gruppen\nFinde einen Knoten mit vielen eingehenden Verbindungen\n\n[Hier könnte man die Interaktion einbauen für das Suchspiel]"
+    "section": "5. How to handle (Rezeptbuch)",
+    "text": "5. How to handle (Rezeptbuch)\nWenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral."
   },
   {
     "objectID": "index.html#fazit-welche-visualisierung-ist-wann-sinnvoll",
@@ -61,6 +61,146 @@
     "title": "Graphdatenvisualisierung",
     "section": "6. Fazit (Welche Visualisierung ist wann sinnvoll?)",
     "text": "6. Fazit (Welche Visualisierung ist wann sinnvoll?)\nEs gibt nicht die eine beste Graphvisualisierung. Was sinnvoll ist, hängt von Größe, Dichte, Richtung der Kanten, gewünschter Interaktion und der Rendering-Technologie im Web ab.\n[Hier folgt weiterer Inhalt]"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#lernziele",
+    "href": "presentation/presentation-slides.html#lernziele",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Lernziele",
+    "text": "Lernziele\nNach dieser Präsentation könnt ihr …\n\nerklären, warum große Graphen ohne Layout-Algorithmen unlesbar werden\ndas Kraftmodell (Federn + Abstoßung) und die Barnes-Hut-Näherung skizzieren\nForceAtlas2, Louvain und d3-force in eure Pipeline einordnen\nbegründen, wann SVG, Canvas oder WebGL sinnvoll sind"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#agenda-25-min",
+    "href": "presentation/presentation-slides.html#agenda-25-min",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Agenda (25 Min)",
+    "text": "Agenda (25 Min)\n\n\n\nBlock\nInhalt\n\n\n\n\nProblem & Motivation\nHairball, wiki-Vote\n\n\nBrücke\nGestalt → Layout (1 Folie)\n\n\nKern\nKraftmodelle, Barnes-Hut, FA2, Louvain\n\n\nLive-Demo\nInteraktive Website (Abschnitt 3b)\n\n\nAusblick\nSkalierung, Grenzen, Quiz"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#wann-wird-ein-graph-unlesbar",
+    "href": "presentation/presentation-slides.html#wann-wird-ein-graph-unlesbar",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Wann wird ein Graph unlesbar?",
+    "text": "Wann wird ein Graph unlesbar?\n\n\n\nHairball vs. strukturiertes Layout"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#use-case-soziale-netzwerke",
+    "href": "presentation/presentation-slides.html#use-case-soziale-netzwerke",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Use-Case: Soziale Netzwerke",
+    "text": "Use-Case: Soziale Netzwerke\n\nKnoten = Akteure, Kanten = Beziehungen\nZiel: Struktur sichtbar machen - Communities, Hubs, Brücken\nBeispiel: wiki-Vote (~7.000 Nutzer, ~100.000 Kanten, SNAP)\n\n\n\n\nwiki-Vote Sample"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#entwicklungsgeschichte-kurzüberblick",
+    "href": "presentation/presentation-slides.html#entwicklungsgeschichte-kurzüberblick",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Entwicklungsgeschichte (Kurzüberblick)",
+    "text": "Entwicklungsgeschichte (Kurzüberblick)\n\n\n\nJahr\nMeilenstein\n\n\n\n\n1984\nEades - Feder-Heuristik\n\n\n1991\nFruchterman-Reingold\n\n\n1986\nBarnes-Hut\n\n\n2008\nLouvain\n\n\n2014\nForceAtlas2\n\n\nheute\nd3-force, Canvas, WebGL"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#gestalt-layout",
+    "href": "presentation/presentation-slides.html#gestalt-layout",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Gestalt → Layout",
+    "text": "Gestalt → Layout\nGesetz der Nähe (Vorlesung): Nahe Elemente = zusammengehörig.\nKraft-Layout: Algorithmen konstruieren diese Nähe durch Positionierung."
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#graph-als-physikalisches-system",
+    "href": "presentation/presentation-slides.html#graph-als-physikalisches-system",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Graph als physikalisches System",
+    "text": "Graph als physikalisches System\n\n\n\nKraftmodell\n\n\n\nAttraktion entlang Kanten (Federn)\nAbstoßung zwischen allen Knoten\nLayout = Kräftegleichgewicht"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#feder--und-abstoßungskräfte",
+    "href": "presentation/presentation-slides.html#feder--und-abstoßungskräfte",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Feder- und Abstoßungskräfte",
+    "text": "Feder- und Abstoßungskräfte\n\\[F_{ij}^{\\mathrm{attr}} = k \\cdot (d_{ij} - l) \\cdot \\vec{u}_{ij}\\]\n\\[F_{ij}^{\\mathrm{rep}} = \\frac{k_{\\mathrm{rep}}}{d_{ij}^{2}} \\cdot \\frac{\\mathbf{x}_i - \\mathbf{x}_j}{d_{ij}}\\]"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#energie-formulierung",
+    "href": "presentation/presentation-slides.html#energie-formulierung",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Energie-Formulierung",
+    "text": "Energie-Formulierung\n\\[E = \\sum_{(i,j)\\in E} \\frac{k}{2}(d_{ij} - l)^2 + \\sum_{i&lt;j} \\frac{k_{\\mathrm{rep}}}{d_{ij}}\\]\nReferenz: Eades 1984, Fruchterman-Reingold 1991"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#fr-vs.-forceatlas2",
+    "href": "presentation/presentation-slides.html#fr-vs.-forceatlas2",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "FR vs. ForceAtlas2",
+    "text": "FR vs. ForceAtlas2\n\n\n\nAspekt\nFR\nFA2\n\n\n\n\nAbstoßung\n\\(O(n^2)\\)\nBarnes-Hut\n\n\nIntegration\nEuler + \\(T\\)\nVerlet + \\(\\alpha\\)"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#barnes-hut",
+    "href": "presentation/presentation-slides.html#barnes-hut",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Barnes-Hut",
+    "text": "Barnes-Hut\n\n\n\nBarnes-Hut\n\n\n\\(\\Theta\\)-Kriterium: Zelle approximieren wenn \\(w/d &lt; \\Theta\\)"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#pipeline",
+    "href": "presentation/presentation-slides.html#pipeline",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Pipeline",
+    "text": "Pipeline\n\n\n\nPipeline\n\n\npreprocess_graph.py → FA2 + Louvain → JSON → d3-force Canvas"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#parameter-effekte",
+    "href": "presentation/presentation-slides.html#parameter-effekte",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Parameter-Effekte",
+    "text": "Parameter-Effekte\n\n\n\nSmall multiples"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#velocity-verlet-alpha-decay",
+    "href": "presentation/presentation-slides.html#velocity-verlet-alpha-decay",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Velocity-Verlet & alpha-Decay",
+    "text": "Velocity-Verlet & alpha-Decay\n\n\n\nEnergy decay"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#louvain-hubs",
+    "href": "presentation/presentation-slides.html#louvain-hubs",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Louvain & Hubs",
+    "text": "Louvain & Hubs\n\n\n\nLouvain\n\n\n\\[Q = \\frac{1}{2m} \\sum_{ij} \\left[ A_{ij} - \\frac{k_i k_j}{2m} \\right] \\delta(c_i, c_j)\\]"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#svg-canvas-webgl",
+    "href": "presentation/presentation-slides.html#svg-canvas-webgl",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "SVG → Canvas → WebGL",
+    "text": "SVG → Canvas → WebGL\n\n\n\nTiers"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#website-abschnitt-3b",
+    "href": "presentation/presentation-slides.html#website-abschnitt-3b",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Website Abschnitt 3b",
+    "text": "Website Abschnitt 3b\n\n\n\nDemo"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#zusammenfassung",
+    "href": "presentation/presentation-slides.html#zusammenfassung",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Zusammenfassung",
+    "text": "Zusammenfassung\nPhysik simulieren · N-Körper approximieren · Communities färben · passend rendern"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#quiz",
+    "href": "presentation/presentation-slides.html#quiz",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Quiz",
+    "text": "Quiz\n\nWarum Barnes-Hut?\nWas bedeutet hohes \\(Q\\)?\nWarum Canvas statt SVG?\nWas steuert \\(\\alpha\\)?"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#arbeitsaufteilung",
+    "href": "presentation/presentation-slides.html#arbeitsaufteilung",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Arbeitsaufteilung",
+    "text": "Arbeitsaufteilung\nSara | … |\nSilvia | … |\nAdam | … |"
   },
   {
     "objectID": "presentation/presentation.html#nodale-graphdatenvisualisierung",
@@ -299,145 +439,5 @@
     "title": "Nodale Graphdatenvisualisierung",
     "section": "Fragen?",
     "text": "Fragen?\nGraphdatenvisualisierung · SNAP wiki-Vote\n\nFolie 34a · Peer-Review: „WebGPU vs. Canvas?” / „Wann GNN statt FA2?”"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#lernziele",
-    "href": "presentation/presentation-slides.html#lernziele",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Lernziele",
-    "text": "Lernziele\nNach dieser Präsentation könnt ihr …\n\nerklären, warum große Graphen ohne Layout-Algorithmen unlesbar werden\ndas Kraftmodell (Federn + Abstoßung) und die Barnes-Hut-Näherung skizzieren\nForceAtlas2, Louvain und d3-force in eure Pipeline einordnen\nbegründen, wann SVG, Canvas oder WebGL sinnvoll sind"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#agenda-25-min",
-    "href": "presentation/presentation-slides.html#agenda-25-min",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Agenda (25 Min)",
-    "text": "Agenda (25 Min)\n\n\n\nBlock\nInhalt\n\n\n\n\nProblem & Motivation\nHairball, wiki-Vote\n\n\nBrücke\nGestalt → Layout (1 Folie)\n\n\nKern\nKraftmodelle, Barnes-Hut, FA2, Louvain\n\n\nLive-Demo\nInteraktive Website (Abschnitt 3b)\n\n\nAusblick\nSkalierung, Grenzen, Quiz"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#wann-wird-ein-graph-unlesbar",
-    "href": "presentation/presentation-slides.html#wann-wird-ein-graph-unlesbar",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Wann wird ein Graph unlesbar?",
-    "text": "Wann wird ein Graph unlesbar?\n\n\n\nHairball vs. strukturiertes Layout"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#use-case-soziale-netzwerke",
-    "href": "presentation/presentation-slides.html#use-case-soziale-netzwerke",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Use-Case: Soziale Netzwerke",
-    "text": "Use-Case: Soziale Netzwerke\n\nKnoten = Akteure, Kanten = Beziehungen\nZiel: Struktur sichtbar machen - Communities, Hubs, Brücken\nBeispiel: wiki-Vote (~7.000 Nutzer, ~100.000 Kanten, SNAP)\n\n\n\n\nwiki-Vote Sample"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#entwicklungsgeschichte-kurzüberblick",
-    "href": "presentation/presentation-slides.html#entwicklungsgeschichte-kurzüberblick",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Entwicklungsgeschichte (Kurzüberblick)",
-    "text": "Entwicklungsgeschichte (Kurzüberblick)\n\n\n\nJahr\nMeilenstein\n\n\n\n\n1984\nEades - Feder-Heuristik\n\n\n1991\nFruchterman-Reingold\n\n\n1986\nBarnes-Hut\n\n\n2008\nLouvain\n\n\n2014\nForceAtlas2\n\n\nheute\nd3-force, Canvas, WebGL"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#gestalt-layout",
-    "href": "presentation/presentation-slides.html#gestalt-layout",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Gestalt → Layout",
-    "text": "Gestalt → Layout\nGesetz der Nähe (Vorlesung): Nahe Elemente = zusammengehörig.\nKraft-Layout: Algorithmen konstruieren diese Nähe durch Positionierung."
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#graph-als-physikalisches-system",
-    "href": "presentation/presentation-slides.html#graph-als-physikalisches-system",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Graph als physikalisches System",
-    "text": "Graph als physikalisches System\n\n\n\nKraftmodell\n\n\n\nAttraktion entlang Kanten (Federn)\nAbstoßung zwischen allen Knoten\nLayout = Kräftegleichgewicht"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#feder--und-abstoßungskräfte",
-    "href": "presentation/presentation-slides.html#feder--und-abstoßungskräfte",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Feder- und Abstoßungskräfte",
-    "text": "Feder- und Abstoßungskräfte\n\\[F_{ij}^{\\mathrm{attr}} = k \\cdot (d_{ij} - l) \\cdot \\vec{u}_{ij}\\]\n\\[F_{ij}^{\\mathrm{rep}} = \\frac{k_{\\mathrm{rep}}}{d_{ij}^{2}} \\cdot \\frac{\\mathbf{x}_i - \\mathbf{x}_j}{d_{ij}}\\]"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#energie-formulierung",
-    "href": "presentation/presentation-slides.html#energie-formulierung",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Energie-Formulierung",
-    "text": "Energie-Formulierung\n\\[E = \\sum_{(i,j)\\in E} \\frac{k}{2}(d_{ij} - l)^2 + \\sum_{i&lt;j} \\frac{k_{\\mathrm{rep}}}{d_{ij}}\\]\nReferenz: Eades 1984, Fruchterman-Reingold 1991"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#fr-vs.-forceatlas2",
-    "href": "presentation/presentation-slides.html#fr-vs.-forceatlas2",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "FR vs. ForceAtlas2",
-    "text": "FR vs. ForceAtlas2\n\n\n\nAspekt\nFR\nFA2\n\n\n\n\nAbstoßung\n\\(O(n^2)\\)\nBarnes-Hut\n\n\nIntegration\nEuler + \\(T\\)\nVerlet + \\(\\alpha\\)"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#barnes-hut",
-    "href": "presentation/presentation-slides.html#barnes-hut",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Barnes-Hut",
-    "text": "Barnes-Hut\n\n\n\nBarnes-Hut\n\n\n\\(\\Theta\\)-Kriterium: Zelle approximieren wenn \\(w/d &lt; \\Theta\\)"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#pipeline",
-    "href": "presentation/presentation-slides.html#pipeline",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Pipeline",
-    "text": "Pipeline\n\n\n\nPipeline\n\n\npreprocess_graph.py → FA2 + Louvain → JSON → d3-force Canvas"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#parameter-effekte",
-    "href": "presentation/presentation-slides.html#parameter-effekte",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Parameter-Effekte",
-    "text": "Parameter-Effekte\n\n\n\nSmall multiples"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#velocity-verlet-alpha-decay",
-    "href": "presentation/presentation-slides.html#velocity-verlet-alpha-decay",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Velocity-Verlet & alpha-Decay",
-    "text": "Velocity-Verlet & alpha-Decay\n\n\n\nEnergy decay"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#louvain-hubs",
-    "href": "presentation/presentation-slides.html#louvain-hubs",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Louvain & Hubs",
-    "text": "Louvain & Hubs\n\n\n\nLouvain\n\n\n\\[Q = \\frac{1}{2m} \\sum_{ij} \\left[ A_{ij} - \\frac{k_i k_j}{2m} \\right] \\delta(c_i, c_j)\\]"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#svg-canvas-webgl",
-    "href": "presentation/presentation-slides.html#svg-canvas-webgl",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "SVG → Canvas → WebGL",
-    "text": "SVG → Canvas → WebGL\n\n\n\nTiers"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#website-abschnitt-3b",
-    "href": "presentation/presentation-slides.html#website-abschnitt-3b",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Website Abschnitt 3b",
-    "text": "Website Abschnitt 3b\n\n\n\nDemo"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#zusammenfassung",
-    "href": "presentation/presentation-slides.html#zusammenfassung",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Zusammenfassung",
-    "text": "Zusammenfassung\nPhysik simulieren · N-Körper approximieren · Communities färben · passend rendern"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#quiz",
-    "href": "presentation/presentation-slides.html#quiz",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Quiz",
-    "text": "Quiz\n\nWarum Barnes-Hut?\nWas bedeutet hohes \\(Q\\)?\nWarum Canvas statt SVG?\nWas steuert \\(\\alpha\\)?"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#arbeitsaufteilung",
-    "href": "presentation/presentation-slides.html#arbeitsaufteilung",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Arbeitsaufteilung",
-    "text": "Arbeitsaufteilung\nSara | … |\nSilvia | … |\nAdam | … |"
   }
 ]
