@@ -4,7 +4,6 @@ author: "Sara, Silvia, Adam"
 format:
   html:
     theme: cosmo
-jupyter: python3
 bibliography: references.bib
 ---
 
@@ -16,151 +15,595 @@ Aber wie zeigt man so etwas im Web so, dass man noch wirklich etwas erkennt?
 ## 2. Problemstellung (Wann wird ein Graph unlesbar?)
 Eine Graphvisualisierung ist nicht automatisch gut, nur weil alle Knoten und Kanten sichtbar sind. Mit wachsender Größe ändern sich Lesbarkeit, Interaktion und die geeignete Web-Technologie grundlegend.
 
-Das folgende ist nur zur Vorschau:
+[Hier Abbildung von Silvia rein]
+
+## 3a. Kleiner Datensatz: Wer begegnet wem in Les Misérables?
+
+![Les Misérables Figurenübersicht](assets/data/les_miserables.jpg){fig-alt="Illustration zu Les Misérables" width="70%"}
+
 ```{=html}
+<style>
+  .graphviz-block {
+    margin: 1.5rem 0 2.5rem;
+  }
 
-<script src="https://cdn.babylonjs.com/babylon.js"></script>
+  .graphviz-frame {
+    border: 0.5px solid #d7d2c8;
+    border-radius: 12px;
+    background: #fcfbf8;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+  }
 
-<div style="width: 100%; height: 400px; position: relative; margin: 20px 0;">
-    <canvas id="renderCanvas" style="width: 100%; height: 100%; touch-action: none; border: 1px solid #ddd; display: block; border-radius: 8px;"></canvas>
-</div>
+  .graphviz-head {
+    padding: 0.9rem 1rem;
+    border-bottom: 0.5px solid #e7e2d8;
+    background: #faf7f2;
+    font-size: 0.92rem;
+    color: #5d594f;
+    line-height: 1.5;
+  }
 
+  .graphviz-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    border-bottom: 0.5px solid #e7e2d8;
+    background: #fdfbf7;
+  }
+
+  .graphviz-btn {
+    appearance: none;
+    border: 1px solid #d0ccbf;
+    background: #f3f0e8;
+    color: #2d2b28;
+    border-radius: 999px;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+  }
+
+  .graphviz-btn:hover {
+    background: #ebe6db;
+    border-color: #bbb3a3;
+    transform: translateY(-1px);
+  }
+
+  .graphviz-btn:disabled {
+    opacity: 0.62;
+    cursor: default;
+    transform: none;
+  }
+
+  .graphviz-legend {
+    padding: 0.9rem 1rem 0.95rem;
+    border-bottom: 0.5px solid #e7e2d8;
+    background: #fcfbf8;
+  }
+
+  .graphviz-legend[hidden] {
+    display: none;
+  }
+
+  .graphviz-legend-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #2d2b28;
+    margin-bottom: 0.45rem;
+  }
+
+  .graphviz-legend-text {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: #5d594f;
+    max-width: 60rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .graphviz-legend-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 1rem;
+  }
+
+  .graphviz-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.84rem;
+    color: #4f4a41;
+    white-space: nowrap;
+  }
+
+  .graphviz-swatch {
+    width: 0.85rem;
+    height: 0.85rem;
+    border-radius: 999px;
+    display: inline-block;
+    border: 1px solid rgba(0,0,0,0.08);
+    flex: 0 0 auto;
+  }
+
+  .graphviz-svg {
+    display: block;
+    width: 100%;
+    height: 620px;
+    background: #fcfbf8;
+  }
+
+  .graphviz-foot {
+    padding: 0.75rem 1rem 0.95rem;
+    border-top: 0.5px solid #e7e2d8;
+    background: #faf7f2;
+    font-size: 0.8rem;
+    color: #868174;
+    line-height: 1.45;
+  }
+
+  .graphviz-tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: rgba(38, 36, 32, 0.92);
+    color: #f9f7f1;
+    padding: 0.45rem 0.6rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    line-height: 1.35;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 120ms ease, transform 120ms ease;
+    white-space: nowrap;
+    z-index: 50;
+  }
+
+  @media (max-width: 900px) {
+    .graphviz-svg {
+      height: 480px;
+    }
+  }
+</style>
+```
+
+```{=html}
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script>
-    window.addEventListener('DOMContentLoaded', function() {
-        const canvas = document.getElementById("renderCanvas");
-        if (!canvas) return;
+  window.GraphVizLesMis = (function () {
+    const palette = ["#355c7d","#6c5b7b","#c06c84","#f67280","#99b898","#e39b6d","#8aa29e","#7f8c8d"];
+    const neutralNode = "#7d786d";
+    const neutralLink = "#c7c1b4";
+    const characterImages = new Map([
+      ["Valjean", "assets/data/valjean.svg"],
+      ["Fantine", "assets/data/fantine.svg"],
+      ["Cosette", "assets/data/cosette.svg"],
+      ["Javert", "assets/data/javert.svg"],
+      ["Eponine", "assets/data/eponine.svg"],
+      ["Gavroche", "assets/data/gavroche.svg"],
+      ["Marius", "assets/data/marius.svg"],
+      ["Enjolras", "assets/data/enjolras.svg"]
+    ]);
+    const tooltip = d3.select("body").append("div").attr("class", "graphviz-tooltip");
 
-        const engine = new BABYLON.Engine(canvas, true);
+    async function loadGraph() {
+      const graph = await d3.json("assets/data/les_miserables.json");
+      const nodes = graph.nodes.map((d, i) => ({ ...d, id: i }));
+      const links = graph.links.map(d => ({
+        source: typeof d.source === "number" ? d.source : d.source.id,
+        target: typeof d.target === "number" ? d.target : d.target.id,
+        value: d.value || 1
+      }));
+      return { nodes, links };
+    }
 
-        const createScene = function () {
-            const scene = new BABYLON.Scene(engine);
-            scene.clearColor = new BABYLON.Color3(0.95, 0.95, 0.95);
+    function buildNeighbors(nodes, links) {
+      const neighbors = new Map(nodes.map(d => [d.id, new Set([d.id])]));
+      links.forEach(l => {
+        const a = typeof l.source === "object" ? l.source.id : l.source;
+        const b = typeof l.target === "object" ? l.target.id : l.target;
+        neighbors.get(a).add(b);
+        neighbors.get(b).add(a);
+      });
+      return neighbors;
+    }
 
-            const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI/4, Math.PI/3, 5, BABYLON.Vector3.Zero(), scene);
-            camera.attachControl(canvas, true);
+    function legendHtml() {
+      return `
+        <div class="graphviz-legend" hidden>
+          <div class="graphviz-legend-title">Farben</div>
+          <div class="graphviz-legend-text">
+            Die Farben markieren unterschiedliche Communities bzw. Cluster im Netzwerk.
+            Figuren mit derselben Farbe gehören zu einem ähnlichen Teilnetzwerk und sind
+            oft stärker untereinander verbunden.
+          </div>
+          <div class="graphviz-legend-items">
+            ${palette.map((c, i) => `
+              <div class="graphviz-legend-item">
+                <span class="graphviz-swatch" style="background:${c}"></span>Gruppe ${i}
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
 
-            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-            
-            const box = BABYLON.MeshBuilder.CreateBox("box", {size: 1.5}, scene);
-            const material = new BABYLON.StandardMaterial("mat", scene);
-            material.diffuseColor = new BABYLON.Color3(0.1, 0.4, 0.8);
-            box.material = material;
+    function createSVG(containerId, title, foot, toolbarHtml = "", includeLegend = false) {
+      const mount = document.getElementById(containerId);
+      mount.innerHTML = `
+        <div class="graphviz-frame">
+          <div class="graphviz-head">${title}</div>
+          ${toolbarHtml ? `<div class="graphviz-toolbar">${toolbarHtml}</div>` : ""}
+          ${includeLegend ? legendHtml() : ""}
+          <svg class="graphviz-svg"></svg>
+          <div class="graphviz-foot">${foot}</div>
+        </div>
+      `;
+      const frame = mount.querySelector(".graphviz-frame");
+      const svg = d3.select(mount).select("svg");
+      const width = frame.clientWidth;
+      const height = window.innerWidth < 900 ? 480 : 620;
+      svg.attr("viewBox", [0, 0, width, height]);
+      return { mount, svg, width, height, legend: mount.querySelector(".graphviz-legend") };
+    }
 
-            scene.registerBeforeRender(function () {
-                box.rotation.y += 0.01;
-                box.rotation.x += 0.005;
-            });
+    function baseColor(group) {
+      return palette[group % palette.length];
+    }
 
-            return scene;
-        };
+    function characterImage(d) {
+      return characterImages.get(d.name);
+    }
 
-        const scene = createScene();
-        engine.runRenderLoop(() => scene.render());
-        window.addEventListener("resize", () => engine.resize());
-    });
+    function setCharacterImageSize(selection, sizeFn) {
+      selection
+        .attr("width", sizeFn)
+        .attr("height", d => sizeFn(d) * 1.34)
+        .attr("x", d => -sizeFn(d) / 2)
+        .attr("y", d => -sizeFn(d) * 0.72);
+    }
+
+    function showTooltip(event, html) {
+      tooltip
+        .style("opacity", 1)
+        .style("transform", "translateY(0)")
+        .html(html)
+        .style("left", (event.pageX + 14) + "px")
+        .style("top", (event.pageY - 12) + "px");
+    }
+
+    function moveTooltip(event) {
+      tooltip
+        .style("left", (event.pageX + 14) + "px")
+        .style("top", (event.pageY - 12) + "px");
+    }
+
+    function hideTooltip() {
+      tooltip
+        .style("opacity", 0)
+        .style("transform", "translateY(4px)");
+    }
+
+    function stickyDrag(simulation) {
+      function dragstarted(event, d) {
+        if (!event.active) simulation.alphaTarget(0.18).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+      }
+      function dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+      }
+      function dragended(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+        if (!event.active) simulation.alphaTarget(0.06);
+      }
+      return d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended);
+    }
+
+    return {
+      loadGraph,
+      buildNeighbors,
+      createSVG,
+      baseColor,
+      characterImage,
+      setCharacterImageSize,
+      neutralNode,
+      neutralLink,
+      showTooltip,
+      moveTooltip,
+      hideTooltip,
+      stickyDrag
+    };
+  })();
 </script>
 ```
-## 3a. Kleiner Datensatz: Wer begegnet wem in Les Misérables?
-Zum Einstieg betrachten wir kein riesiges soziales Netzwerk, sondern ein kleines Beziehungsgeflecht aus einer Geschichte. Der Datensatz zeigt Figuren aus Victor Hugos Roman Les Misérables; jede Kante verbindet zwei Figuren, die im selben Kapitel gemeinsam auftreten. So entsteht ein kleines, aber bereits strukturiertes Netzwerk aus Haupt- und Nebenfiguren.
 
-### Warum ist das gut?
-Dieser Datensatz ist klein genug, dass man noch einzelne Knoten, Gruppen und auffällige Figuren direkt erkennen kann. Genau deshalb eignet er sich gut für eine erste interaktive Visualisierung: Man kann hovern, Nachbarn hervorheben, Labels einblenden und beobachten, wie ein Layout aus einem abstrakten Netz eine lesbare Struktur macht. Force-Directed-Darstellungen mit D3 werden genau für solche Netzwerke häufig verwendet.
+Bevor wir größere Netzwerke betrachten, beginnen wir mit einem kleinen Beziehungsgraphen. Der Datensatz zu *Les Misérables* beschreibt, welche Figuren in Victor Hugos Roman gemeinsam in denselben Kapiteln auftreten. Knoten stehen hier für Figuren, Kanten für gemeinsames Auftreten. 
+<br>
+Dieser Datensatz ist klein genug, dass man noch einzelne Figuren, ihre Nachbarschaften und erste Gruppenbildungen direkt erkennen kann. Genau deshalb eignet er sich gut für eine erste interaktive Visualisierung: Man kann hovern, Nachbarn hervorheben, Labels einblenden und beobachten, wie ein Layout aus einem abstrakten Netz eine lesbare Struktur macht. Force-Directed-Darstellungen mit D3 werden genau für solche Netzwerke häufig verwendet.
+
+
+Zusätzlich helfen Farben dabei, die entstehende Struktur schneller zu lesen. Figuren mit derselben Farbe gehören zu demselben Cluster beziehungsweise zu einer Community innerhalb des Netzwerks. Die Farbcodierung macht damit sichtbar, welche Figuren stärker untereinander verbunden sind und welche eher zwischen verschiedenen Gruppen vermitteln. 
+
+<div id="viz-random-neutral" class="graphviz-block"></div>
+
+```{=html}
+<script>
+(async function () {
+  const G = window.GraphVizLesMis;
+  const { nodes, links } = await G.loadGraph();
+  const neighbors = G.buildNeighbors(nodes, links);
+
+  const { svg, width, height, legend, mount } = G.createSVG(
+    "viz-random-neutral",
+    "Noch ohne Ordnung: dieselben Knoten und Kanten in zufälliger Anordnung",
+    "Statische Darstellung ohne Force-Layout · Button blendet Gruppencodierung ein",
+    `<button class="graphviz-btn" id="random-colors-btn">Farben anzeigen</button>`,
+    true
+  );
+
+  const margin = 60;
+  nodes.forEach(d => {
+    d.x = margin + Math.random() * (width - 2 * margin);
+    d.y = margin + Math.random() * (height - 2 * margin);
+  });
+
+  const nodeMap = new Map(nodes.map(d => [d.id, d]));
+  let colorsOn = false;
+
+  const link = svg.append("g")
+    .attr("stroke", G.neutralLink)
+    .attr("stroke-opacity", 0.34)
+    .selectAll("line")
+    .data(links)
+    .join("line")
+    .attr("x1", d => nodeMap.get(d.source).x)
+    .attr("y1", d => nodeMap.get(d.source).y)
+    .attr("x2", d => nodeMap.get(d.target).x)
+    .attr("y2", d => nodeMap.get(d.target).y)
+    .attr("stroke-width", d => Math.max(0.7, Math.sqrt(d.value) * 0.6));
+
+  const node = svg.append("g")
+    .selectAll("g")
+    .data(nodes)
+    .join("g")
+    .attr("transform", d => `translate(${d.x},${d.y})`);
+
+  node.append("circle")
+    .attr("r", d => G.characterImage(d) ? 0 : 5.3)
+    .attr("fill", d => G.baseColor(d.group))
+    .attr("stroke", "#fcfbf8")
+    .attr("stroke-width", 1.2);
+
+  G.setCharacterImageSize(
+    node.append("image")
+      .attr("href", d => G.characterImage(d) || "")
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .style("display", d => G.characterImage(d) ? null : "none"),
+    () => 34
+  );
+
+  function nodeFill(d) {
+    return colorsOn ? G.baseColor(d.group) : G.neutralNode;
+  }
+
+  function resetStyle() {
+    node.select("circle")
+      .attr("fill", d => nodeFill(d))
+      .attr("fill-opacity", 1)
+      .attr("r", d => G.characterImage(d) ? 0 : 5.3);
+
+    G.setCharacterImageSize(
+      node.select("image")
+        .attr("opacity", 1),
+      () => 34
+    );
+
+    link
+      .attr("stroke-opacity", 0.34)
+      .attr("stroke", G.neutralLink);
+  }
+
+  node
+    .on("mouseover", function (event, d) {
+      const active = neighbors.get(d.id);
+
+      node.select("circle")
+        .attr("fill", n => nodeFill(n))
+        .attr("fill-opacity", n => active.has(n.id) ? 1 : 0.18)
+        .attr("r", n => {
+          if (G.characterImage(n)) return 0;
+          return n.id === d.id ? 8 : active.has(n.id) ? 6.5 : 5;
+        });
+
+      G.setCharacterImageSize(
+        node.select("image")
+          .attr("opacity", n => active.has(n.id) ? 1 : 0.18),
+        n => n.id === d.id ? 46 : active.has(n.id) ? 39 : 34
+      );
+
+      link
+        .attr("stroke-opacity", l => (l.source === d.id || l.target === d.id) ? 0.92 : 0.05)
+        .attr("stroke", l => (l.source === d.id || l.target === d.id) ? "#b54a3a" : "#cdc7bc");
+
+      G.showTooltip(
+        event,
+        `<strong>${d.name}</strong><br>Nachbarn: ${active.size - 1}${colorsOn ? `<br>Gruppe: ${d.group}` : ""}`
+      );
+    })
+    .on("mousemove", G.moveTooltip)
+    .on("mouseout", function () {
+      resetStyle();
+      G.hideTooltip();
+    });
+
+  mount.querySelector("#random-colors-btn").addEventListener("click", function () {
+    colorsOn = !colorsOn;
+    this.textContent = colorsOn ? "Farben ausblenden" : "Farben anzeigen";
+    legend.hidden = !colorsOn;
+    resetStyle();
+  });
+})();
+</script>
+```
+
+Ein Graph enthält seine Struktur nicht automatisch als Bild. Wenn dieselben Knoten und Kanten zunächst nur ungeordnet im Raum liegen, sind zwar alle Informationen vorhanden, aber noch kaum lesbar. Wichtige Figuren, Gruppen und dichte Bereiche bleiben in diesem Zustand weitgehend verborgen.
 
 ### Was ist das Problem?
 Auch ein kleines Netzwerk ist nicht automatisch verständlich. Wenn man die Figuren zufällig platziert, entstehen Liniengewirr und Überlagerungen, und Beziehungen zwischen wichtigen Figuren gehen in der Darstellung unter. Das Problem ist also nicht nur die Datenmenge, sondern die Frage, wie man Beziehungen räumlich so anordnet, dass Nähe auch inhaltlich lesbar wird.
 
-### Layout + GraphAlg
-Für diesen ersten Teil verwenden wir ein Force-Directed-Layout. Dabei stoßen sich alle Knoten gegenseitig ab, während Kanten verbundene Figuren zueinander ziehen; so bildet sich schrittweise eine Anordnung, in der häufig gemeinsam auftretende Figuren näher beieinander liegen. D3s d3-force bietet dafür genau die passenden Bausteine wie forceLink, forceManyBody und forceCenter.
+### Das Layout als nächster Schritt
+Im nächsten Schritt wird aus dieser Menge von Punkten und Linien eine geordnete Visualisierung. Das force-directed Layout zieht verbundene Figuren zusammen, während sich Knoten gegenseitig abstoßen. So entsteht schrittweise eine Anordnung, in der Nachbarschaften, Cluster und zentrale Figuren sichtbar werden.
 
-### Was lernen wir daraus?
-Schon bei einem kleinen Graphen sieht man: Eine Visualisierung zeigt Beziehungen nicht einfach „neutral“, sondern übersetzt sie in Raum. Das Layout macht Cluster, zentrale Figuren und dichte Beziehungen sichtbar und ist damit selbst ein Teil der Analyse.
 
 ```{=html}
-<div class="small-graph-block">
-  <div class="sg-controls" style="display:flex; gap:12px; flex-wrap:wrap; margin:1rem 0;">
-    <label><input type="checkbox" id="sg-labels"> Labels anzeigen</label>
-    <button id="sg-reset" type="button">Layout neu starten</button>
-  </div>
+<div id="viz-force-sticky" class="graphviz-block"></div>
 
-  <div style="border:0.5px solid #d3d1c7; border-radius:8px; padding:0.5rem; background:#fcfbf8;">
-    <svg id="small-graph" viewBox="0 0 900 560" style="width:100%; height:auto; display:block;"></svg>
-  </div>
-
-  <p style="font-size:12px; color:#888; margin-top:8px;">
-    Figuren aus <em>Les Misérables</em> · Hover hebt Nachbarn hervor · Ziehen verschiebt Knoten
-  </p>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script>
 (async function () {
-  const width = 900, height = 560;
-  const svg = d3.select("#small-graph");
-  const data = await d3.json("assets/data/les_miserables.json");
+  const G = window.GraphVizLesMis;
+  const { nodes, links } = await G.loadGraph();
+  const neighbors = G.buildNeighbors(nodes, links);
 
-  const color = d3.scaleOrdinal(d3.schemeTableau10);
+  const { svg, width, height, mount } = G.createSVG(
+    "viz-force-sticky",
+    "Force-Directed Layout: verschobene Knoten bleiben fixiert, Nachbarn weichen aus",
+    "Buttons: Neu sortieren · Namen anzeigen · Drag fixiert Knoten dauerhaft an neuer Position",
+    `
+      <button class="graphviz-btn" id="force-sticky-reheat">Neu sortieren</button>
+      <button class="graphviz-btn" id="force-sticky-labels">Namen anzeigen</button>
+      <button class="graphviz-btn" id="force-sticky-characters">Charaktere ausblenden</button>
+
+    `
+  );
+
+  let showLabels = false;
+  let showCharacters = true;
+
+  const simulation = d3.forceSimulation(nodes)
+    .force("link", d3.forceLink(links).id(d => d.id).distance(34).strength(0.68))
+    .force("charge", d3.forceManyBody().strength(-115))
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("collide", d3.forceCollide().radius(11));
 
   const link = svg.append("g")
-    .attr("stroke", "#b8b6ae")
-    .attr("stroke-opacity", 0.6)
+    .attr("stroke", "#bcb6aa")
+    .attr("stroke-opacity", 0.42)
     .selectAll("line")
-    .data(data.links)
+    .data(links)
     .join("line")
-    .attr("stroke-width", d => Math.sqrt(d.value || 1));
+    .attr("stroke-width", d => Math.max(0.75, Math.sqrt(d.value) * 0.8));
 
   const node = svg.append("g")
-    .selectAll("circle")
-    .data(data.nodes)
-    .join("circle")
-    .attr("r", 6)
-    .attr("fill", d => color(d.group))
-    .attr("stroke", "#fff")
-    .attr("stroke-width", 1.5);
+    .selectAll("g")
+    .data(nodes)
+    .join("g")
+    .call(G.stickyDrag(simulation));
+
+  node.append("circle")
+    .attr("r", 5.7)
+    .attr("fill", d => G.baseColor(d.group))
+    .attr("stroke", "#fcfbf8")
+    .attr("stroke-width", 1.4);
+
+  G.setCharacterImageSize(
+    node.append("image")
+      .attr("href", d => G.characterImage(d) || "")
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .style("display", d => G.characterImage(d) ? null : "none"),
+    () => 36
+  );
 
   const label = svg.append("g")
     .selectAll("text")
-    .data(data.nodes)
+    .data(nodes)
     .join("text")
     .text(d => d.name)
     .attr("font-size", 11)
-    .attr("fill", "#444")
+    .attr("font-family", "sans-serif")
+    .attr("fill", "#2d2b28")
     .attr("dx", 8)
     .attr("dy", 3)
-    .style("display", "none");
+    .style("opacity", 0)
+    .style("pointer-events", "none");
 
-  const simulation = d3.forceSimulation(data.nodes)
-    .force("link", d3.forceLink(data.links).distance(38))
-    .force("charge", d3.forceManyBody().strength(-120))
-    .force("center", d3.forceCenter(width / 2, height / 2))
-    .force("collide", d3.forceCollide(10));
+  function resetView() {
+    node.select("circle")
+      .style("display", d => (showCharacters && G.characterImage(d)) ? "none" : null)
+      .attr("fill-opacity", 1)
+      .attr("r", 5.7)
+      .attr("stroke", d => (d.fx != null && d.fy != null) ? "#8d3d32" : "#fcfbf8")
+      .attr("stroke-width", d => (d.fx != null && d.fy != null) ? 2.2 : 1.4);
 
-  const linked = new Set(
-    data.links.flatMap(d => [
-      `${d.source.name}-${d.target.name}`,
-      `${d.target.name}-${d.source.name}`
-    ])
-  );
+    G.setCharacterImageSize(
+      node.select("image")
+        .style("display", d => (showCharacters && G.characterImage(d)) ? null : "none")
+        .attr("opacity", 1),
+      () => 36
+    );
 
-  function isNeighbor(a, b) {
-    return a.name === b.name || linked.has(`${a.name}-${b.name}`);
+    link
+      .attr("stroke-opacity", 0.42)
+      .attr("stroke", "#bcb6aa");
+
+    label.style("opacity", showLabels ? 0.75 : 0);
   }
 
   node
-    .on("mouseover", function(event, d) {
-      node.attr("opacity", o => isNeighbor(d, o) ? 1 : 0.15);
-      link.attr("stroke-opacity", o => (o.source === d || o.target === d) ? 0.9 : 0.08)
-          .attr("stroke", o => (o.source === d || o.target === d) ? "#b54a3a" : "#b8b6ae");
-      label.style("display", o => isNeighbor(d, o) ? "block" : "none");
+    .on("mouseover", function (event, d) {
+      const active = neighbors.get(d.id);
+
+      node.select("circle")
+        .style("display", n => (showCharacters && G.characterImage(n)) ? "none" : null)
+        .attr("fill-opacity", n => active.has(n.id) ? 1 : 0.12)
+        .attr("r", n => {
+          if (showCharacters && G.characterImage(n)) return 0;
+          return n.id === d.id ? 8.6 : active.has(n.id) ? 6.8 : 4.7;
+        })
+        .attr("stroke", n => {
+          if (n.id === d.id) return "#8d3d32";
+          return (n.fx != null && n.fy != null) ? "#8d3d32" : "#fcfbf8";
+        })
+        .attr("stroke-width", n => {
+          if (n.id === d.id) return 2.4;
+          return (n.fx != null && n.fy != null) ? 2.2 : 1.4;
+        });
+
+      G.setCharacterImageSize(
+        node.select("image")
+          .style("display", n => (showCharacters && G.characterImage(n)) ? null : "none")
+          .attr("opacity", n => active.has(n.id) ? 1 : 0.12),
+        n => n.id === d.id ? 48 : active.has(n.id) ? 41 : 36
+      );
+
+      link
+        .attr("stroke-opacity", l => {
+          const a = typeof l.source === "object" ? l.source.id : l.source;
+          const b = typeof l.target === "object" ? l.target.id : l.target;
+          return (a === d.id || b === d.id) ? 0.98 : 0.04;
+        })
+        .attr("stroke", l => {
+          const a = typeof l.source === "object" ? l.source.id : l.source;
+          const b = typeof l.target === "object" ? l.target.id : l.target;
+          return (a === d.id || b === d.id) ? "#b54a3a" : "#d4cec2";
+        });
+
+      label
+        .style("opacity", n => active.has(n.id) ? 1 : (showLabels ? 0.14 : 0))
+        .attr("font-weight", n => n.id === d.id ? 700 : 400);
+
+      G.showTooltip(
+        event,
+        `<strong>${d.name}</strong><br>Gruppe: ${d.group}<br>Nachbarn: ${active.size - 1}${(d.fx != null && d.fy != null) ? "<br>Position fixiert" : ""}`
+      );
     })
-    .on("mouseout", function() {
-      node.attr("opacity", 1);
-      link.attr("stroke-opacity", 0.6).attr("stroke", "#b8b6ae");
-      if (!document.getElementById("sg-labels").checked) label.style("display", "none");
-    })
-    .call(d3.drag()
-      .on("start", dragstarted)
-      .on("drag", dragged)
-      .on("end", dragended));
+    .on("mousemove", G.moveTooltip)
+    .on("mouseout", function () {
+      resetView();
+      G.hideTooltip();
+    });
 
   simulation.on("tick", () => {
     link
@@ -170,41 +613,41 @@ Schon bei einem kleinen Graphen sieht man: Eine Visualisierung zeigt Beziehungen
       .attr("y2", d => d.target.y);
 
     node
-      .attr("cx", d => d.x)
-      .attr("cy", d => d.y);
+      .attr("transform", d => `translate(${d.x},${d.y})`);
 
     label
       .attr("x", d => d.x)
       .attr("y", d => d.y);
   });
 
-  document.getElementById("sg-labels").addEventListener("change", e => {
-    label.style("display", e.target.checked ? "block" : "none");
-  });
-
-  document.getElementById("sg-reset").addEventListener("click", () => {
+  mount.querySelector("#force-sticky-reheat").addEventListener("click", function () {
+    nodes.forEach(d => {
+      d.fx = null;
+      d.fy = null;
+    });
     simulation.alpha(1).restart();
+    resetView();
   });
 
-  function dragstarted(event, d) {
-    if (!event.active) simulation.alphaTarget(0.3).restart();
-    d.fx = d.x;
-    d.fy = d.y;
-  }
+  mount.querySelector("#force-sticky-labels").addEventListener("click", function () {
+    showLabels = !showLabels;
+    this.textContent = showLabels ? "Namen ausblenden" : "Namen anzeigen";
+    label.style("opacity", showLabels ? 0.75 : 0);
+  });
 
-  function dragged(event, d) {
-    d.fx = event.x;
-    d.fy = event.y;
-  }
+  mount.querySelector("#force-sticky-characters").addEventListener("click", function () {
+    showCharacters = !showCharacters;
+    this.textContent = showCharacters ? "Charaktere ausblenden" : "Charaktere einblenden";
+    resetView();
+  });
 
-  function dragended(event, d) {
-    if (!event.active) simulation.alphaTarget(0);
-    d.fx = null;
-    d.fy = null;
-  }
+  resetView();
 })();
 </script>
 ```
+
+### Warum das hier funktioniert
+Für einen kleinen Graphen ist dieses Verfahren gut geeignet. Die Anordnung bleibt nachvollziehbar, einzelne Knoten lassen sich noch direkt untersuchen, und Interaktionen wie Hover oder Drag bleiben flüssig. Gerade deshalb eignet sich diese Stufe gut, um die Grundidee der Graphvisualisierung einzuführen, bevor größere Netzwerke andere Verfahren erzwingen.
 
 ## 3b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)
 Im kleinen Beispiel stand *eine* Person im Mittelpunkt: Max und sein Ego-Netz. Jetzt drehen wir die Perspektive um und betrachten ein **vollständiges soziales Netzwerk ohne Mittelpunkt** – das Wikipedia-Abstimmungsnetzwerk `wiki-Vote` mit rund **7.000 Nutzer:innen und über 100.000 Beziehungen**. Hier gibt es kein Zentrum, um das wir die Knoten anordnen könnten.
