@@ -1,145 +1,56 @@
 ---
-title: "Graphdatenvisualisierung"
+title: "Graphdatenvisualisierung im Web"
 author: "Sara, Silvia, Adam"
-format:
-  html:
-    theme: cosmo
+format: html
 jupyter: python3
 bibliography: references.bib
 ---
 
 ## 1. Intro (Warum Soziale Netzwerke schwer zu zeichnen sind)
-Soziale Netzwerke bestehen aus Menschen und ihren Beziehungen. 
-Aber wie zeigt man so etwas im Web so, dass man noch wirklich etwas erkennt?
+Soziale Netzwerke bestehen aus tausenden bis Millionen von Verbindungen.  
+Je mehr Knoten und Kanten hinzukommen, desto schneller wird die Struktur unlesbar.
 
+Das Problem: **Daten haben keine räumliche Ordnung** – nur Beziehungen.
 
-## 2. Problemstellung (Wann wird ein Graph unlesbar?)
-Eine Graphvisualisierung ist nicht automatisch gut, nur weil alle Knoten und Kanten sichtbar sind. Mit wachsender Größe ändern sich Lesbarkeit, Interaktion und die geeignete Web-Technologie grundlegend.
+## 2. Was ist Graphdatenvisualisierung?
+
+Ein Graph besteht aus:
+
+- **Knoten** (z. B. Personen, Seiten)
+- **Kanten** (Beziehungen zwischen ihnen)
+
+Ziel der Visualisierung ist es, diese Struktur **räumlich sinnvoll anzuordnen**, sodass Muster sichtbar werden.
+
+## 3. Herausforderung (Wann wird ein Graph unlesbar?)
+Mit wachsender Größe entstehen Probleme:
+
+- Kanten überlagern sich
+- Cluster verschwinden
+- Orientierung geht verloren
+
+Ab einem gewissen Punkt entsteht ein sogenannter **Hairball-Effekt**.
 
 [hier Abbildung von Silvia hin]
 
-## 3a. Kleiner Datensatz
+Im folgenden werden drei unterschiedliche Ansätze aufgezeigt:
 
-## 3b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)
-Im kleinen Beispiel stand *eine* Person im Mittelpunkt: Max und sein Ego-Netz. Jetzt drehen wir die Perspektive um und betrachten ein **vollständiges soziales Netzwerk ohne Mittelpunkt** – das Wikipedia-Abstimmungsnetzwerk `wiki-Vote` mit rund **7.000 Nutzer:innen und über 100.000 Beziehungen**. Hier gibt es kein Zentrum, um das wir die Knoten anordnen könnten.
+---
 
-### Warum ein globales Layout statt eines Ego-Layouts?
-Das egozentrische Layout aus 3a funktioniert nur, solange es einen klaren Mittelpunkt gibt. Bei einem Netzwerk dieser Größe gibt es viele gleichberechtigte Knoten, dichte Bereiche und sich überlappende Communities. Deshalb verwenden wir ein **globales, kräftebasiertes Layout (ForceAtlas2)**: Kanten ziehen verbundene Knoten zusammen, alle Knoten stoßen sich gegenseitig ab. So entstehen Cluster aus der Struktur heraus, ohne dass wir einen Mittelpunkt vorgeben.
+## 4a. Kleiner Datensatz
+{{< include small.qmd >}}
+---
 
-### Was ist das Problem?
-Genau hier zeigt sich die Grenze: Bei mehreren tausend Knoten und über hunderttausend Kanten wird die Darstellung schnell zum „Hairball". Einzelne Kanten lassen sich kaum noch verfolgen, Labels überlagern sich, und ein SVG-/DOM-basiertes Layout würde unter der Knotenzahl einbrechen. Lesbarkeit entsteht nicht mehr durch jede Einzelkante, sondern erst durch **Reduktion**: Wir färben nach Community (Louvain) und skalieren die Knotengröße nach eingehenden Stimmen (In-Degree), damit zentrale Hubs sichtbar bleiben.
+## 4b. Mittlerer Datensatz
+{{< include medium.qmd >}}
+---
 
-### Layout + GraphAlg
-Technisch motiviert diese Größenordnung den Wechsel zu **Canvas**: Statt tausender DOM-Knoten zeichnen wir alles in ein einziges `<canvas>`-Element und rendern nur bei Interaktion neu. Das Layout wird einmalig offline mit ForceAtlas2 vorberechnet, sodass die Seite sofort lädt; im Browser sorgt eine D3-Force-Simulation für Interaktivität (Ziehen, Nachbarschaft hervorheben, neu anordnen). Probiere es aus – fahre über Knoten, zoome hinein und beobachte, wie dicht das Netz wirklich ist:
+## 4c. Großer Datensatz
+{{< include big.qmd >}}
+---
 
-```{=html}
-<div class="force-graph" data-src="assets/data/social_graph.json">
-  <div class="fg-controls">
-    <div class="fg-control">
-      <label for="fg-charge">Abstoßung</label>
-      <input id="fg-charge" type="range" min="5" max="120" value="30" data-control="charge">
-    </div>
-    <div class="fg-control">
-      <label for="fg-distance">Kantenlänge</label>
-      <input id="fg-distance" type="range" min="5" max="120" value="30" data-control="distance">
-    </div>
-    <div class="fg-control">
-      <label for="fg-labels">Hub-Labels</label>
-      <input id="fg-labels" type="checkbox" data-control="labels">
-    </div>
-    <button type="button" data-control="resimulate">Neu anordnen</button>
-    <button type="button" data-control="reset">Ansicht zurücksetzen</button>
-  </div>
-  <div class="fg-canvas-wrap">
-    <canvas></canvas>
-    <div class="fg-tooltip"></div>
-  </div>
-  <div class="fg-status">Lade Graphdaten ...</div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-<script src="assets/js/force-graph.js"></script>
-```
-
-### So liest du den Graphen
-
-::: {.callout-tip title="Schnell-Legende"}
-- **Farbe = Community.** Jede Farbe ist eine automatisch gefundene Gruppe (siehe Louvain weiter unten) – Knoten, die untereinander dichter verbunden sind als mit dem Rest.
-- **Knotengröße = eingehende Stimmen (In-Degree).** Große Punkte sind Nutzer:innen, für die besonders viele andere abgestimmt haben – die „Hubs" des Netzwerks.
-- **Maus über einen Knoten:** Der Knoten und seine direkten Nachbarn bleiben farbig, alles andere wird ausgegraut; die roten Linien sind seine Kanten. Das Tooltip zeigt ID, Community, Stimmen und Nachbarzahl.
-- **Mausrad = Zoom, Ziehen = Verschieben.** Einzelne Knoten lassen sich mit gedrückter Maustaste festhalten und umherschieben.
-:::
-
-### Die Bedienelemente erklärt
-
-- **Abstoßung** – wie stark sich alle Knoten gegenseitig wegdrücken (die „Many-Body"-Kraft). Höhere Werte spreizen das Netz weiter auseinander.
-- **Kantenlänge** – die Ruhelänge der „Federn" entlang der Kanten. Kürzere Kanten ziehen verbundene Knoten enger zusammen.
-- **Hub-Labels** – blendet die Nummern der **12 Knoten mit den meisten eingehenden Stimmen** ein. Da der Datensatz anonymisiert ist, sind das nur numerische IDs; sie zeigen aber, *wo* im Knäuel die zentralen Akteure sitzen.
-- **Neu anordnen** – „heizt" die laufende Simulation neu auf (siehe Kasten).
-- **Ansicht zurücksetzen** – stellt Zoom und Ausschnitt so ein, dass der ganze Graph wieder ins Bild passt.
-
-::: {.callout-note collapse="true" title="Warum bewegt „Neu anordnen“ so wenig?"}
-Das ist Absicht – und selbst schon lehrreich. Zwei Effekte wirken zusammen:
-
-1. **Der Graph startet bereits im Gleichgewicht.** Die Positionen sind *nicht* im Browser berechnet, sondern offline mit ForceAtlas2 vorab optimiert. Da ForceAtlas2 fast dieselbe Physik nutzt wie die Browser-Simulation, sitzt das Layout schon in einem Energie-Minimum. „Neu anordnen" würfelt die Positionen **nicht** neu, sondern erwärmt nur die bestehende Anordnung – es gibt also kaum etwas zu verbessern.
-2. **Die Kräfte sind bewusst sanft eingestellt** (schwache, in der Reichweite begrenzte Abstoßung, schwache Kanten), damit ein Netz mit über 100.000 Kanten flüssig bleibt und nicht „explodiert". Der dichte Kern verhält sich dadurch wie ein **starrer Körper**. Die einzige Bewegung, die quasi keine Energie kostet, ist eine **globale Drehung/Verschiebung** des gesamten Klumpens – genau die leichte Rotation, die man sieht, bevor alles wieder einfriert.
-
-Wer ein echtes Neu-Berechnen sehen möchte, müsste die Startpositionen zufällig setzen und die Kräfte stärker wählen – dann „wächst" das Layout sichtbar aus dem Chaos zusammen.
-:::
-
-### Wie das Layout entsteht: ForceAtlas2 + Barnes-Hut
-
-Ein kräftebasiertes („force-directed") Layout behandelt den Graphen wie ein physikalisches System: **Kanten sind Federn**, die verbundene Knoten anziehen, und **alle Knoten stoßen sich gegenseitig ab** (wie gleichnamige Ladungen). Lässt man das System „ausschwingen", wandern dicht verbundene Gruppen zusammen und schwach verbundene auseinander – Struktur wird sichtbar, ohne dass wir sie vorgeben.
-
-Der Knackpunkt ist die Abstoßung: Eigentlich müsste man *jedes* Knotenpaar vergleichen – bei 7.000 Knoten sind das rund 25 Millionen Paare pro Schritt (Aufwand $O(n^2)$). ForceAtlas2 nutzt deshalb die **Barnes-Hut-Näherung**: Weit entfernte Knotengruppen werden zu einem Schwerpunkt zusammengefasst und nur einmal verrechnet. Das senkt den Aufwand auf $O(n \log n)$ und macht große Graphen überhaupt erst berechenbar.
-
-Weil diese Berechnung trotzdem einige Sekunden dauert, führen wir sie **einmalig offline** im Python-Skript aus und speichern die fertigen Koordinaten in einer JSON-Datei. Die Website lädt nur das Ergebnis und ist dadurch sofort da.
-
-### Communities und Hubs: Louvain + In-Degree
-
-Farbe und Größe sind keine Deko, sondern zwei Analyse-Ebenen:
-
-- **Communities (Farbe)** kommen vom **Louvain-Algorithmus**. Er sucht eine Aufteilung in Gruppen mit möglichst hoher *Modularität* – also viele Kanten *innerhalb* der Gruppen und wenige *zwischen* ihnen. Hier entstehen 15 Communities. Das ist der „globale" Ordnungshinweis, der im Ego-Netz aus 3a noch nicht nötig war.
-- **In-Degree (Größe)** ist die Zahl der **eingehenden** Kanten – bei wiki-Vote also: Für wie viele Personen wurde abgestimmt? Große Knoten sind einflussreiche Hubs. (Bei gerichteten Netzen unterscheidet man In- und Out-Degree; fürs Layout behandeln wir die Kanten aber **ungerichtet**, um nicht über 100.000 Pfeilspitzen zeichnen zu müssen.)
-
-### Warum Canvas statt SVG?
-
-In 3a (kleines Netz) war **SVG** ideal: Jeder Knoten ist ein eigenes DOM-Element, das man stylen und anklicken kann. Bei ~7.000 Knoten und ~100.000 Kanten wären das aber über hunderttausend DOM-Elemente – der Browser würde beim Zoomen und Scrollen einbrechen.
-
-Deshalb zeichnen wir hier auf ein **`<canvas>`**: eine einzige Zeichenfläche, auf die pro Bild alles in einem Durchgang gemalt wird (Kanten gebündelt, Knoten nach Farbe gruppiert). Das skaliert auf zehntausende Elemente. Der Preis: Es gibt keine einzelnen DOM-Knoten mehr, also müssen Interaktionen wie „über welchem Knoten ist die Maus?" selbst berechnet werden – dafür nutzen wir einen **Quadtree** (eine räumliche Suchstruktur), der den nächstgelegenen Knoten in $O(\log n)$ findet, statt alle 7.000 durchzuprobieren.
-
-### Die Physik dahinter: d3-force und Velocity-Verlet
-
-Die Interaktivität im Browser liefert **d3-force**. Jeder Knoten hat eine Position $(x, y)$ und eine Geschwindigkeit $(v_x, v_y)$. In jedem Simulationsschritt passiert:
-
-1. Die Kräfte (Federn, Abstoßung, Zentrierung) verändern die **Geschwindigkeiten**.
-2. Eine **Reibung** (`velocityDecay`) bremst die Geschwindigkeiten, damit nichts ewig nachschwingt.
-3. Die **Positionen** werden um die Geschwindigkeit weitergeschoben.
-
-Dieses Integrationsverfahren heißt **Velocity-Verlet** – dasselbe Schema, mit dem auch Teilchensimulationen in der Physik rechnen; es ist stabil und günstig. Gesteuert wird alles über eine „Temperatur" **`alpha`**, die pro Schritt abklingt (`alphaDecay`) und die Kräfte mitskaliert: Das System startet „heiß" und beweglich und „friert" allmählich ein – im Kern ein **Simulated Annealing**. Genau deshalb kommt der Graph nach „Neu anordnen" nach kurzer Zeit von selbst zur Ruhe.
-
-## 3c. Großer Datensatz (Vom Freundesnetz zum Follow-Graph)
-Beim Twitter-Netz wird aus einem lesbaren sozialen Bild schnell ein massives Strukturobjekt.
-
-### Warum gut?
-Dieses Netzwerk zeigt sehr deutlich, wie sich Maßstab und Bedeutung gleichzeitig verändern. Ihr könnt hier nicht nur Größe thematisieren, sondern auch den Unterschied zwischen Freundschaft und Follow-Beziehung.
-
-### Was ist das Problem?
-Einzelne Knoten sind kaum noch direkt lesbar, Pfeile oder Richtungen lassen sich nicht mehr für jede Kante sinnvoll zeigen, und klassische Browser-Darstellung kommt an Performance-Grenzen. Die Herausforderung ist jetzt nicht mehr nur Zeichnen, sondern sinnvolle Reduktion.
-
-### Layout + GraphAlg
-Hier passt die Argumentation für WebGL/GPU sehr gut. Inhaltlich könnt ihr zusätzlich auf In-Degree/Out-Degree, Hubs, Communities, Filterung und Abstraktion eingehen, weil bei dieser Größenordnung nicht mehr jede Einzelkante der eigentliche Erkenntnisträger ist.
-
+## 5. GNN (Graph Neural Network)
 [Hier folgt weiterer Inhalt]
 
-## 4. GNN (Graph Neural Network)
-[Hier folgt weiterer Inhalt]
-
-## 5. How to handle (Rezeptbuch)
+## 6. How to handle (Rezeptbuch)
 Wenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral.
-
-## 6. Fazit (Welche Visualisierung ist wann sinnvoll?)
-Es gibt nicht die eine beste Graphvisualisierung. Was sinnvoll ist, hängt von Größe, Dichte, Richtung der Kanten, gewünschter Interaktion und der Rendering-Technologie im Web ab.
-
-[Hier folgt weiterer Inhalt]
 
