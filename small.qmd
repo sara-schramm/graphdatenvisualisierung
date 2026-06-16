@@ -1,0 +1,32 @@
+---
+title: "Kleiner Datensatz – Les Misérables"
+format: html
+---
+
+## Der Datensatz
+
+<div class="two-col">
+
+<div class="text">
+
+### Les Misérables Graph
+
+Der Datensatz basiert auf den Beziehungen der Figuren aus dem Roman *Les Misérables*.
+
+Er besteht aus:
+
+- 77 Knoten (Charaktere)
+- 254 Kanten (Beziehungen)
+- ungerichteten Verbindungen
+
+Jeder Knoten steht für eine Figur, jede Kante für eine gemeinsame Szene oder Interaktion.
+
+Dieser Datensatz eignet sich besonders gut, weil er klein genug ist, um jeden Schritt eines Graph-Layouts sichtbar nachvollziehen zu können.
+
+</div>
+
+<div class="image">
+  <img src="assets/Les_Miserables.jpg" alt="Les Miserables Charaktere Graph" />
+</div>
+
+</div>

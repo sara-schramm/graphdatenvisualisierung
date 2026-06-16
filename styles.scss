@@ -1,0 +1,22 @@
+.two-col {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-top: 1.5rem;
+}
+
+.two-col .text {
+  flex: 1;
+}
+
+.two-col .image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.two-col .image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
