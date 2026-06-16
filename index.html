@@ -8,7 +8,7 @@
 
 <meta name="author" content="Sara, Silvia, Adam">
 
-<title>Graphdatenvisualisierung</title>
+<title>Graphdatenvisualisierung im Web – Graphdatenvisualisierung</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -43,7 +43,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-bba5ebae505b5c03f3f0d8040a416a6b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-d42e3a450557161d5337326f150af9d1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -102,7 +102,7 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.scss">
 </head>
 
 <body class="nav-fixed fullcontent quarto-light">
@@ -126,6 +126,18 @@ window.Quarto = {
     <a class="nav-link active" href="./index.html" aria-current="page"> 
 <span class="menu-text">Home</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./small.html"> 
+<span class="menu-text">Kleiner Datensatz</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./medium.html"> 
+<span class="menu-text">Mittlerer Datensatz</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./big.html"> 
+<span class="menu-text">Großer Datensatz</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -143,7 +155,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Graphdatenvisualisierung</h1>
+<h1 class="title">Graphdatenvisualisierung im Web</h1>
 </div>
 
 
@@ -168,15 +180,38 @@ window.Quarto = {
 
 <section id="intro-warum-soziale-netzwerke-schwer-zu-zeichnen-sind" class="level2">
 <h2 class="anchored" data-anchor-id="intro-warum-soziale-netzwerke-schwer-zu-zeichnen-sind">1. Intro (Warum Soziale Netzwerke schwer zu zeichnen sind)</h2>
-<p>Soziale Netzwerke bestehen aus Menschen und ihren Beziehungen. Aber wie zeigt man so etwas im Web so, dass man noch wirklich etwas erkennt?</p>
+<p>Soziale Netzwerke bestehen aus tausenden bis Millionen von Verbindungen.<br>
+Je mehr Knoten und Kanten hinzukommen, desto schneller wird die Struktur unlesbar.</p>
+<p>Das Problem: <strong>Daten haben keine räumliche Ordnung</strong> – nur Beziehungen.</p>
 </section>
-<section id="problemstellung-wann-wird-ein-graph-unlesbar" class="level2">
-<h2 class="anchored" data-anchor-id="problemstellung-wann-wird-ein-graph-unlesbar">2. Problemstellung (Wann wird ein Graph unlesbar?)</h2>
-<p>Eine Graphvisualisierung ist nicht automatisch gut, nur weil alle Knoten und Kanten sichtbar sind. Mit wachsender Größe ändern sich Lesbarkeit, Interaktion und die geeignete Web-Technologie grundlegend.</p>
+<section id="was-ist-graphdatenvisualisierung" class="level2">
+<h2 class="anchored" data-anchor-id="was-ist-graphdatenvisualisierung">2. Was ist Graphdatenvisualisierung?</h2>
+<p>Ein Graph besteht aus:</p>
+<ul>
+<li><strong>Knoten</strong> (z. B. Personen, Seiten)</li>
+<li><strong>Kanten</strong> (Beziehungen zwischen ihnen)</li>
+</ul>
+<p>Ziel der Visualisierung ist es, diese Struktur <strong>räumlich sinnvoll anzuordnen</strong>, sodass Muster sichtbar werden.</p>
+</section>
+<section id="herausforderung-wann-wird-ein-graph-unlesbar" class="level2">
+<h2 class="anchored" data-anchor-id="herausforderung-wann-wird-ein-graph-unlesbar">3. Herausforderung (Wann wird ein Graph unlesbar?)</h2>
+<p>Mit wachsender Größe entstehen Probleme:</p>
+<ul>
+<li>Kanten überlagern sich</li>
+<li>Cluster verschwinden</li>
+<li>Orientierung geht verloren</li>
+</ul>
+<p>Ab einem gewissen Punkt entsteht ein sogenannter <strong>Hairball-Effekt</strong>.</p>
 <p>[hier Abbildung von Silvia hin]</p>
+<p>Im folgenden werden drei unterschiedliche Ansätze aufgezeigt:</p>
+<hr>
 </section>
 <section id="a.-kleiner-datensatz" class="level2">
-<h2 class="anchored" data-anchor-id="a.-kleiner-datensatz">3a. Kleiner Datensatz</h2>
+<h2 class="anchored" data-anchor-id="a.-kleiner-datensatz">4a. Kleiner Datensatz</h2>
+<hr>
+</section>
+<section id="b.-mittlerer-datensatz" class="level2">
+<h2 class="anchored" data-anchor-id="b.-mittlerer-datensatz">4b. Mittlerer Datensatz</h2>
 </section>
 <section id="b.-mittlerer-datensatz-ein-ganzes-netzwerk-statt-eines-freundeskreises" class="level2">
 <h2 class="anchored" data-anchor-id="b.-mittlerer-datensatz-ein-ganzes-netzwerk-statt-eines-freundeskreises">3b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)</h2>
@@ -299,7 +334,11 @@ window.Quarto = {
 <li>Die <strong>Positionen</strong> werden um die Geschwindigkeit weitergeschoben.</li>
 </ol>
 <p>Dieses Integrationsverfahren heißt <strong>Velocity-Verlet</strong> – dasselbe Schema, mit dem auch Teilchensimulationen in der Physik rechnen; es ist stabil und günstig. Gesteuert wird alles über eine „Temperatur” <strong><code>alpha</code></strong>, die pro Schritt abklingt (<code>alphaDecay</code>) und die Kräfte mitskaliert: Das System startet „heiß” und beweglich und „friert” allmählich ein – im Kern ein <strong>Simulated Annealing</strong>. Genau deshalb kommt der Graph nach „Neu anordnen” nach kurzer Zeit von selbst zur Ruhe.</p>
+<hr>
 </section>
+</section>
+<section id="c.-großer-datensatz" class="level2">
+<h2 class="anchored" data-anchor-id="c.-großer-datensatz">4c. Großer Datensatz</h2>
 </section>
 <section id="c.-großer-datensatz-vom-freundesnetz-zum-follow-graph" class="level2">
 <h2 class="anchored" data-anchor-id="c.-großer-datensatz-vom-freundesnetz-zum-follow-graph">3c. Großer Datensatz (Vom Freundesnetz zum Follow-Graph)</h2>
@@ -316,20 +355,16 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="layout-graphalg-1">Layout + GraphAlg</h3>
 <p>Hier passt die Argumentation für WebGL/GPU sehr gut. Inhaltlich könnt ihr zusätzlich auf In-Degree/Out-Degree, Hubs, Communities, Filterung und Abstraktion eingehen, weil bei dieser Größenordnung nicht mehr jede Einzelkante der eigentliche Erkenntnisträger ist.</p>
 <p>[Hier folgt weiterer Inhalt]</p>
+<hr>
 </section>
 </section>
 <section id="gnn-graph-neural-network" class="level2">
-<h2 class="anchored" data-anchor-id="gnn-graph-neural-network">4. GNN (Graph Neural Network)</h2>
+<h2 class="anchored" data-anchor-id="gnn-graph-neural-network">5. GNN (Graph Neural Network)</h2>
 <p>[Hier folgt weiterer Inhalt]</p>
 </section>
 <section id="how-to-handle-rezeptbuch" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-handle-rezeptbuch">5. How to handle (Rezeptbuch)</h2>
+<h2 class="anchored" data-anchor-id="how-to-handle-rezeptbuch">6. How to handle (Rezeptbuch)</h2>
 <p>Wenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral.</p>
-</section>
-<section id="fazit-welche-visualisierung-ist-wann-sinnvoll" class="level2">
-<h2 class="anchored" data-anchor-id="fazit-welche-visualisierung-ist-wann-sinnvoll">6. Fazit (Welche Visualisierung ist wann sinnvoll?)</h2>
-<p>Es gibt nicht die eine beste Graphvisualisierung. Was sinnvoll ist, hängt von Größe, Dichte, Richtung der Kanten, gewünschter Interaktion und der Rendering-Technologie im Web ab.</p>
-<p>[Hier folgt weiterer Inhalt]</p>
 
 
 </section>
