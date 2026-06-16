@@ -26,7 +26,7 @@ Dieser Datensatz eignet sich besonders gut, weil er klein genug ist, um jeden Sc
 </div>
 
 <div class="image">
-  <img src="assets/Les_Miserables.jpg" alt="Les Miserables Charaktere Graph" />
+  <img src="assets/images/les_miserables.jpg" alt="Les Miserables Charaktere Graph" />
 </div>
 
 </div>
