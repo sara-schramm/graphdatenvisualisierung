@@ -90,188 +90,8 @@ Hier könnt ihr einen force-directed Ansatz als Hauptbeispiel nehmen und daneben
 [Hier folgt weiterer Inhalt]
 
 ## 3b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)
-Im kleinen Beispiel stand *eine* Person im Mittelpunkt: Max und sein Ego-Netz. Jetzt drehen wir die Perspektive um und betrachten ein **vollständiges soziales Netzwerk ohne Mittelpunkt** – das Wikipedia-Abstimmungsnetzwerk `wiki-Vote` mit rund **7.000 Nutzer:innen und über 100.000 Beziehungen**. Hier gibt es kein Zentrum, um das wir die Knoten anordnen könnten.
 
-### Warum ein globales Layout statt eines Ego-Layouts?
-Das egozentrische Layout aus 3a funktioniert nur, solange es einen klaren Mittelpunkt gibt. Bei einem Netzwerk dieser Größe gibt es viele gleichberechtigte Knoten, dichte Bereiche und sich überlappende Communities. Deshalb verwenden wir ein **globales Stress-Majorization-Layout**: Die Positionen werden so gewählt, dass **Layout-Distanzen** den **kürzesten Pfaddistanzen** im Graphen möglichst nahekommen — ohne einen Mittelpunkt vorzugeben.
-
-### Was ist das Problem?
-Genau hier zeigt sich die Grenze: Bei mehreren tausend Knoten und über hunderttausend Kanten wird die Darstellung schnell zum „Hairball". Einzelne Kanten lassen sich kaum noch verfolgen, Labels überlagern sich, und ein SVG-/DOM-basiertes Layout würde unter der Knotenzahl einbrechen. Lesbarkeit entsteht nicht mehr durch jede Einzelkante, sondern erst durch **Reduktion**: Wir färben nach Community (Louvain) und skalieren die Knotengröße nach eingehenden Stimmen (In-Degree), damit zentrale Hubs sichtbar bleiben.
-
-### Die Loss-Funktion: Stress Majorization {#stress-majorization}
-
-Ab der mittleren Größenordnung wird Layout zur **Optimierung von Distanzen**, nicht mehr zum Ausschwingen von Kräften. Die Stress-Funktion misst, wie gut die Zeichnung die Graph-Struktur abbildet:
-
-$$ \mathcal{L} = \sum_{i \neq j} w_{i,j} \left( \|p_i - p_j\|_2 - d_{i,j} \right)^2 $$
-
-Hier ist $d_{i,j}$ die **kürzeste Pfaddistanz** zwischen Knoten $i$ und $j$ im Graphen, $p_i$ die **Position** von Knoten $i$ in der Zeichnung, und $w_{i,j}$ ein Gewicht (typisch $1/d_{i,j}^2$). **Stress-Majorization** minimiert diese Funktion iterativ — ein Verfahren, das auch in gelernten Layout-Ansätzen als Trainingsziel auftaucht (siehe Abschnitt 5).
-
-```{=html}
-<div id="stress-majorization-demo" class="stress-demo reveal-on-scroll">
-  <p><strong>Interaktiv:</strong> Ziehe die Knoten — je näher Layout-Distanz und Pfaddistanz, desto geringer der Stress.</p>
-  <div class="stress-demo-layout">
-    <svg viewBox="0 0 320 160" width="320" height="160" aria-label="Stress-Demo Layout"></svg>
-    <div class="stress-metrics">
-      <div class="stress-bar-row">
-        <label><span>Gesamt-Stress</span><span data-stress-total>0</span></label>
-        <div class="stress-bar" data-stress-bar><span style="width:40%"></span></div>
-      </div>
-      <div class="stress-bar-row" data-pair-stress data-a="u" data-b="v">
-        <label><span>u–v (Pfad 1)</span><span>0</span></label>
-        <div class="stress-bar"><span></span></div>
-      </div>
-      <div class="stress-bar-row" data-pair-stress data-a="u" data-b="z">
-        <label><span>u–z (Pfad 2)</span><span>0</span></label>
-        <div class="stress-bar"><span></span></div>
-      </div>
-    </div>
-  </div>
-</div>
-```
-
-### Layout + GraphAlg
-Technisch motiviert diese Größenordnung den Wechsel zu **Canvas**: Statt tausender DOM-Knoten zeichnen wir alles in ein einziges `<canvas>`-Element und rendern nur bei Interaktion neu. Das Layout wird **einmalig offline** per Stress-Majorization vorberechnet, sodass die Seite sofort lädt. Im Browser kannst du den Graphen erkunden (Zoomen, Nachbarschaft hervorheben, Knoten kurz verschieben) — ohne das Layout neu zu berechnen. Probiere es aus:
-
-```{=html}
-<div class="force-graph" data-src="assets/data/social_graph.json" tabindex="0" aria-label="Interaktiver wiki-Vote Graph">
-  <div class="fg-onboarding" hidden>
-    <div class="fg-onboarding-card">
-      <h3>Willkommen</h3>
-      <p>…</p>
-      <div class="fg-onboarding-actions">
-        <button type="button" data-onboarding-skip="">Überspringen</button>
-        <button type="button" class="primary" data-onboarding-next="">Weiter</button>
-      </div>
-    </div>
-  </div>
-  <div class="fg-header">
-    <span class="fg-title">wiki-Vote · Stress-Layout (offline)</span>
-    <button type="button" class="fg-help-btn" data-control="help" aria-label="Kurzanleitung anzeigen">?</button>
-  </div>
-  <div class="fg-discovery">
-    <span style="font-size:0.78rem;color:#64748b;margin-right:0.25rem;">Entdecken:</span>
-    <button type="button" class="discovery-chip" data-discovery="hub">Hub finden</button>
-    <button type="button" class="discovery-chip" data-discovery="community">Community isolieren</button>
-    <button type="button" class="discovery-chip" data-discovery="neighbor">Nachbarn zeigen</button>
-  </div>
-  <div class="fg-controls">
-    <div class="fg-control">
-      <label for="fg-labels">Hub-Labels</label>
-      <input id="fg-labels" type="checkbox" data-control="labels">
-    </div>
-    <div class="fg-control">
-      <label for="fg-louvain">Louvain-Farben</label>
-      <input id="fg-louvain" type="checkbox" data-control="louvain" checked>
-    </div>
-    <button type="button" data-control="reset-layout">Layout zurücksetzen</button>
-    <button type="button" data-control="reset">Ansicht zurücksetzen</button>
-  </div>
-  <div class="fg-legend">
-    <span class="fg-legend-label">Community:</span>
-    <span class="fg-legend-items"></span>
-    <span class="fg-legend-size-demo">
-      Größe ∝ Stimmen
-      <span style="width:6px;height:6px;"></span>
-      <span style="width:10px;height:10px;"></span>
-      <span style="width:14px;height:14px;"></span>
-    </span>
-  </div>
-  <div class="fg-canvas-wrap">
-    <div class="fg-skeleton">
-      <div class="fg-skeleton-text">Layout wird geladen …</div>
-      <div class="fg-skeleton-bar"><span></span></div>
-    </div>
-    <canvas class="fg-main"></canvas>
-    <div class="fg-minimap" aria-hidden="true"><canvas></canvas></div>
-    <div class="fg-tooltip"></div>
-  </div>
-  <div class="fg-keyboard-hint">
-    Zuerst Graph anklicken · <kbd>+</kbd>/<kbd>−</kbd> Zoom · <kbd>R</kbd> Reset · <kbd>Esc</kbd> Auswahl aufheben
-  </div>
-  <div class="fg-status">Lade Graphdaten …</div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-<script src="assets/js/force-graph.js"></script>
-```
-
-### So liest du den Graphen
-
-::: {.callout-tip title="Schnell-Legende"}
-- **Farbe = Community.** Jede Farbe ist eine automatisch gefundene Gruppe (siehe Louvain weiter unten) – Knoten, die untereinander dichter verbunden sind als mit dem Rest.
-- **Knotengröße = eingehende Stimmen (In-Degree).** Große Punkte sind Nutzer:innen, für die besonders viele andere abgestimmt haben – die „Hubs" des Netzwerks.
-- **Maus über einen Knoten:** Der Knoten und seine direkten Nachbarn bleiben farbig, alles andere wird ausgegraut; die roten Linien sind seine Kanten. Das Tooltip zeigt ID, Community, Stimmen und Nachbarzahl.
-- **Mausrad = Zoom, Ziehen = Verschieben.** Einzelne Knoten lassen sich kurz umherschieben — das ändert nur die Anzeige, nicht die offline berechnete Optimierung.
-:::
-
-### Die Bedienelemente erklärt
-
-- **Hub-Labels** – blendet die Nummern der **12 Knoten mit den meisten eingehenden Stimmen** ein. Da der Datensatz anonymisiert ist, sind das nur numerische IDs; sie zeigen aber, *wo* im Knäuel die zentralen Akteure sitzen.
-- **Louvain-Farben** – schaltet die Community-Färbung ein oder aus, um die reine Struktur des Stress-Layouts zu sehen.
-- **Layout zurücksetzen** – stellt alle Knotenpositionen auf die offline optimierten Koordinaten zurück (nach explorativem Verschieben).
-- **Ansicht zurücksetzen** – stellt Zoom und Ausschnitt so ein, dass der ganze Graph wieder ins Bild passt.
-
-::: {.callout-note collapse="true" title="Warum verschiebt Ziehen das Layout nicht dauerhaft?"}
-Die Positionen wurden **offline per Stress-Majorization optimiert** — im Browser wird kein Layout neu berechnet. Wenn du einen Knoten ziehst, verschiebst du ihn nur **lokal zur Erkundung**. Mit **Layout zurücksetzen** kehrst du zur optimierten Anordnung zurück. Genau so unterscheidet sich die mittlere Stufe von 3a: dort „wächst" das Layout live; hier ist es ein **fertiges Optimierungsergebnis**.
-:::
-
-::: {.reveal-on-scroll}
-```{=html}
-<div class="schematic-grid">
-  <div class="schematic-card">
-    <h4>Pfaddistanz vs. Layout-Distanz</h4>
-    <svg viewBox="0 0 240 100" aria-hidden="true">
-      <line x1="30" y1="50" x2="90" y2="50" stroke="#2780e3" stroke-width="2"/>
-      <circle cx="30" cy="50" r="10" fill="#2780e3"/>
-      <circle cx="90" cy="50" r="10" fill="#2780e3"/>
-      <text x="60" y="42" text-anchor="middle" font-size="9" fill="#64748b">d=1</text>
-      <line x1="120" y1="50" x2="210" y2="50" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3"/>
-      <circle cx="120" cy="50" r="10" fill="#2780e3" opacity="0.5"/>
-      <circle cx="210" cy="50" r="10" fill="#2780e3" opacity="0.5"/>
-      <text x="165" y="42" text-anchor="middle" font-size="9" fill="#64748b">||p|| ≠ d</text>
-      <text x="165" y="72" text-anchor="middle" font-size="9" fill="#ff7f0e">Stress ↑</text>
-    </svg>
-    <p class="schematic-caption">Je größer die Abweichung zwischen Pfad- und Layout-Distanz, desto höher der Stress.</p>
-  </div>
-  <div class="schematic-card">
-    <h4>Majorization: iterativ verbessern</h4>
-    <svg viewBox="0 0 240 100" aria-hidden="true">
-      <circle cx="40" cy="50" r="12" fill="#2780e3" opacity="0.4"/>
-      <text x="40" y="54" text-anchor="middle" font-size="8" fill="#fff">Init</text>
-      <path d="M58 50 L82 50" stroke="#64748b" marker-end="url(#arr2)"/>
-      <circle cx="110" cy="50" r="12" fill="#2780e3" opacity="0.7"/>
-      <text x="110" y="54" text-anchor="middle" font-size="8" fill="#fff">↓L</text>
-      <path d="M128 50 L152 50" stroke="#64748b" marker-end="url(#arr2)"/>
-      <circle cx="180" cy="50" r="12" fill="#2780e3"/>
-      <text x="180" y="54" text-anchor="middle" font-size="8" fill="#fff">min</text>
-      <defs><marker id="arr2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#64748b"/></marker></defs>
-    </svg>
-    <p class="schematic-caption">Startposition → Untergrenze berechnen → Positionen aktualisieren, bis Stress minimal.</p>
-  </div>
-</div>
-```
-:::
-
-### Wie das Layout entsteht: Stress-Majorization offline
-
-Im Gegensatz zu kräftebasierten Layouts (Federn + Abstoßung wie in 3a) optimiert Stress-Majorization **Distanzen**: Für jedes Knotenpaar $(i,j)$ wird die euklidische Distanz $\|p_i - p_j\|$ der kürzesten Pfaddistanz $d_{i,j}$ angeglichen. Das Verfahren iteriert, bis der Stress $\mathcal{L}$ nicht mehr signifikant sinkt.
-
-Bei ~7.000 Knoten ist das offline auf der CPU in wenigen Minuten machbar — deutlich zu langsam für eine live Browser-Simulation, aber ideal für ein **vorberechnetes** Layout. Wir führen die Berechnung einmalig im Python-Skript aus und speichern die Koordinaten in JSON. Die Website lädt nur das Ergebnis.
-
-Gelernte Layout-Ansätze (Abschnitt 5) können dieselbe Stress-Idee nutzen — der Unterschied: dort lernt ein Netzwerk die Zuordnung, hier optimiert ein klassischer Algorithmus direkt.
-
-### Communities und Hubs: Louvain + In-Degree
-
-Farbe und Größe sind keine Deko, sondern zwei Analyse-Ebenen:
-
-- **Communities (Farbe)** kommen vom **Louvain-Algorithmus**. Er sucht eine Aufteilung in Gruppen mit möglichst hoher *Modularität* – also viele Kanten *innerhalb* der Gruppen und wenige *zwischen* ihnen. Hier entstehen 15 Communities. Das ist der „globale" Ordnungshinweis, der im Ego-Netz aus 3a noch nicht nötig war.
-- **In-Degree (Größe)** ist die Zahl der **eingehenden** Kanten – bei wiki-Vote also: Für wie viele Personen wurde abgestimmt? Große Knoten sind einflussreiche Hubs. (Bei gerichteten Netzen unterscheidet man In- und Out-Degree; fürs Layout behandeln wir die Kanten aber **ungerichtet**, um nicht über 100.000 Pfeilspitzen zeichnen zu müssen.)
-
-### Warum Canvas statt SVG?
-
-In 3a (kleines Netz) war **SVG** ideal: Jeder Knoten ist ein eigenes DOM-Element, das man stylen und anklicken kann. Bei ~7.000 Knoten und ~100.000 Kanten wären das aber über hunderttausend DOM-Elemente – der Browser würde beim Zoomen und Scrollen einbrechen.
-
-Deshalb zeichnen wir hier auf ein **`<canvas>`**: eine einzige Zeichenfläche, auf die pro Bild alles in einem Durchgang gemalt wird (Kanten gebündelt, Knoten nach Farbe gruppiert). Das skaliert auf zehntausende Elemente. Der Preis: Es gibt keine einzelnen DOM-Knoten mehr, also müssen Interaktionen wie „über welchem Knoten ist die Maus?" selbst berechnet werden – dafür nutzen wir einen **Quadtree** (eine räumliche Suchstruktur), der den nächstgelegenen Knoten in $O(\log n)$ findet, statt alle 7.000 durchzuprobieren.
+{{< include medium.qmd >}}
 
 ## 3c. Großer Datensatz (Vom Freundesnetz zum Follow-Graph)
 Beim Twitter-Netz wird aus einem lesbaren sozialen Bild schnell ein massives Strukturobjekt.
@@ -295,6 +115,10 @@ Wenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. W
 Das Rezeptbuch fasst **klassische** Entscheidungen zusammen. Im nächsten Abschnitt wechseln wir die Perspektive: Nicht *wie* zeichne ich, sondern *warum* ist die zugrunde liegende Struktur so schwer in die Ebene zu bringen — und was leisten GNNs dabei?
 
 ## 5. Warum Graphen schwer darstellbar sind — und was GNNs anders machen {#gnn-topology}
+
+```{=html}
+<div class="section-gnn">
+```
 
 ::: {.section-hero .reveal-on-scroll}
 Abschnitte 1–4 zeigen, **wie** man Graphen zeichnet und skaliert. Hier geht es um die tiefere Frage: Warum ist ein Netzwerk **kein Bild** — und wie übersetzen Graph Neural Networks (GNNs) irregularer Topologie in nutzbare Repräsentationen?
@@ -410,9 +234,14 @@ GNNs lösen nicht „magisch“ das Layout-Problem — sie lernen **Repräsentat
 </div>
 ```
 
-::: {.callout-warning title="Embeddings sind kein Beweis"}
-2D-Plots von Embeddings sind **explorativ**. Nähe im Plot bedeutet nicht automatisch Nähe im Graphen.
-:::
+```{=html}
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Embeddings sind kein Beweis</span><span class="acc-tag tag-konzept">Konzept</span></summary>
+<div class="acc-body">
+<p>2D-Plots von Embeddings sind <strong>explorativ</strong>. Nähe im Plot bedeutet nicht automatisch Nähe im Graphen.</p>
+</div>
+</details>
+```
 
 ### Permutationsinvarianz {#perm-invariance-heading}
 
@@ -466,9 +295,14 @@ Beide teilen eine Idee: **lokales Receptive Field** + **geteilte Gewichte**. Der
 </div>
 ```
 
-::: {.callout-note title="Didaktische Vereinfachung"}
-Echte GNNs können Kantenfeatures, Attention (GAT) oder Richtungen modellieren. Für den Einstieg reicht die Analogie: **Kernel = Nachbarschaft**, **Faltungsschritt = Message Passing**.
-:::
+```{=html}
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Didaktische Vereinfachung</span><span class="acc-tag tag-konzept">Konzept</span></summary>
+<div class="acc-body">
+<p>Echte GNNs können Kantenfeatures, Attention (GAT) oder Richtungen modellieren. Für den Einstieg reicht die Analogie: <strong>Kernel = Nachbarschaft</strong>, <strong>Faltungsschritt = Message Passing</strong>.</p>
+</div>
+</details>
+```
 
 ### Die Mathematik: Message Passing {#gnn-math}
 
@@ -525,13 +359,19 @@ Dual-Ansicht wie [GNN-101](https://github.com/Visual-Intelligence-UMN/GNN-101): 
 </div>
 ```
 
-### Was GNNs für Visualisierung bedeuten
-
-GNNs ersetzen nicht automatisch klassisches Layout — sie **repräsentieren** Knoten so, dass Graph-Struktur in den Feature-Vektoren steckt. Für Visualisierung heißt das:
-
-- **Embeddings** können mit PCA/UMAP in 2D projiziert werden (explorativ, nicht als Beweis).
-- **Layout-Training** kann dieselbe Stress-Idee wie in [3b](#stress-majorization) nutzen — dann lernt das Netz Koordinaten statt sie per Majorization zu optimieren.
-- Der Vorteil liegt oft in **downstream tasks** (Klassifikation, Link Prediction) und generalisierbaren Repräsentationen — nicht in „schneller als Canvas".
+```{=html}
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Was GNNs für Visualisierung bedeuten</span><span class="acc-tag tag-konzept">Konzept</span></summary>
+<div class="acc-body">
+<p>GNNs ersetzen nicht automatisch klassisches Layout — sie <strong>repräsentieren</strong> Knoten so, dass Graph-Struktur in den Feature-Vektoren steckt. Für Visualisierung heißt das:</p>
+<ul>
+<li><strong>Embeddings</strong> können mit PCA/UMAP in 2D projiziert werden (explorativ, nicht als Beweis).</li>
+<li><strong>Layout-Training</strong> kann dieselbe Stress-Idee wie in <a href="#stress-majorization">3b</a> nutzen — dann lernt das Netz Koordinaten statt sie per Majorization zu optimieren.</li>
+<li>Der Vorteil liegt oft in <strong>downstream tasks</strong> (Klassifikation, Link Prediction) und generalisierbaren Repräsentationen — nicht in „schneller als Canvas".</li>
+</ul>
+</div>
+</details>
+```
 
 ### Didaktik-Check: Hast du es verstanden? {#gnn-quiz}
 
@@ -591,6 +431,10 @@ GNNs ersetzen nicht automatisch klassisches Layout — sie **repräsentieren** K
     <p>Du hast <strong data-quiz-score>0 / 4</strong> Fragen richtig beantwortet.</p>
     <p style="font-size:0.88rem;color:#64748b;">Tipp: Tasten <kbd>1</kbd>–<kbd>3</kbd> wählen Antworten.</p>
   </div>
+</div>
+```
+
+```{=html}
 </div>
 ```
 

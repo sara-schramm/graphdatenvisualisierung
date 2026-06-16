@@ -2,6 +2,7 @@ project:
   type: website
   output-dir: _output
   resources:
+    - graph_medium/stress/social_graph.json
     - assets
 
 website:
@@ -14,4 +15,6 @@ website:
 format:
   html:
     theme: cosmo
-    css: styles.css
+    css:
+      - styles.css
+      - custom.css

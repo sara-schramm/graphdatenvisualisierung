@@ -141,7 +141,7 @@
     if (!root || root.dataset.fgInitialized === "true") return;
     root.dataset.fgInitialized = "true";
 
-    var src = root.dataset.src || "assets/data/social_graph.json";
+    var src = root.dataset.src || "graph_medium/stress/social_graph.json";
     var canvas = root.querySelector("canvas.fg-main") || root.querySelector("canvas");
     var minimapCanvas = root.querySelector(".fg-minimap canvas");
     var tooltip = root.querySelector(".fg-tooltip");
