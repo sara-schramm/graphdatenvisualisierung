@@ -1,208 +1,5 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Graphdatenvisualisierung",
-    "section": "",
-    "text": "Soziale Netzwerke bestehen aus Menschen und ihren Beziehungen. Aber wie zeigt man so etwas im Web so, dass man noch wirklich etwas erkennt?"
-  },
-  {
-    "objectID": "index.html#intro-warum-soziale-netzwerke-schwer-zu-zeichnen-sind",
-    "href": "index.html#intro-warum-soziale-netzwerke-schwer-zu-zeichnen-sind",
-    "title": "Graphdatenvisualisierung",
-    "section": "",
-    "text": "Soziale Netzwerke bestehen aus Menschen und ihren Beziehungen. Aber wie zeigt man so etwas im Web so, dass man noch wirklich etwas erkennt?"
-  },
-  {
-    "objectID": "index.html#problemstellung-wann-wird-ein-graph-unlesbar",
-    "href": "index.html#problemstellung-wann-wird-ein-graph-unlesbar",
-    "title": "Graphdatenvisualisierung",
-    "section": "2. Problemstellung (Wann wird ein Graph unlesbar?)",
-    "text": "2. Problemstellung (Wann wird ein Graph unlesbar?)\nEine Graphvisualisierung ist nicht automatisch gut, nur weil alle Knoten und Kanten sichtbar sind. Mit wachsender Größe ändern sich Lesbarkeit, Interaktion und die geeignete Web-Technologie grundlegend.\n[hier Abbildung von Silvia hin]"
-  },
-  {
-    "objectID": "index.html#a.-kleiner-datensatz",
-    "href": "index.html#a.-kleiner-datensatz",
-    "title": "Graphdatenvisualisierung",
-    "section": "3a. Kleiner Datensatz",
-    "text": "3a. Kleiner Datensatz"
-  },
-  {
-    "objectID": "index.html#b.-mittlerer-datensatz-ein-ganzes-netzwerk-statt-eines-freundeskreises",
-    "href": "index.html#b.-mittlerer-datensatz-ein-ganzes-netzwerk-statt-eines-freundeskreises",
-    "title": "Graphdatenvisualisierung",
-    "section": "3b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)",
-    "text": "3b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)\nIm kleinen Beispiel stand eine Person im Mittelpunkt: Max und sein Ego-Netz. Jetzt drehen wir die Perspektive um und betrachten ein vollständiges soziales Netzwerk ohne Mittelpunkt – das Wikipedia-Abstimmungsnetzwerk wiki-Vote mit rund 7.000 Nutzer:innen und über 100.000 Beziehungen. Hier gibt es kein Zentrum, um das wir die Knoten anordnen könnten.\n\nWarum ein globales Layout statt eines Ego-Layouts?\nDas egozentrische Layout aus 3a funktioniert nur, solange es einen klaren Mittelpunkt gibt. Bei einem Netzwerk dieser Größe gibt es viele gleichberechtigte Knoten, dichte Bereiche und sich überlappende Communities. Deshalb verwenden wir ein globales, kräftebasiertes Layout (ForceAtlas2): Kanten ziehen verbundene Knoten zusammen, alle Knoten stoßen sich gegenseitig ab. So entstehen Cluster aus der Struktur heraus, ohne dass wir einen Mittelpunkt vorgeben.\n\n\nWas ist das Problem?\nGenau hier zeigt sich die Grenze: Bei mehreren tausend Knoten und über hunderttausend Kanten wird die Darstellung schnell zum „Hairball”. Einzelne Kanten lassen sich kaum noch verfolgen, Labels überlagern sich, und ein SVG-/DOM-basiertes Layout würde unter der Knotenzahl einbrechen. Lesbarkeit entsteht nicht mehr durch jede Einzelkante, sondern erst durch Reduktion: Wir färben nach Community (Louvain) und skalieren die Knotengröße nach eingehenden Stimmen (In-Degree), damit zentrale Hubs sichtbar bleiben.\n\n\nLayout + GraphAlg\nTechnisch motiviert diese Größenordnung den Wechsel zu Canvas: Statt tausender DOM-Knoten zeichnen wir alles in ein einziges &lt;canvas&gt;-Element und rendern nur bei Interaktion neu. Das Layout wird einmalig offline mit ForceAtlas2 vorberechnet, sodass die Seite sofort lädt; im Browser sorgt eine D3-Force-Simulation für Interaktivität (Ziehen, Nachbarschaft hervorheben, neu anordnen). Probiere es aus – fahre über Knoten, zoome hinein und beobachte, wie dicht das Netz wirklich ist:\n\n  \n    \n      Abstoßung\n      \n    \n    \n      Kantenlänge\n      \n    \n    \n      Hub-Labels\n      \n    \n    Neu anordnen\n    Ansicht zurücksetzen\n  \n  \n    \n    \n  \n  Lade Graphdaten ...\n\n\n\n\n\n\nSo liest du den Graphen\n\n\n\n\n\n\nTipSchnell-Legende\n\n\n\n\nFarbe = Community. Jede Farbe ist eine automatisch gefundene Gruppe (siehe Louvain weiter unten) – Knoten, die untereinander dichter verbunden sind als mit dem Rest.\nKnotengröße = eingehende Stimmen (In-Degree). Große Punkte sind Nutzer:innen, für die besonders viele andere abgestimmt haben – die „Hubs” des Netzwerks.\nMaus über einen Knoten: Der Knoten und seine direkten Nachbarn bleiben farbig, alles andere wird ausgegraut; die roten Linien sind seine Kanten. Das Tooltip zeigt ID, Community, Stimmen und Nachbarzahl.\nMausrad = Zoom, Ziehen = Verschieben. Einzelne Knoten lassen sich mit gedrückter Maustaste festhalten und umherschieben.\n\n\n\n\n\nDie Bedienelemente erklärt\n\nAbstoßung – wie stark sich alle Knoten gegenseitig wegdrücken (die „Many-Body”-Kraft). Höhere Werte spreizen das Netz weiter auseinander.\nKantenlänge – die Ruhelänge der „Federn” entlang der Kanten. Kürzere Kanten ziehen verbundene Knoten enger zusammen.\nHub-Labels – blendet die Nummern der 12 Knoten mit den meisten eingehenden Stimmen ein. Da der Datensatz anonymisiert ist, sind das nur numerische IDs; sie zeigen aber, wo im Knäuel die zentralen Akteure sitzen.\nNeu anordnen – „heizt” die laufende Simulation neu auf (siehe Kasten).\nAnsicht zurücksetzen – stellt Zoom und Ausschnitt so ein, dass der ganze Graph wieder ins Bild passt.\n\n\n\n\n\n\n\nNoteWarum bewegt „Neu anordnen“ so wenig?\n\n\n\n\n\nDas ist Absicht – und selbst schon lehrreich. Zwei Effekte wirken zusammen:\n\nDer Graph startet bereits im Gleichgewicht. Die Positionen sind nicht im Browser berechnet, sondern offline mit ForceAtlas2 vorab optimiert. Da ForceAtlas2 fast dieselbe Physik nutzt wie die Browser-Simulation, sitzt das Layout schon in einem Energie-Minimum. „Neu anordnen” würfelt die Positionen nicht neu, sondern erwärmt nur die bestehende Anordnung – es gibt also kaum etwas zu verbessern.\nDie Kräfte sind bewusst sanft eingestellt (schwache, in der Reichweite begrenzte Abstoßung, schwache Kanten), damit ein Netz mit über 100.000 Kanten flüssig bleibt und nicht „explodiert”. Der dichte Kern verhält sich dadurch wie ein starrer Körper. Die einzige Bewegung, die quasi keine Energie kostet, ist eine globale Drehung/Verschiebung des gesamten Klumpens – genau die leichte Rotation, die man sieht, bevor alles wieder einfriert.\n\nWer ein echtes Neu-Berechnen sehen möchte, müsste die Startpositionen zufällig setzen und die Kräfte stärker wählen – dann „wächst” das Layout sichtbar aus dem Chaos zusammen.\n\n\n\n\n\nWie das Layout entsteht: ForceAtlas2 + Barnes-Hut\nEin kräftebasiertes („force-directed”) Layout behandelt den Graphen wie ein physikalisches System: Kanten sind Federn, die verbundene Knoten anziehen, und alle Knoten stoßen sich gegenseitig ab (wie gleichnamige Ladungen). Lässt man das System „ausschwingen”, wandern dicht verbundene Gruppen zusammen und schwach verbundene auseinander – Struktur wird sichtbar, ohne dass wir sie vorgeben.\nDer Knackpunkt ist die Abstoßung: Eigentlich müsste man jedes Knotenpaar vergleichen – bei 7.000 Knoten sind das rund 25 Millionen Paare pro Schritt (Aufwand \\(O(n^2)\\)). ForceAtlas2 nutzt deshalb die Barnes-Hut-Näherung: Weit entfernte Knotengruppen werden zu einem Schwerpunkt zusammengefasst und nur einmal verrechnet. Das senkt den Aufwand auf \\(O(n \\log n)\\) und macht große Graphen überhaupt erst berechenbar.\nWeil diese Berechnung trotzdem einige Sekunden dauert, führen wir sie einmalig offline im Python-Skript aus und speichern die fertigen Koordinaten in einer JSON-Datei. Die Website lädt nur das Ergebnis und ist dadurch sofort da.\n\n\nCommunities und Hubs: Louvain + In-Degree\nFarbe und Größe sind keine Deko, sondern zwei Analyse-Ebenen:\n\nCommunities (Farbe) kommen vom Louvain-Algorithmus. Er sucht eine Aufteilung in Gruppen mit möglichst hoher Modularität – also viele Kanten innerhalb der Gruppen und wenige zwischen ihnen. Hier entstehen 15 Communities. Das ist der „globale” Ordnungshinweis, der im Ego-Netz aus 3a noch nicht nötig war.\nIn-Degree (Größe) ist die Zahl der eingehenden Kanten – bei wiki-Vote also: Für wie viele Personen wurde abgestimmt? Große Knoten sind einflussreiche Hubs. (Bei gerichteten Netzen unterscheidet man In- und Out-Degree; fürs Layout behandeln wir die Kanten aber ungerichtet, um nicht über 100.000 Pfeilspitzen zeichnen zu müssen.)\n\n\n\nWarum Canvas statt SVG?\nIn 3a (kleines Netz) war SVG ideal: Jeder Knoten ist ein eigenes DOM-Element, das man stylen und anklicken kann. Bei ~7.000 Knoten und ~100.000 Kanten wären das aber über hunderttausend DOM-Elemente – der Browser würde beim Zoomen und Scrollen einbrechen.\nDeshalb zeichnen wir hier auf ein &lt;canvas&gt;: eine einzige Zeichenfläche, auf die pro Bild alles in einem Durchgang gemalt wird (Kanten gebündelt, Knoten nach Farbe gruppiert). Das skaliert auf zehntausende Elemente. Der Preis: Es gibt keine einzelnen DOM-Knoten mehr, also müssen Interaktionen wie „über welchem Knoten ist die Maus?” selbst berechnet werden – dafür nutzen wir einen Quadtree (eine räumliche Suchstruktur), der den nächstgelegenen Knoten in \\(O(\\log n)\\) findet, statt alle 7.000 durchzuprobieren.\n\n\nDie Physik dahinter: d3-force und Velocity-Verlet\nDie Interaktivität im Browser liefert d3-force. Jeder Knoten hat eine Position \\((x, y)\\) und eine Geschwindigkeit \\((v_x, v_y)\\). In jedem Simulationsschritt passiert:\n\nDie Kräfte (Federn, Abstoßung, Zentrierung) verändern die Geschwindigkeiten.\nEine Reibung (velocityDecay) bremst die Geschwindigkeiten, damit nichts ewig nachschwingt.\nDie Positionen werden um die Geschwindigkeit weitergeschoben.\n\nDieses Integrationsverfahren heißt Velocity-Verlet – dasselbe Schema, mit dem auch Teilchensimulationen in der Physik rechnen; es ist stabil und günstig. Gesteuert wird alles über eine „Temperatur” alpha, die pro Schritt abklingt (alphaDecay) und die Kräfte mitskaliert: Das System startet „heiß” und beweglich und „friert” allmählich ein – im Kern ein Simulated Annealing. Genau deshalb kommt der Graph nach „Neu anordnen” nach kurzer Zeit von selbst zur Ruhe."
-  },
-  {
-    "objectID": "index.html#c.-großer-datensatz-vom-freundesnetz-zum-follow-graph",
-    "href": "index.html#c.-großer-datensatz-vom-freundesnetz-zum-follow-graph",
-    "title": "Graphdatenvisualisierung",
-    "section": "3c. Großer Datensatz (Vom Freundesnetz zum Follow-Graph)",
-    "text": "3c. Großer Datensatz (Vom Freundesnetz zum Follow-Graph)\nBeim Twitter-Netz wird aus einem lesbaren sozialen Bild schnell ein massives Strukturobjekt.\n\nWarum gut?\nDieses Netzwerk zeigt sehr deutlich, wie sich Maßstab und Bedeutung gleichzeitig verändern. Ihr könnt hier nicht nur Größe thematisieren, sondern auch den Unterschied zwischen Freundschaft und Follow-Beziehung.\n\n\nWas ist das Problem?\nEinzelne Knoten sind kaum noch direkt lesbar, Pfeile oder Richtungen lassen sich nicht mehr für jede Kante sinnvoll zeigen, und klassische Browser-Darstellung kommt an Performance-Grenzen. Die Herausforderung ist jetzt nicht mehr nur Zeichnen, sondern sinnvolle Reduktion.\n\n\nLayout + GraphAlg\nHier passt die Argumentation für WebGL/GPU sehr gut. Inhaltlich könnt ihr zusätzlich auf In-Degree/Out-Degree, Hubs, Communities, Filterung und Abstraktion eingehen, weil bei dieser Größenordnung nicht mehr jede Einzelkante der eigentliche Erkenntnisträger ist.\n[Hier folgt weiterer Inhalt]"
-  },
-  {
-    "objectID": "index.html#gnn-graph-neural-network",
-    "href": "index.html#gnn-graph-neural-network",
-    "title": "Graphdatenvisualisierung",
-    "section": "4. GNN (Graph Neural Network)",
-    "text": "4. GNN (Graph Neural Network)\n[Hier folgt weiterer Inhalt]"
-  },
-  {
-    "objectID": "index.html#how-to-handle-rezeptbuch",
-    "href": "index.html#how-to-handle-rezeptbuch",
-    "title": "Graphdatenvisualisierung",
-    "section": "5. How to handle (Rezeptbuch)",
-    "text": "5. How to handle (Rezeptbuch)\nWenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral."
-  },
-  {
-    "objectID": "index.html#fazit-welche-visualisierung-ist-wann-sinnvoll",
-    "href": "index.html#fazit-welche-visualisierung-ist-wann-sinnvoll",
-    "title": "Graphdatenvisualisierung",
-    "section": "6. Fazit (Welche Visualisierung ist wann sinnvoll?)",
-    "text": "6. Fazit (Welche Visualisierung ist wann sinnvoll?)\nEs gibt nicht die eine beste Graphvisualisierung. Was sinnvoll ist, hängt von Größe, Dichte, Richtung der Kanten, gewünschter Interaktion und der Rendering-Technologie im Web ab.\n[Hier folgt weiterer Inhalt]"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#lernziele",
-    "href": "presentation/presentation-slides.html#lernziele",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Lernziele",
-    "text": "Lernziele\nNach dieser Präsentation könnt ihr …\n\nerklären, warum große Graphen ohne Layout-Algorithmen unlesbar werden\ndas Kraftmodell (Federn + Abstoßung) und die Barnes-Hut-Näherung skizzieren\nForceAtlas2, Louvain und d3-force in eure Pipeline einordnen\nbegründen, wann SVG, Canvas oder WebGL sinnvoll sind"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#agenda-25-min",
-    "href": "presentation/presentation-slides.html#agenda-25-min",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Agenda (25 Min)",
-    "text": "Agenda (25 Min)\n\n\n\nBlock\nInhalt\n\n\n\n\nProblem & Motivation\nHairball, wiki-Vote\n\n\nBrücke\nGestalt → Layout (1 Folie)\n\n\nKern\nKraftmodelle, Barnes-Hut, FA2, Louvain\n\n\nLive-Demo\nInteraktive Website (Abschnitt 3b)\n\n\nAusblick\nSkalierung, Grenzen, Quiz"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#wann-wird-ein-graph-unlesbar",
-    "href": "presentation/presentation-slides.html#wann-wird-ein-graph-unlesbar",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Wann wird ein Graph unlesbar?",
-    "text": "Wann wird ein Graph unlesbar?\n\n\n\nHairball vs. strukturiertes Layout"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#use-case-soziale-netzwerke",
-    "href": "presentation/presentation-slides.html#use-case-soziale-netzwerke",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Use-Case: Soziale Netzwerke",
-    "text": "Use-Case: Soziale Netzwerke\n\nKnoten = Akteure, Kanten = Beziehungen\nZiel: Struktur sichtbar machen - Communities, Hubs, Brücken\nBeispiel: wiki-Vote (~7.000 Nutzer, ~100.000 Kanten, SNAP)\n\n\n\n\nwiki-Vote Sample"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#entwicklungsgeschichte-kurzüberblick",
-    "href": "presentation/presentation-slides.html#entwicklungsgeschichte-kurzüberblick",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Entwicklungsgeschichte (Kurzüberblick)",
-    "text": "Entwicklungsgeschichte (Kurzüberblick)\n\n\n\nJahr\nMeilenstein\n\n\n\n\n1984\nEades - Feder-Heuristik\n\n\n1991\nFruchterman-Reingold\n\n\n1986\nBarnes-Hut\n\n\n2008\nLouvain\n\n\n2014\nForceAtlas2\n\n\nheute\nd3-force, Canvas, WebGL"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#gestalt-layout",
-    "href": "presentation/presentation-slides.html#gestalt-layout",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Gestalt → Layout",
-    "text": "Gestalt → Layout\nGesetz der Nähe (Vorlesung): Nahe Elemente = zusammengehörig.\nKraft-Layout: Algorithmen konstruieren diese Nähe durch Positionierung."
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#graph-als-physikalisches-system",
-    "href": "presentation/presentation-slides.html#graph-als-physikalisches-system",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Graph als physikalisches System",
-    "text": "Graph als physikalisches System\n\n\n\nKraftmodell\n\n\n\nAttraktion entlang Kanten (Federn)\nAbstoßung zwischen allen Knoten\nLayout = Kräftegleichgewicht"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#feder--und-abstoßungskräfte",
-    "href": "presentation/presentation-slides.html#feder--und-abstoßungskräfte",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Feder- und Abstoßungskräfte",
-    "text": "Feder- und Abstoßungskräfte\n\\[F_{ij}^{\\mathrm{attr}} = k \\cdot (d_{ij} - l) \\cdot \\vec{u}_{ij}\\]\n\\[F_{ij}^{\\mathrm{rep}} = \\frac{k_{\\mathrm{rep}}}{d_{ij}^{2}} \\cdot \\frac{\\mathbf{x}_i - \\mathbf{x}_j}{d_{ij}}\\]"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#energie-formulierung",
-    "href": "presentation/presentation-slides.html#energie-formulierung",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Energie-Formulierung",
-    "text": "Energie-Formulierung\n\\[E = \\sum_{(i,j)\\in E} \\frac{k}{2}(d_{ij} - l)^2 + \\sum_{i&lt;j} \\frac{k_{\\mathrm{rep}}}{d_{ij}}\\]\nReferenz: Eades 1984, Fruchterman-Reingold 1991"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#fr-vs.-forceatlas2",
-    "href": "presentation/presentation-slides.html#fr-vs.-forceatlas2",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "FR vs. ForceAtlas2",
-    "text": "FR vs. ForceAtlas2\n\n\n\nAspekt\nFR\nFA2\n\n\n\n\nAbstoßung\n\\(O(n^2)\\)\nBarnes-Hut\n\n\nIntegration\nEuler + \\(T\\)\nVerlet + \\(\\alpha\\)"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#barnes-hut",
-    "href": "presentation/presentation-slides.html#barnes-hut",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Barnes-Hut",
-    "text": "Barnes-Hut\n\n\n\nBarnes-Hut\n\n\n\\(\\Theta\\)-Kriterium: Zelle approximieren wenn \\(w/d &lt; \\Theta\\)"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#pipeline",
-    "href": "presentation/presentation-slides.html#pipeline",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Pipeline",
-    "text": "Pipeline\n\n\n\nPipeline\n\n\npreprocess_graph.py → FA2 + Louvain → JSON → d3-force Canvas"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#parameter-effekte",
-    "href": "presentation/presentation-slides.html#parameter-effekte",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Parameter-Effekte",
-    "text": "Parameter-Effekte\n\n\n\nSmall multiples"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#velocity-verlet-alpha-decay",
-    "href": "presentation/presentation-slides.html#velocity-verlet-alpha-decay",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Velocity-Verlet & alpha-Decay",
-    "text": "Velocity-Verlet & alpha-Decay\n\n\n\nEnergy decay"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#louvain-hubs",
-    "href": "presentation/presentation-slides.html#louvain-hubs",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Louvain & Hubs",
-    "text": "Louvain & Hubs\n\n\n\nLouvain\n\n\n\\[Q = \\frac{1}{2m} \\sum_{ij} \\left[ A_{ij} - \\frac{k_i k_j}{2m} \\right] \\delta(c_i, c_j)\\]"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#svg-canvas-webgl",
-    "href": "presentation/presentation-slides.html#svg-canvas-webgl",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "SVG → Canvas → WebGL",
-    "text": "SVG → Canvas → WebGL\n\n\n\nTiers"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#website-abschnitt-3b",
-    "href": "presentation/presentation-slides.html#website-abschnitt-3b",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Website Abschnitt 3b",
-    "text": "Website Abschnitt 3b\n\n\n\nDemo"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#zusammenfassung",
-    "href": "presentation/presentation-slides.html#zusammenfassung",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Zusammenfassung",
-    "text": "Zusammenfassung\nPhysik simulieren · N-Körper approximieren · Communities färben · passend rendern"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#quiz",
-    "href": "presentation/presentation-slides.html#quiz",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Quiz",
-    "text": "Quiz\n\nWarum Barnes-Hut?\nWas bedeutet hohes \\(Q\\)?\nWarum Canvas statt SVG?\nWas steuert \\(\\alpha\\)?"
-  },
-  {
-    "objectID": "presentation/presentation-slides.html#arbeitsaufteilung",
-    "href": "presentation/presentation-slides.html#arbeitsaufteilung",
-    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
-    "section": "Arbeitsaufteilung",
-    "text": "Arbeitsaufteilung\nSara | … |\nSilvia | … |\nAdam | … |"
-  },
-  {
     "objectID": "presentation/presentation.html#nodale-graphdatenvisualisierung",
     "href": "presentation/presentation.html#nodale-graphdatenvisualisierung",
     "title": "Nodale Graphdatenvisualisierung",
@@ -439,5 +236,208 @@
     "title": "Nodale Graphdatenvisualisierung",
     "section": "Fragen?",
     "text": "Fragen?\nGraphdatenvisualisierung · SNAP wiki-Vote\n\nFolie 34a · Peer-Review: „WebGPU vs. Canvas?” / „Wann GNN statt FA2?”"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#lernziele",
+    "href": "presentation/presentation-slides.html#lernziele",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Lernziele",
+    "text": "Lernziele\nNach dieser Präsentation könnt ihr …\n\nerklären, warum große Graphen ohne Layout-Algorithmen unlesbar werden\ndas Kraftmodell (Federn + Abstoßung) und die Barnes-Hut-Näherung skizzieren\nForceAtlas2, Louvain und d3-force in eure Pipeline einordnen\nbegründen, wann SVG, Canvas oder WebGL sinnvoll sind"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#agenda-25-min",
+    "href": "presentation/presentation-slides.html#agenda-25-min",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Agenda (25 Min)",
+    "text": "Agenda (25 Min)\n\n\n\nBlock\nInhalt\n\n\n\n\nProblem & Motivation\nHairball, wiki-Vote\n\n\nBrücke\nGestalt → Layout (1 Folie)\n\n\nKern\nKraftmodelle, Barnes-Hut, FA2, Louvain\n\n\nLive-Demo\nInteraktive Website (Abschnitt 3b)\n\n\nAusblick\nSkalierung, Grenzen, Quiz"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#wann-wird-ein-graph-unlesbar",
+    "href": "presentation/presentation-slides.html#wann-wird-ein-graph-unlesbar",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Wann wird ein Graph unlesbar?",
+    "text": "Wann wird ein Graph unlesbar?\n\n\n\nHairball vs. strukturiertes Layout"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#use-case-soziale-netzwerke",
+    "href": "presentation/presentation-slides.html#use-case-soziale-netzwerke",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Use-Case: Soziale Netzwerke",
+    "text": "Use-Case: Soziale Netzwerke\n\nKnoten = Akteure, Kanten = Beziehungen\nZiel: Struktur sichtbar machen - Communities, Hubs, Brücken\nBeispiel: wiki-Vote (~7.000 Nutzer, ~100.000 Kanten, SNAP)\n\n\n\n\nwiki-Vote Sample"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#entwicklungsgeschichte-kurzüberblick",
+    "href": "presentation/presentation-slides.html#entwicklungsgeschichte-kurzüberblick",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Entwicklungsgeschichte (Kurzüberblick)",
+    "text": "Entwicklungsgeschichte (Kurzüberblick)\n\n\n\nJahr\nMeilenstein\n\n\n\n\n1984\nEades - Feder-Heuristik\n\n\n1991\nFruchterman-Reingold\n\n\n1986\nBarnes-Hut\n\n\n2008\nLouvain\n\n\n2014\nForceAtlas2\n\n\nheute\nd3-force, Canvas, WebGL"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#gestalt-layout",
+    "href": "presentation/presentation-slides.html#gestalt-layout",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Gestalt → Layout",
+    "text": "Gestalt → Layout\nGesetz der Nähe (Vorlesung): Nahe Elemente = zusammengehörig.\nKraft-Layout: Algorithmen konstruieren diese Nähe durch Positionierung."
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#graph-als-physikalisches-system",
+    "href": "presentation/presentation-slides.html#graph-als-physikalisches-system",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Graph als physikalisches System",
+    "text": "Graph als physikalisches System\n\n\n\nKraftmodell\n\n\n\nAttraktion entlang Kanten (Federn)\nAbstoßung zwischen allen Knoten\nLayout = Kräftegleichgewicht"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#feder--und-abstoßungskräfte",
+    "href": "presentation/presentation-slides.html#feder--und-abstoßungskräfte",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Feder- und Abstoßungskräfte",
+    "text": "Feder- und Abstoßungskräfte\n\\[F_{ij}^{\\mathrm{attr}} = k \\cdot (d_{ij} - l) \\cdot \\vec{u}_{ij}\\]\n\\[F_{ij}^{\\mathrm{rep}} = \\frac{k_{\\mathrm{rep}}}{d_{ij}^{2}} \\cdot \\frac{\\mathbf{x}_i - \\mathbf{x}_j}{d_{ij}}\\]"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#energie-formulierung",
+    "href": "presentation/presentation-slides.html#energie-formulierung",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Energie-Formulierung",
+    "text": "Energie-Formulierung\n\\[E = \\sum_{(i,j)\\in E} \\frac{k}{2}(d_{ij} - l)^2 + \\sum_{i&lt;j} \\frac{k_{\\mathrm{rep}}}{d_{ij}}\\]\nReferenz: Eades 1984, Fruchterman-Reingold 1991"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#fr-vs.-forceatlas2",
+    "href": "presentation/presentation-slides.html#fr-vs.-forceatlas2",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "FR vs. ForceAtlas2",
+    "text": "FR vs. ForceAtlas2\n\n\n\nAspekt\nFR\nFA2\n\n\n\n\nAbstoßung\n\\(O(n^2)\\)\nBarnes-Hut\n\n\nIntegration\nEuler + \\(T\\)\nVerlet + \\(\\alpha\\)"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#barnes-hut",
+    "href": "presentation/presentation-slides.html#barnes-hut",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Barnes-Hut",
+    "text": "Barnes-Hut\n\n\n\nBarnes-Hut\n\n\n\\(\\Theta\\)-Kriterium: Zelle approximieren wenn \\(w/d &lt; \\Theta\\)"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#pipeline",
+    "href": "presentation/presentation-slides.html#pipeline",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Pipeline",
+    "text": "Pipeline\n\n\n\nPipeline\n\n\npreprocess_graph.py → FA2 + Louvain → JSON → d3-force Canvas"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#parameter-effekte",
+    "href": "presentation/presentation-slides.html#parameter-effekte",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Parameter-Effekte",
+    "text": "Parameter-Effekte\n\n\n\nSmall multiples"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#velocity-verlet-alpha-decay",
+    "href": "presentation/presentation-slides.html#velocity-verlet-alpha-decay",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Velocity-Verlet & alpha-Decay",
+    "text": "Velocity-Verlet & alpha-Decay\n\n\n\nEnergy decay"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#louvain-hubs",
+    "href": "presentation/presentation-slides.html#louvain-hubs",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Louvain & Hubs",
+    "text": "Louvain & Hubs\n\n\n\nLouvain\n\n\n\\[Q = \\frac{1}{2m} \\sum_{ij} \\left[ A_{ij} - \\frac{k_i k_j}{2m} \\right] \\delta(c_i, c_j)\\]"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#svg-canvas-webgl",
+    "href": "presentation/presentation-slides.html#svg-canvas-webgl",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "SVG → Canvas → WebGL",
+    "text": "SVG → Canvas → WebGL\n\n\n\nTiers"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#website-abschnitt-3b",
+    "href": "presentation/presentation-slides.html#website-abschnitt-3b",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Website Abschnitt 3b",
+    "text": "Website Abschnitt 3b\n\n\n\nDemo"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#zusammenfassung",
+    "href": "presentation/presentation-slides.html#zusammenfassung",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Zusammenfassung",
+    "text": "Zusammenfassung\nPhysik simulieren · N-Körper approximieren · Communities färben · passend rendern"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#quiz",
+    "href": "presentation/presentation-slides.html#quiz",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Quiz",
+    "text": "Quiz\n\nWarum Barnes-Hut?\nWas bedeutet hohes \\(Q\\)?\nWarum Canvas statt SVG?\nWas steuert \\(\\alpha\\)?"
+  },
+  {
+    "objectID": "presentation/presentation-slides.html#arbeitsaufteilung",
+    "href": "presentation/presentation-slides.html#arbeitsaufteilung",
+    "title": "DEPRECATED - superseded by presentation.qmd (v2)",
+    "section": "Arbeitsaufteilung",
+    "text": "Arbeitsaufteilung\nSara | … |\nSilvia | … |\nAdam | … |"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Graphdatenvisualisierung",
+    "section": "",
+    "text": "Soziale Netzwerke bestehen aus Menschen und ihren Beziehungen. Aber wie zeigt man so etwas im Web so, dass man noch wirklich etwas erkennt?"
+  },
+  {
+    "objectID": "index.html#intro-warum-soziale-netzwerke-schwer-zu-zeichnen-sind",
+    "href": "index.html#intro-warum-soziale-netzwerke-schwer-zu-zeichnen-sind",
+    "title": "Graphdatenvisualisierung",
+    "section": "",
+    "text": "Soziale Netzwerke bestehen aus Menschen und ihren Beziehungen. Aber wie zeigt man so etwas im Web so, dass man noch wirklich etwas erkennt?"
+  },
+  {
+    "objectID": "index.html#problemstellung-wann-wird-ein-graph-unlesbar",
+    "href": "index.html#problemstellung-wann-wird-ein-graph-unlesbar",
+    "title": "Graphdatenvisualisierung",
+    "section": "2. Problemstellung (Wann wird ein Graph unlesbar?)",
+    "text": "2. Problemstellung (Wann wird ein Graph unlesbar?)\nEine Graphvisualisierung ist nicht automatisch gut, nur weil alle Knoten und Kanten sichtbar sind. Mit wachsender Größe ändern sich Lesbarkeit, Interaktion und die geeignete Web-Technologie grundlegend.\n[hier Abbildung von Silvia hin]"
+  },
+  {
+    "objectID": "index.html#a.-kleiner-datensatz",
+    "href": "index.html#a.-kleiner-datensatz",
+    "title": "Graphdatenvisualisierung",
+    "section": "3a. Kleiner Datensatz",
+    "text": "3a. Kleiner Datensatz"
+  },
+  {
+    "objectID": "index.html#b.-mittlerer-datensatz-ein-ganzes-netzwerk-statt-eines-freundeskreises",
+    "href": "index.html#b.-mittlerer-datensatz-ein-ganzes-netzwerk-statt-eines-freundeskreises",
+    "title": "Graphdatenvisualisierung",
+    "section": "3b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)",
+    "text": "3b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)\nIm kleinen Beispiel stand eine Person im Mittelpunkt: Max und sein Ego-Netz. Jetzt drehen wir die Perspektive um und betrachten ein vollständiges soziales Netzwerk ohne Mittelpunkt – das Wikipedia-Abstimmungsnetzwerk wiki-Vote mit rund 7.000 Nutzer:innen und über 100.000 Beziehungen. Hier gibt es kein Zentrum, um das wir die Knoten anordnen könnten.\n\nWarum ein globales Layout statt eines Ego-Layouts?\nDas egozentrische Layout aus 3a funktioniert nur, solange es einen klaren Mittelpunkt gibt. Bei einem Netzwerk dieser Größe gibt es viele gleichberechtigte Knoten, dichte Bereiche und sich überlappende Communities. Deshalb verwenden wir ein globales, kräftebasiertes Layout (ForceAtlas2): Kanten ziehen verbundene Knoten zusammen, alle Knoten stoßen sich gegenseitig ab. So entstehen Cluster aus der Struktur heraus, ohne dass wir einen Mittelpunkt vorgeben.\n\n\nWas ist das Problem?\nGenau hier zeigt sich die Grenze: Bei mehreren tausend Knoten und über hunderttausend Kanten wird die Darstellung schnell zum „Hairball”. Einzelne Kanten lassen sich kaum noch verfolgen, Labels überlagern sich, und ein SVG-/DOM-basiertes Layout würde unter der Knotenzahl einbrechen. Lesbarkeit entsteht nicht mehr durch jede Einzelkante, sondern erst durch Reduktion: Wir färben nach Community (Louvain) und skalieren die Knotengröße nach eingehenden Stimmen (In-Degree), damit zentrale Hubs sichtbar bleiben.\n\n\nLayout + GraphAlg\nTechnisch motiviert diese Größenordnung den Wechsel zu Canvas: Statt tausender DOM-Knoten zeichnen wir alles in ein einziges &lt;canvas&gt;-Element und rendern nur bei Interaktion neu. Das Layout wird einmalig offline mit ForceAtlas2 vorberechnet, sodass die Seite sofort lädt; im Browser sorgt eine D3-Force-Simulation für Interaktivität (Ziehen, Nachbarschaft hervorheben, neu anordnen). Probiere es aus – fahre über Knoten, zoome hinein und beobachte, wie dicht das Netz wirklich ist:\n\n  \n    \n      Abstoßung\n      \n    \n    \n      Kantenlänge\n      \n    \n    \n      Hub-Labels\n      \n    \n    Neu anordnen\n    Ansicht zurücksetzen\n  \n  \n    \n    \n  \n  Lade Graphdaten ...\n\n\n\n\n\n\nSo liest du den Graphen\n\n\n\n\n\n\nTipSchnell-Legende\n\n\n\n\nFarbe = Community. Jede Farbe ist eine automatisch gefundene Gruppe (siehe Louvain weiter unten) – Knoten, die untereinander dichter verbunden sind als mit dem Rest.\nKnotengröße = eingehende Stimmen (In-Degree). Große Punkte sind Nutzer:innen, für die besonders viele andere abgestimmt haben – die „Hubs” des Netzwerks.\nMaus über einen Knoten: Der Knoten und seine direkten Nachbarn bleiben farbig, alles andere wird ausgegraut; die roten Linien sind seine Kanten. Das Tooltip zeigt ID, Community, Stimmen und Nachbarzahl.\nMausrad = Zoom, Ziehen = Verschieben. Einzelne Knoten lassen sich mit gedrückter Maustaste festhalten und umherschieben.\n\n\n\n\n\nDie Bedienelemente erklärt\n\nAbstoßung – wie stark sich alle Knoten gegenseitig wegdrücken (die „Many-Body”-Kraft). Höhere Werte spreizen das Netz weiter auseinander.\nKantenlänge – die Ruhelänge der „Federn” entlang der Kanten. Kürzere Kanten ziehen verbundene Knoten enger zusammen.\nHub-Labels – blendet die Nummern der 12 Knoten mit den meisten eingehenden Stimmen ein. Da der Datensatz anonymisiert ist, sind das nur numerische IDs; sie zeigen aber, wo im Knäuel die zentralen Akteure sitzen.\nNeu anordnen – „heizt” die laufende Simulation neu auf (siehe Kasten).\nAnsicht zurücksetzen – stellt Zoom und Ausschnitt so ein, dass der ganze Graph wieder ins Bild passt.\n\n\n\n\n\n\n\nNoteWarum bewegt „Neu anordnen“ so wenig?\n\n\n\n\n\nDas ist Absicht – und selbst schon lehrreich. Zwei Effekte wirken zusammen:\n\nDer Graph startet bereits im Gleichgewicht. Die Positionen sind nicht im Browser berechnet, sondern offline mit ForceAtlas2 vorab optimiert. Da ForceAtlas2 fast dieselbe Physik nutzt wie die Browser-Simulation, sitzt das Layout schon in einem Energie-Minimum. „Neu anordnen” würfelt die Positionen nicht neu, sondern erwärmt nur die bestehende Anordnung – es gibt also kaum etwas zu verbessern.\nDie Kräfte sind bewusst sanft eingestellt (schwache, in der Reichweite begrenzte Abstoßung, schwache Kanten), damit ein Netz mit über 100.000 Kanten flüssig bleibt und nicht „explodiert”. Der dichte Kern verhält sich dadurch wie ein starrer Körper. Die einzige Bewegung, die quasi keine Energie kostet, ist eine globale Drehung/Verschiebung des gesamten Klumpens – genau die leichte Rotation, die man sieht, bevor alles wieder einfriert.\n\nWer ein echtes Neu-Berechnen sehen möchte, müsste die Startpositionen zufällig setzen und die Kräfte stärker wählen – dann „wächst” das Layout sichtbar aus dem Chaos zusammen.\n\n\n\n\n\nWie das Layout entsteht: ForceAtlas2 + Barnes-Hut\nEin kräftebasiertes („force-directed”) Layout behandelt den Graphen wie ein physikalisches System: Kanten sind Federn, die verbundene Knoten anziehen, und alle Knoten stoßen sich gegenseitig ab (wie gleichnamige Ladungen). Lässt man das System „ausschwingen”, wandern dicht verbundene Gruppen zusammen und schwach verbundene auseinander – Struktur wird sichtbar, ohne dass wir sie vorgeben.\nDer Knackpunkt ist die Abstoßung: Eigentlich müsste man jedes Knotenpaar vergleichen – bei 7.000 Knoten sind das rund 25 Millionen Paare pro Schritt (Aufwand \\(O(n^2)\\)). ForceAtlas2 nutzt deshalb die Barnes-Hut-Näherung: Weit entfernte Knotengruppen werden zu einem Schwerpunkt zusammengefasst und nur einmal verrechnet. Das senkt den Aufwand auf \\(O(n \\log n)\\) und macht große Graphen überhaupt erst berechenbar.\nWeil diese Berechnung trotzdem einige Sekunden dauert, führen wir sie einmalig offline im Python-Skript aus und speichern die fertigen Koordinaten in einer JSON-Datei. Die Website lädt nur das Ergebnis und ist dadurch sofort da.\n\n\nCommunities und Hubs: Louvain + In-Degree\nFarbe und Größe sind keine Deko, sondern zwei Analyse-Ebenen:\n\nCommunities (Farbe) kommen vom Louvain-Algorithmus. Er sucht eine Aufteilung in Gruppen mit möglichst hoher Modularität – also viele Kanten innerhalb der Gruppen und wenige zwischen ihnen. Hier entstehen 15 Communities. Das ist der „globale” Ordnungshinweis, der im Ego-Netz aus 3a noch nicht nötig war.\nIn-Degree (Größe) ist die Zahl der eingehenden Kanten – bei wiki-Vote also: Für wie viele Personen wurde abgestimmt? Große Knoten sind einflussreiche Hubs. (Bei gerichteten Netzen unterscheidet man In- und Out-Degree; fürs Layout behandeln wir die Kanten aber ungerichtet, um nicht über 100.000 Pfeilspitzen zeichnen zu müssen.)\n\n\n\nWarum Canvas statt SVG?\nIn 3a (kleines Netz) war SVG ideal: Jeder Knoten ist ein eigenes DOM-Element, das man stylen und anklicken kann. Bei ~7.000 Knoten und ~100.000 Kanten wären das aber über hunderttausend DOM-Elemente – der Browser würde beim Zoomen und Scrollen einbrechen.\nDeshalb zeichnen wir hier auf ein &lt;canvas&gt;: eine einzige Zeichenfläche, auf die pro Bild alles in einem Durchgang gemalt wird (Kanten gebündelt, Knoten nach Farbe gruppiert). Das skaliert auf zehntausende Elemente. Der Preis: Es gibt keine einzelnen DOM-Knoten mehr, also müssen Interaktionen wie „über welchem Knoten ist die Maus?” selbst berechnet werden – dafür nutzen wir einen Quadtree (eine räumliche Suchstruktur), der den nächstgelegenen Knoten in \\(O(\\log n)\\) findet, statt alle 7.000 durchzuprobieren.\n\n\nDie Physik dahinter: d3-force und Velocity-Verlet\nDie Interaktivität im Browser liefert d3-force. Jeder Knoten hat eine Position \\((x, y)\\) und eine Geschwindigkeit \\((v_x, v_y)\\). In jedem Simulationsschritt passiert:\n\nDie Kräfte (Federn, Abstoßung, Zentrierung) verändern die Geschwindigkeiten.\nEine Reibung (velocityDecay) bremst die Geschwindigkeiten, damit nichts ewig nachschwingt.\nDie Positionen werden um die Geschwindigkeit weitergeschoben.\n\nDieses Integrationsverfahren heißt Velocity-Verlet – dasselbe Schema, mit dem auch Teilchensimulationen in der Physik rechnen; es ist stabil und günstig. Gesteuert wird alles über eine „Temperatur” alpha, die pro Schritt abklingt (alphaDecay) und die Kräfte mitskaliert: Das System startet „heiß” und beweglich und „friert” allmählich ein – im Kern ein Simulated Annealing. Genau deshalb kommt der Graph nach „Neu anordnen” nach kurzer Zeit von selbst zur Ruhe."
+  },
+  {
+    "objectID": "index.html#c.-großer-datensatz-vom-freundesnetz-zum-follow-graph",
+    "href": "index.html#c.-großer-datensatz-vom-freundesnetz-zum-follow-graph",
+    "title": "Graphdatenvisualisierung",
+    "section": "3c. Großer Datensatz (Vom Freundesnetz zum Follow-Graph)",
+    "text": "3c. Großer Datensatz (Vom Freundesnetz zum Follow-Graph)\nBeim Twitter-Netz wird aus einem lesbaren sozialen Bild schnell ein massives Strukturobjekt.\n\nWarum gut?\nDieses Netzwerk zeigt sehr deutlich, wie sich Maßstab und Bedeutung gleichzeitig verändern. Ihr könnt hier nicht nur Größe thematisieren, sondern auch den Unterschied zwischen Freundschaft und Follow-Beziehung.\n\n\nWas ist das Problem?\nEinzelne Knoten sind kaum noch direkt lesbar, Pfeile oder Richtungen lassen sich nicht mehr für jede Kante sinnvoll zeigen, und klassische Browser-Darstellung kommt an Performance-Grenzen. Die Herausforderung ist jetzt nicht mehr nur Zeichnen, sondern sinnvolle Reduktion.\n\n\nLayout + GraphAlg\nHier passt die Argumentation für WebGL/GPU sehr gut. Inhaltlich könnt ihr zusätzlich auf In-Degree/Out-Degree, Hubs, Communities, Filterung und Abstraktion eingehen, weil bei dieser Größenordnung nicht mehr jede Einzelkante der eigentliche Erkenntnisträger ist.\n[Hier folgt weiterer Inhalt]"
+  },
+  {
+    "objectID": "index.html#gnn-graph-neural-network",
+    "href": "index.html#gnn-graph-neural-network",
+    "title": "Graphdatenvisualisierung",
+    "section": "4. GNN (Graph Neural Network)",
+    "text": "4. GNN (Graph Neural Network)\n[Hier folgt weiterer Inhalt]"
+  },
+  {
+    "objectID": "index.html#how-to-handle-rezeptbuch",
+    "href": "index.html#how-to-handle-rezeptbuch",
+    "title": "Graphdatenvisualisierung",
+    "section": "5. How to handle (Rezeptbuch)",
+    "text": "5. How to handle (Rezeptbuch)\nWenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral."
+  },
+  {
+    "objectID": "index.html#fazit-welche-visualisierung-ist-wann-sinnvoll",
+    "href": "index.html#fazit-welche-visualisierung-ist-wann-sinnvoll",
+    "title": "Graphdatenvisualisierung",
+    "section": "6. Fazit (Welche Visualisierung ist wann sinnvoll?)",
+    "text": "6. Fazit (Welche Visualisierung ist wann sinnvoll?)\nEs gibt nicht die eine beste Graphvisualisierung. Was sinnvoll ist, hängt von Größe, Dichte, Richtung der Kanten, gewünschter Interaktion und der Rendering-Technologie im Web ab.\n[Hier folgt weiterer Inhalt]"
   }
 ]
