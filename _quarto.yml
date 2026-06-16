@@ -10,6 +10,12 @@ website:
     left:
       - href: index.qmd
         text: Home
+      - href: small.qmd
+        text: Kleiner Datensatz
+      - href: medium.qmd
+        text: Mittlerer Datensatz
+      - href: big.qmd
+        text: Großer Datensatz
 
 format:
   html:
