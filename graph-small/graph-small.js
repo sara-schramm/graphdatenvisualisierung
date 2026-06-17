@@ -17,7 +17,7 @@
         const button = control.append("button")
             .attr("type", "button")
             .attr("class", "character-icon-toggle")
-            .text("Charakter-Symbole anzeigen");
+            .text("Hauptfiguren anzeigen");
 
         button.on("click", () => {
             const hidden = iconGroup.style("display") === "none";
@@ -25,7 +25,7 @@
             if (hideSelection) {
                 hideSelection.style("display", hidden ? "none" : null);
             }
-            button.text(hidden ? "Charakter-Symbole ausblenden" : "Charakter-Symbole anzeigen");
+            button.text(hidden ? "Hauptfiguren ausblenden" : "Hauptfiguren anzeigen");
         });
     }
 
@@ -33,17 +33,18 @@
         const icons = svg.append("g")
             .attr("class", "character-icons")
             .style("display", "none");
+        icons.raise();
 
         icons.selectAll("image")
             .data(nodes)
             .join("image")
             .attr("href", d => `assets/data/${characterIconMap[d.name]}`)
-            .attr("width", 40)
-            .attr("height", 40)
+            .attr("width", 60)
+            .attr("height", 60)
             .attr("x", d => (d.x ?? 0) - 20)
             .attr("y", d => (d.y ?? 0) - 20)
-            .attr("opacity", 0.95)
-            .attr("pointer-events", "none");
+            .attr("opacity", 1)
+
 
         return icons;
     }
@@ -161,6 +162,7 @@
       initStep2();
       initStep3();
       initStep4();
+      initStep5();
       initStep6();
     });
 
@@ -170,8 +172,6 @@
   function initStep1() {
     const el = d3.select("#graph-step1");
     if (el.empty()) return;
-    // Replace the SVG with a simple, scrollable list of links.
-    // Each item shows exactly the two connected nodes (source — target).
     const list = el.append("div").attr("class", "link-list");
 
     list.selectAll(".link-item")
@@ -179,7 +179,6 @@
       .join("div")
       .attr("class", "link-item")
       .html(d => {
-        // link.source/target may be numeric indices or resolved objects
         const src = (typeof d.source === 'number') ? (graphData.nodes[d.source] && (graphData.nodes[d.source].name || graphData.nodes[d.source].id)) : (d.source && (d.source.name || d.source.id));
         const tgt = (typeof d.target === 'number') ? (graphData.nodes[d.target] && (graphData.nodes[d.target].name || graphData.nodes[d.target].id)) : (d.target && (d.target.name || d.target.id));
         return `<span class="node-badge">${src || '—'}</span><span class="sep">—</span><span class="node-badge">${tgt || '—'}</span>`;
@@ -379,7 +378,7 @@
 
     const nodeRadius = 3;
     const sim = d3.forceSimulation(graphData.nodes)
-      .force("link", d3.forceLink(graphData.links))
+      .force("link", d3.forceLink(graphData.links).distance(30))
       .force("charge", d3.forceManyBody())
       .force("collide", d3.forceCollide(nodeRadius * 2))
       .force("center", d3.forceCenter(width/2, height/2));
@@ -394,11 +393,29 @@
       .selectAll("circle")
       .data(graphData.nodes)
       .join("circle")
-      .attr("r", 3)
+      .attr("r", 5)
       .attr("fill", "#444");
+
+      node
+        .on("mouseover", (event, d) => {
+            tooltip
+            .style("display", "block")
+            .html(d.name)
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY + 10) + "px");
+        })
+        .on("mousemove", (event) => {
+            tooltip
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY + 10) + "px");
+        })
+        .on("mouseout", () => {
+            tooltip.style("display", "none");
+        });
 
     const iconNodes = graphData.nodes.filter(d => characterIconMap[d.name]);
     const iconGroup = createCharacterIcons(svg, iconNodes);
+
     const hideSelection = node.filter(d => characterIconMap[d.name]);
     createCharacterToggle(el, iconGroup, hideSelection);
     
@@ -408,6 +425,10 @@
         d.x = Math.max(nodeRadius, Math.min(width - nodeRadius, d.x));
         d.y = Math.max(nodeRadius, Math.min(height - nodeRadius, d.y));
       });
+
+iconGroup.selectAll("image")
+      .attr("x", d => d.x - 20)
+      .attr("y", d => d.y - 20);
 
       link
         .attr("x1", d => d.source.x)
@@ -420,6 +441,106 @@
         .attr("cy", d => d.y);
     });
   }
+
+// ==========================================================
+// STEP 5
+// ==========================================================
+function initStep5() {
+  const el = d3.select("#graph-step5");
+  if (el.empty()) return;
+
+  const svg = el.append("svg")
+    .attr("viewBox", [0, 0, width, height]);
+
+  const tooltip = d3.select("body")
+    .append("div")
+    .attr("class", "tooltip")
+    .style("position", "absolute")
+    .style("display", "none")
+    .style("background", "rgba(0,0,0,0.7)")
+    .style("color", "#fff")
+    .style("padding", "6px 8px")
+    .style("border-radius", "4px")
+    .style("font-size", "12px");
+
+  // Knoten + Links direkt verwenden
+  const nodes = graphData.nodes.map((d, i) => ({
+    ...d,
+    id: i
+  }));
+
+  const links = graphData.links.map(d => ({
+    source: typeof d.source === "object" ? d.source.index : d.source,
+    target: typeof d.target === "object" ? d.target.index : d.target
+  }));
+
+  const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+  const link = svg.append("g")
+    .selectAll("line")
+    .data(links)
+    .join("line")
+    .attr("stroke", "#bbb")
+    .attr("stroke-opacity", 0.5);
+
+  const node = svg.append("g")
+    .selectAll("circle")
+    .data(nodes)
+    .join("circle")
+    .attr("r", 5)
+    .attr("fill", d => color(d.group))
+    .call(drag(d3.forceSimulation(nodes)));
+
+  const iconNodes = nodes.filter(d => characterIconMap[d.name]);
+  const iconGroup = createCharacterIcons(svg, iconNodes);
+
+  const sim = d3.forceSimulation(nodes)
+    .force("link", d3.forceLink(links).id(d => d.id).distance(30))
+    .force("charge", d3.forceManyBody().strength(-40))
+    .force("center", d3.forceCenter(width / 2, height / 2));
+
+  node
+    .on("mouseover", (event, d) => {
+      tooltip
+        .style("display", "block")
+        .html(d.name)
+        .style("left", (event.pageX + 10) + "px")
+        .style("top", (event.pageY + 10) + "px");
+
+      node.attr("opacity", n =>
+        n.id === d.id ? 1 : 0.3
+      );
+
+      link.attr("stroke", l =>
+        l.source.id === d.id || l.target.id === d.id
+          ? "black"
+          : "#ccc"
+      );
+    })
+    .on("mouseout", () => {
+      tooltip.style("display", "none");
+      node.attr("opacity", 1);
+      link.attr("stroke", "#bbb");
+    })
+    .call(drag(sim));
+
+  sim.on("tick", () => {
+    iconGroup.selectAll("image")
+        .attr("x", d => d.x - 30)
+        .attr("y", d => d.y - 30)
+    link
+      .attr("x1", d => d.source.x)
+      .attr("y1", d => d.source.y)
+      .attr("x2", d => d.target.x)
+      .attr("y2", d => d.target.y);
+
+    node
+      .attr("cx", d => d.x)
+      .attr("cy", d => d.y);
+  });
+  const hideSelection = node.filter(d => characterIconMap[d.name]);
+  createCharacterToggle(el, iconGroup, hideSelection);
+}
 
   // =========================================================
   // STEP 6 — Skalierbarer Force-Directed Graph
@@ -434,7 +555,7 @@
         .attr("viewBox", [0, 0, width, height]);
 
       const { nodes, links } = buildScaledGraph();
-      const nodeRadiusFinal = 4;
+      const nodeRadiusFinal = 5;
 
       const link = svg.append("g")
         .selectAll("line")
@@ -452,9 +573,9 @@
         .attr("fill", "#666");
 
       const sim = d3.forceSimulation(nodes)
-        .force("link", d3.forceLink(links).id(d => d.id).distance(10).strength(0.6))
+        .force("link", d3.forceLink(links).id(d => d.id).distance(10).strength(0.3))
         .force("charge", d3.forceManyBody().strength(-10))
-        .force("center", d3.forceCenter(width/2, height/2).strength(0.4));
+        .force("center", d3.forceCenter(width/2, height/2).strength(0.2));
 
       node.call(drag(sim));
 
@@ -463,7 +584,7 @@
       node.on("mouseover", (e, d) => {
         const id = d._origIndex;
         link.attr("stroke", l =>
-            l.source._origIndex === id || l.target._origIndex === id ? "orange" : "#ccc"
+            l.source._origIndex === id || l.target._origIndex === id ? "black" : "#ccc"
         );
       });
 
