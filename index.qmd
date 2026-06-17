@@ -54,3 +54,7 @@ Im folgenden werden drei unterschiedliche Ansätze aufgezeigt:
 ## 6. How to handle (Rezeptbuch)
 Wenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral.
 
+### Quellen:
+https://www.yworks.com/pages/force-directed-graph-layout
+https://cambridge-intelligence.com/blog/automatic-graph-layouts/
+https://towardsdatascience.com/text-network-analysis-generate-beautiful-network-visualisations-a373dbe183ca/
