@@ -147,8 +147,8 @@ Hier passt die Argumentation für WebGL/GPU sehr gut. Inhaltlich könnt ihr zus�
 ## 4. GNN (Graph Neural Network)
 [Hier folgt weiterer Inhalt]
 
-## 5. How to handle (Rezeptbuch)
-Wenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral.
+## 5. How to handle (Rezeptbuch) 
+{{< include cookbook.qmd >}}
 
 ## 6. Fazit (Welche Visualisierung ist wann sinnvoll?)
 Es gibt nicht die eine beste Graphvisualisierung. Was sinnvoll ist, hängt von Größe, Dichte, Richtung der Kanten, gewünschter Interaktion und der Rendering-Technologie im Web ab.
