@@ -107,7 +107,7 @@ Der Knackpunkt ist die Abstoßung: Eigentlich müsste man *jedes* Knotenpaar ver
 
 Weil diese Berechnung trotzdem einige Sekunden dauert, führen wir sie **einmalig offline** im Python-Skript aus und speichern die fertigen Koordinaten in einer JSON-Datei. Die Website lädt nur das Ergebnis und ist dadurch sofort da.
 
-### Communities und Hubs: Louvain + In-Degree
+### Communities und Hubs: Louvain + In-Degree  
 
 Farbe und Größe sind keine Deko, sondern zwei Analyse-Ebenen:
 
