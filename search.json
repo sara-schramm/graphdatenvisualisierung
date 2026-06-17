@@ -480,6 +480,6 @@
     "href": "index.html#how-to-handle-rezeptbuch",
     "title": "Graphdatenvisualisierung im Web",
     "section": "6. How to handle (Rezeptbuch)",
-    "text": "6. How to handle (Rezeptbuch)\nWenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral."
+    "text": "6. How to handle (Rezeptbuch)\nWenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral.\n\nQuellen:\nhttps://www.yworks.com/pages/force-directed-graph-layout https://cambridge-intelligence.com/blog/automatic-graph-layouts/ https://towardsdatascience.com/text-network-analysis-generate-beautiful-network-visualisations-a373dbe183ca/"
   }
 ]
