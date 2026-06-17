@@ -53,38 +53,54 @@
 
   function buildScaledGraph(scaleIndex = currentScaleIndex) {
     const copies = 2 ** scaleIndex;
+
     const baseNodes = graphData.nodes;
     const baseLinks = graphData.links;
+
     const nodes = [];
     const links = [];
-    for (let copy = 0; copy < copies; copy++) {
-      baseNodes.forEach((node, i) => {
-        nodes.push({
-          ...node,
-          baseIndex: i,
-          copy,
-          x: Math.random() * width,
-          y: Math.random() * height
+
+    for (let c = 0; c < copies; c++) {
+        const offset = c * baseNodes.length;
+
+        baseNodes.forEach((n, i) => {
+            nodes.push({
+                ...n,
+                id: offset + i,
+                _origIndex: i
+            });
         });
-      });
-    }
-    for (let copy = 0; copy < copies; copy++) {
-      const offset = copy * baseNodes.length;
-      baseLinks.forEach(l => {
-        const sourceIndex = (typeof l.source === 'number') ? l.source : (l.source && l.source.index);
-        const targetIndex = (typeof l.target === 'number') ? l.target : (l.target && l.target.index);
-        links.push({
-          source: nodes[offset + sourceIndex],
-          target: nodes[offset + targetIndex],
-          value: l.value
+
+        baseLinks.forEach(l => {
+            const s = (typeof l.source === "number") ? l.source : l.source.index;
+            const t = (typeof l.target === "number") ? l.target : l.target.index;
+
+            links.push({
+                source: offset + s,
+                target: offset + t
+            });
+
+            // kleine Verbindung zur nächsten Kopie
+            if (c < copies - 1 && Math.random() < 0.1) {
+                const nextOffset = (c + 1) * baseNodes.length;
+
+                links.push({
+                    source: offset + s,
+                    target: nextOffset + t
+                });
+            }
         });
-      });
     }
+
     return { nodes, links };
   }
 
   function createScaleControls(el, renderGraph) {
     const control = el.insert("div", ":first-child").attr("class", "scale-control");
+
+    control.append("span")
+      .attr("class", "scale-label")
+      .text(`Knoten: ${scaleCounts[currentScaleIndex]}`);
 
     control.append("button")
       .attr("type", "button")
@@ -96,11 +112,6 @@
           renderGraph();
         }
       });
-
-    control.append("span")
-      .attr("class", "scale-label")
-      .text(`Knoten: ${scaleCounts[currentScaleIndex]}`);
-
     control.append("button")
       .attr("type", "button")
       .attr("class", "scale-button")
@@ -208,6 +219,20 @@
     const iconNodes = positioned.filter(d => characterIconMap[d.name]);
     const iconGroup = createCharacterIcons(svg, iconNodes);
 
+    const links = svg.append("g")
+        .selectAll("line")
+        .data(graphData.links)
+        .join("line")
+        .attr("stroke", "#bbb")
+        .attr("stroke-opacity", 0.4)
+        .attr("x1", d => {
+            const s = graphData.nodes[d.source];
+            return positioned[d.source]?.x ?? 0;
+        })
+        .attr("y1", d => positioned[d.source]?.y ?? 0)
+        .attr("x2", d => positioned[d.target]?.x ?? 0)
+        .attr("y2", d => positioned[d.target]?.y ?? 0);
+        
     const nodeCircles = svg.append("g")
       .selectAll("circle")
       .data(positioned)
@@ -221,7 +246,7 @@
       .on("mouseover", (event, d, i) => {
         tooltip
           .style("display", "block")
-          .html(`Name: ${d.name || d.id || 'unbekannt'}<br>Verbindungen: ${degree[d.index || d._origIndex || 0] || 0}`);
+          .html(`${d.name || d.id || 'unbekannt'}`);
       })
       .on("mousemove", (event) => {
         tooltip
@@ -427,8 +452,8 @@
         .attr("fill", "#666");
 
       const sim = d3.forceSimulation(nodes)
-        .force("link", d3.forceLink(links).distance(40))
-        .force("charge", d3.forceManyBody().strength(-120))
+        .force("link", d3.forceLink(links).id(d => d.id).distance(10).strength(0.6))
+        .force("charge", d3.forceManyBody().strength(-10))
         .force("center", d3.forceCenter(width/2, height/2).strength(0.4));
 
       node.call(drag(sim));
@@ -436,15 +461,16 @@
       createScaleControls(el, renderGraph);
 
       node.on("mouseover", (e, d) => {
+        const id = d._origIndex;
         link.attr("stroke", l =>
-          l.source.baseIndex === d.baseIndex || l.target.baseIndex === d.baseIndex ? "orange" : "#ccc"
+            l.source._origIndex === id || l.target._origIndex === id ? "orange" : "#ccc"
         );
       });
 
       sim.on("tick", () => {
         nodes.forEach(d => {
-          d.x = Math.max(nodeRadiusFinal, Math.min(width - nodeRadiusFinal, d.x));
-          d.y = Math.max(nodeRadiusFinal, Math.min(height - nodeRadiusFinal, d.y));
+            d.x = Math.max(nodeRadiusFinal, Math.min(width - nodeRadiusFinal, d.x));
+            d.y = Math.max(nodeRadiusFinal, Math.min(height - nodeRadiusFinal, d.y));
         });
 
         link
@@ -458,7 +484,6 @@
           .attr("cy", d => d.y);
       });
     }
-
     renderGraph();
   }
 

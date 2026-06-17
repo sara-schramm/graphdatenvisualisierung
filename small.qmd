@@ -4,18 +4,7 @@
 
 ### Les Misérables Graph
 
-Der Datensatz basiert auf den Beziehungen der Figuren aus dem Roman *Les Misérables*.
-
-Er besteht aus
-
-- 77 Knoten (Charaktere)
-- 254 Kanten (Beziehungen)
-- ungerichteten Verbindungen
-
-Jeder Knoten steht für eine Figur, jede Kante für eine gemeinsame Szene oder Interaktion.
-
-Dieser Datensatz eignet sich besonders gut, weil er klein genug ist, um jeden Schritt eines Graph-Layouts sichtbar nachvollziehen zu können.
-
+Der Datensatz basiert auf den Beziehungen der Figuren aus dem Roman Les Misérables. Er umfasst insgesamt 77 Knoten, wobei jeder Knoten eine einzelne Figur aus der Geschichte repräsentiert. Untenstehend sind die Hauptcharaktere dargestellt:
 <div class="image-container">
 
 <img src="assets/data/les_miserables.jpg"
@@ -23,19 +12,23 @@ Dieser Datensatz eignet sich besonders gut, weil er klein genug ist, um jeden Sc
 
 </div>
 
----
+Die 77 Figuren sind durch 254 Kanten miteinander verbunden, die jeweils eine gemeinsame Szene oder eine direkte Interaktion zwischen zwei Charakteren darstellen. Die Verbindungen sind ungerichtet, das heißt, sie besitzen keine feste Richtung, sondern beschreiben lediglich die Existenz einer Beziehung zwischen zwei Figuren.
 
-## Schritt 1 – Die Rohdaten
+Durch diese Struktur entsteht ein klassisches Netzwerk aus Entitäten und Beziehungen, das sich besonders gut für die Visualisierung von Graphalgorithmen eignet. Der Datensatz ist bewusst klein gehalten, sodass sich jeder einzelne Schritt eines Layout-Verfahrens gut nachvollziehen lässt. Dadurch kann beobachtet werden, wie aus einer reinen Liste von Knoten und Kanten schrittweise eine räumliche Struktur entsteht und sich Muster, Cluster und zentrale Figuren im Verlauf der Berechnung herausbilden.
 
-Noch bevor ein Algorithmus arbeitet, besteht ein Graph lediglich aus einer Liste von Knoten und Kanten.
+## Die Rohdaten
 
-Ein Graph besitzt zunächst **keine Positionen**. Es existieren nur Beziehungen zwischen den Elementen.
+Noch bevor ein Algorithmus arbeitet, besteht ein Graph lediglich aus einer Liste von Knoten und Kanten. Zu diesem Zeitpunkt gibt es keine räumliche Ordnung und keine visuelle Struktur, sondern ausschließlich die Information darüber, welche Elemente miteinander verbunden sind.
 
-Das bedeutet:
+Ein Graph beschreibt somit zunächst nur Beziehungen zwischen Objekten, jedoch nicht deren Position im Raum. Die räumliche Anordnung entsteht erst durch einen späteren Layout-Algorithmus.
 
-- keine Koordinaten
-- keine räumliche Struktur
-- nur Verbindungen
+Das bedeutet konkret:
+
+- es existieren keine Koordinaten
+- es gibt keine geometrische Struktur
+- die Darstellung besteht ausschließlich aus Verbindungen zwischen Knoten.
+
+Eine Liste aller Verbindungen aus dem Roman Les Misérables ist hier dargestellt
 
 <div id="graph-step1"></div>
 
@@ -63,44 +56,56 @@ Ein Graph wird typischerweise als JSON gespeichert.
   ]
 }
 ```
+
+Dabei gilt:
+
+- nodes enthält alle Elemente des Graphen
+- links beschreibt die Beziehungen zwischen diesen Elementen
+- source und target definieren jeweils eine Verbindung zwischen zwei Knoten
+
+Während der Simulation ersetzt D3 diese abstrakten Verweise intern durch konkrete Objekte mit zusätzlichen Eigenschaften wie x, y, vx und vy. Dadurch kann der Graph dynamisch berechnet und animiert werden.
 </div> </details>
 
 ## Schritt 2 - Was passiert damit?
 
-Die gleichen Knoten werden nun zufällig im Raum verteilt.
-Obwohl alle Informationen vorhanden sind, entsteht keine sinnvolle Struktur.
+Die gleichen Knoten werden nun zufällig im Raum verteilt. Obwohl alle Informationen über die Verbindungen vollständig vorhanden sind, entsteht dabei keine sinnvolle räumliche Struktur.
+
+Jeder Knoten erhält lediglich eine beliebige Position innerhalb der Zeichenfläche, unabhängig davon, ob er stark oder schwach mit anderen Knoten verbunden ist. Dadurch wird die eigentliche Informationsstruktur des Graphen nicht sichtbar gemacht, sondern durch die zufällige Platzierung überdeckt.
+
+In dieser Darstellung findest du auch unsere Hauptfiguren wieder, klicke auf den Button, um sie sichtbar zu machen.
 
 <div id="graph-step2"></div>
-
-Wir erkennen kaum etwas.
-
-- keine Cluster
-- keine Hierarchie
-- keine Orientierung
-- Positionen besitzen keine Bedeutung
 
 <details class="acc"> <summary>
 <span class="acc-toggle"></span>
 <span class="acc-title">Warum zufällige Koordinaten keine Information enthalten</span>
 <span class="acc-tag tag-konzept">Konzept</span>
 </summary> <div class="acc-body">
-Ein Graph definiert ausschließlich Beziehungen. Er beschreibt nicht, an welcher Position sich ein Knoten befinden soll. Die Koordinaten entstehen erst durch einen Layout-Algorithmus.
+Der Graph definiert ausschließlich Beziehungen. Er beschreibt nicht, an welcher Position sich ein Knoten befinden soll. Die Koordinaten entstehen erst durch einen Layout-Algorithmus.
+Zusammenhänge, Cluster oder zentrale Knoten lassen sich dadurch kaum erkennen, da räumliche Nähe hier nicht mit inhaltlicher Nähe übereinstimmt.
+
+- keine Cluster erkennbar
+- keine Hierarchie sichtbar
+- keine Orientierung im Raum
+- Positionen sind rein zufällig und bedeutungslos
+
+Damit wird deutlich, dass ein Graph ohne geeigneten Layout-Algorithmus zwar vollständig definiert ist, aber visuell kaum interpretierbar bleibt.
 </div> </details>
 
 ## Schritt 3 – Die Idee eines Force-Directed Layouts
 
 Wie kann aus einer ungeordneten Punktmenge eine lesbare Struktur entstehen?
 
-Die Grundidee besteht darin, den Graphen als physikalisches System zu betrachten.
+Die Grundidee besteht darin, den Graphen nicht mehr als reine Sammlung von Punkten und Verbindungen zu betrachten, sondern als ein dynamisches System, das sich wie ein physikalisches Modell verhält. Die einzelnen Knoten besitzen dabei keine festen Positionen, sondern reagieren aufeinander, sobald Kräfte zwischen ihnen wirken.
+Im Zentrum stehen zwei gegensätzliche Effekte, die gleichzeitig auftreten. 
 
-Es wirken gleichzeitig
+Einerseits ziehen sich Knoten, die durch eine Kante verbunden sind, gegenseitig an. Diese „Anziehung“ sorgt dafür, dass verwandte oder direkt verbundene Elemente näher zusammenrücken. 
 
-- Anziehung zwischen verbundenen Knoten
-- Abstoßung zwischen allen Knoten
+Andererseits stoßen sich alle Knoten gegenseitig ab, unabhängig davon, ob sie verbunden sind oder nicht. Diese „Abstoßung“ verhindert, dass alle Punkte in einem einzigen Cluster kollabieren.
 
-Dadurch bewegt sich der Graph schrittweise in einen stabilen Gleichgewichtszustand.
+Durch das Zusammenspiel dieser beiden Kräfte entsteht eine kontinuierliche Bewegung im System. Die Knoten verschieben sich Schritt für Schritt, bis sich ein Zustand einstellt, in dem sich die Kräfte weitgehend ausgleichen. In diesem Gleichgewicht gibt es keine dominante Bewegung mehr, und die Struktur wirkt stabil und lesbar. Das Ergebnis ist keine vorgegebene Anordnung, sondern eine emergente Struktur, die sich aus den zugrunde liegenden Beziehungen selbst entwickelt.
 
-#### Animation der Kräfte
+In der folgenden Animation ist das Verhalten der Kräfte sichtbar. Versuche die Knoten näher aneinander zu bringen und erkenne was passiert.
 <div id="graph-step3"></div>
 
 <details class="acc">
@@ -153,23 +158,23 @@ Dadurch bewegt sich der Graph schrittweise in einen stabilen Gleichgewichtszusta
 
 ## Schritt 4 – Implementierung von D3
 
-D3 (Data-Driven Documents) ist eine JavaScript-Bibliothek zur Visualisierung von Daten im Web.
+D3 (Data-Driven Documents) ist eine JavaScript-Bibliothek zur Visualisierung von Daten im Web. Sie dient dazu, Daten direkt mit grafischen Elementen im Browser zu verbinden und diese dynamisch darzustellen.
 
-Sie verbindet **Daten direkt mit DOM-Elementen** (z. B. SVG, HTML) und erlaubt es, diese Elemente dynamisch zu verändern.
+Im Kern bedeutet das, dass nicht statische Grafiken erstellt werden, sondern eine direkte Kopplung zwischen Daten und DOM-Elementen (z. B. SVG oder HTML) entsteht. Wenn sich die Daten verändern, aktualisiert sich automatisch auch die visuelle Darstellung.
 
-Das bedeutet:
+Die zentrale Idee lässt sich so zusammenfassen:
 
-- Daten bestimmen die Darstellung
-- Elemente werden nicht statisch gezeichnet, sondern datengetrieben erzeugt
-- jede Änderung an den Daten kann sofort visuell umgesetzt werden
+- Daten steuern die Darstellung vollständig  
+- Elemente werden aus Daten heraus erzeugt, nicht manuell gezeichnet  
+- Änderungen an Daten führen sofort zu visuellen Updates  
 
-Im Kontext von Graphen ist D3 besonders stark, weil es:
+Besonders im Bereich von Graphen ist D3 sehr leistungsfähig, da es:
 
-- Knoten und Kanten aus JSON-Daten erstellt
-- physikalische Simulationen ausführen kann
-- kontinuierlich Positionen aktualisiert (Animation über „ticks“)
+- Knoten und Kanten direkt aus JSON-Strukturen erzeugt  
+- physikalische Simulationen zur Layout-Berechnung unterstützt  
+- Positionen kontinuierlich aktualisiert (über sogenannte „ticks“)  
 
-Dadurch eignet sich D3 ideal für **interaktive Netzwerkvisualisierungen im Browser**.
+Dadurch eignet sich D3 besonders gut für **interaktive Netzwerkvisualisierungen im Browser**, bei denen sich Strukturen dynamisch entwickeln und erkunden lassen.
 
 Platzhalter: D3 Force Simulation
 <div id="graph-step4"></div>
@@ -209,23 +214,21 @@ const simulation = d3.forceSimulation(nodes)
   </div>
 </div> </details>
 
-Die Positionen der Knoten werden anschließend bei jedem Simulationsschritt aktualisiert.
+## Schritt 5 – Das Ergebnis: wenn der Algorithmus funktioniert
 
-## Schritt 5 – Das Ergebnis
+SVG (Scalable Vector Graphics) ist ein vektorbasiertes Grafikformat im Browser, das grafische Elemente wie Kreise, Linien oder Pfade als einzelne, adressierbare Objekte darstellt. Dadurch lassen sich Visualisierungen flexibel aufbauen und dynamisch verändern, ohne sie neu zu rendern.
 
-Nach vielen Iterationen entsteht eine stabile Anordnung. Jetzt werden Zusammenhänge sichtbar.
+Nach mehreren Iterationen der Force-Simulation stabilisiert sich die Struktur des Graphen. Die Knoten bewegen sich so lange, bis sich die Kräfte zwischen Anziehung und Abstoßung weitgehend ausgleichen.
 
-- Cluster
-- zentrale Figuren
-- Gruppen
-- Nachbarschaften
+In diesem Zustand wird die Struktur des Datensatzes sichtbar. Aus einer reinen Liste von Beziehungen entsteht ein räumliches Muster mit klar erkennbarer Ordnung.
 
-Da der Datensatz klein ist, können komfortable Interaktionen ergänzt werden.
+Typische Strukturen treten hervor:
 
-- Hover
-- Drag
-- Zoom
-- Charakterbilder
+- dicht verbundene Cluster
+- zentrale Knoten mit vielen Verbindungen
+- klar abgegrenzte Gruppen
+- erkennbare Nachbarschaften im Netzwerk
+
 
 <details class="acc"> <summary>
 
@@ -235,26 +238,35 @@ Da der Datensatz klein ist, können komfortable Interaktionen ergänzt werden.
 </summary> <div class="acc-body">
 SVG eignet sich besonders gut für kleine Graphen, weil jedes Element (Knoten und Kante) direkt im DOM existiert und dadurch einzeln angesprochen werden kann. 
 Das ermöglicht einfache Interaktionen wie Hover, Drag oder Animationen ohne zusätzliche Rendering-Schichten.
-Da der Datensatz nur wenige hundert Elemente umfasst, reicht die Performance des Browsers problemlos aus und bleibt flüssig und interaktiv.
+Da der Datensatz nur wenige Elemente umfasst, reicht die Performance des Browsers problemlos aus und bleibt flüssig und interaktiv.
 </div> </details>
 
-## Schritt 6 – Wo liegt die Grenze?
+## Schritt 6 – Die Grenze
 
-Das Verfahren funktioniert hervorragend für kleine Netzwerke.
+Das gleiche Verfahren funktioniert nicht nur für kleine Netzwerke, sondern lässt sich grundsätzlich auf größere Datenmengen anwenden. Genau hier zeigt sich jedoch eine entscheidende Schwäche.
 
-Mit zunehmender Größe entstehen jedoch neue Probleme.
+Mit wachsender Größe verändert sich das Verhalten des Graphen deutlich:
 
-Der Graph wächst.
+77 → 154 → 308 → 616 → 1232 Knoten
 
-77 -> 154 -> 308 ->616 -> 1232
+Je mehr Elemente hinzugefügt werden, desto stärker überlagern sich Knoten und Kanten. Die klare Struktur beginnt sich aufzulösen, bis die Darstellung kaum noch interpretierbar ist.
 
-Immer mehr Knoten und Kanten überlagern sich.
-Die Darstellung entwickelt sich zu einem sogenannten Hairball.
+Es entsteht ein sogenannter *Hairball* – ein dichtes Gewirr aus Linien und Punkten, in dem kaum noch einzelne Strukturen erkennbar sind.
+
+Die Ursachen dafür sind strukturell:
+
+- zu viele Knoten im gleichen Raum  
+- zu viele Kanten pro Fläche  
+- visuelle Überlagerung statt Trennung  
+- begrenzte Auflösung des Bildschirms  
+
+Was passiert, wenn der Roman eine Fortsetzung bekommen würde und irgendwann aus 77 Figuren mehreren zehntausend Charakter werden?
+Erhöhe die Anzahl der Knoten und siehe was passiert? Ab wann wird es ein Problem?
 
 Platzhalter: Graph wächst schrittweise; Buttons zum Vergrößern und Verkleinern
 <div id="graph-step6"></div>
 
-Was passiert, wenn unser Netzwerk nicht aus 77 Figuren besteht, sondern aus mehreren zehntausend Charaktern?
+
 Im nächsten Abschnitt betrachten wir deshalb einen deutlich größeren Datensatz.
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
