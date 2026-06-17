@@ -1,19 +1,12 @@
----
-title: "Kleiner Datensatz – Les Misérables"
-format: html
----
+# Kleiner Datensatz – Les Misérables
 
 ## Der Datensatz
-
-<div class="two-col">
-
-<div class="text">
 
 ### Les Misérables Graph
 
 Der Datensatz basiert auf den Beziehungen der Figuren aus dem Roman *Les Misérables*.
 
-Er besteht aus:
+Er besteht aus
 
 - 77 Knoten (Charaktere)
 - 254 Kanten (Beziehungen)
@@ -23,10 +16,246 @@ Jeder Knoten steht für eine Figur, jede Kante für eine gemeinsame Szene oder I
 
 Dieser Datensatz eignet sich besonders gut, weil er klein genug ist, um jeden Schritt eines Graph-Layouts sichtbar nachvollziehen zu können.
 
+<div class="image-container">
+
+<img src="assets/data/les_miserables.jpg"
+     alt="Les Misérables Charaktere">
+
 </div>
 
-<div class="image">
-  <img src="assets/images/les_miserables.jpg" alt="Les Miserables Charaktere Graph" />
-</div>
+---
 
+## Schritt 1 – Die Rohdaten
+
+Noch bevor ein Algorithmus arbeitet, besteht ein Graph lediglich aus einer Liste von Knoten und Kanten.
+
+Ein Graph besitzt zunächst **keine Positionen**. Es existieren nur Beziehungen zwischen den Elementen.
+
+Das bedeutet:
+
+- keine Koordinaten
+- keine räumliche Struktur
+- nur Verbindungen
+
+<div id="graph-step1"></div>
+
+<details class="acc">
+
+<summary>
+
+<span class="acc-toggle"></span>
+<span class="acc-title">Wie D3 einen Graphen intern speichert</span>
+<span class="acc-tag tag-impl">Implementierung</span>
+</summary>
+
+<div class="acc-body">
+
+Ein Graph wird typischerweise als JSON gespeichert.
+
+```json
+{
+  "nodes": [
+    { "id": "A" },
+    { "id": "B" }
+  ],
+  "links": [
+    { "source": "A", "target": "B" }
+  ]
+}
+```
+</div> </details>
+
+## Schritt 2 - Was passiert damit?
+
+Die gleichen Knoten werden nun zufällig im Raum verteilt.
+Obwohl alle Informationen vorhanden sind, entsteht keine sinnvolle Struktur.
+
+<div id="graph-step2"></div>
+
+Wir erkennen kaum etwas.
+
+- keine Cluster
+- keine Hierarchie
+- keine Orientierung
+- Positionen besitzen keine Bedeutung
+
+<details class="acc"> <summary>
+<span class="acc-toggle"></span>
+<span class="acc-title">Warum zufällige Koordinaten keine Information enthalten</span>
+<span class="acc-tag tag-konzept">Konzept</span>
+</summary> <div class="acc-body">
+Ein Graph definiert ausschließlich Beziehungen. Er beschreibt nicht, an welcher Position sich ein Knoten befinden soll. Die Koordinaten entstehen erst durch einen Layout-Algorithmus.
+</div> </details>
+
+## Schritt 3 – Die Idee eines Force-Directed Layouts
+
+Wie kann aus einer ungeordneten Punktmenge eine lesbare Struktur entstehen?
+
+Die Grundidee besteht darin, den Graphen als physikalisches System zu betrachten.
+
+Es wirken gleichzeitig
+
+- Anziehung zwischen verbundenen Knoten
+- Abstoßung zwischen allen Knoten
+
+Dadurch bewegt sich der Graph schrittweise in einen stabilen Gleichgewichtszustand.
+
+#### Animation der Kräfte
+<div id="graph-step3"></div>
+
+<details class="acc">
+<summary>
+  <span class="acc-toggle"></span>
+  <span class="acc-title">Die Kräfte hinter dem Layout</span>
+  <span class="acc-tag tag-algo">Algorithmus</span>
+</summary>
+<div class="acc-body">
+  <p>Das <strong>Fruchterman-Reingold-Modell</strong> betrachtet den Graphen als physikalisches System, in dem sich Knoten gegenseitig beeinflussen.</p>
+  <p>Jeder Knoten besitzt eine Position <em>x<sub>i</sub> ∈ ℝ²</em>. Die Simulation passt diese Positionen iterativ an, bis ein stabiles Gleichgewicht entsteht.</p>
+
+  <p><strong>1. Attraction (Anziehung entlang der Kanten)</strong></p>
+  <p>Verbundene Knoten wirken wie durch Federn gekoppelt.</p>
+  <div class="formula-block"><pre>F<sub>a</sub>(i,j) = k · (‖x<sub>i</sub> - x<sub>j</sub>‖ - l) · (x<sub>j</sub> - x<sub>i</sub>) / ‖x<sub>j</sub> - x<sub>i</sub>‖</pre></div>
+  <ul>
+    <li><strong>l</strong> = optimale Kantenlänge</li>
+    <li>Knoten werden zusammengezogen, wenn sie zu weit auseinander liegen</li>
+    <li>und abgestoßen, wenn sie zu nah sind</li>
+  </ul>
+  <p>Ziel: gleichmäßige Kantenlängen</p>
+
+  <p><strong>2. Repulsion (Abstoßung aller Knoten)</strong></p>
+  <p>Alle Knoten stoßen sich gegenseitig ab, um Überlagerungen zu vermeiden.</p>
+  <div class="formula-block"><pre>F<sub>r</sub>(i,j) = k² / ‖x<sub>i</sub> - x<sub>j</sub>‖² · (x<sub>i</sub> - x<sub>j</sub>) / ‖x<sub>i</sub> - x<sub>j</sub>‖</pre></div>
+  <ul>
+    <li>starke Abstoßung bei kleinen Distanzen</li>
+    <li>schwächer werdend mit wachsendem Abstand</li>
+    <li>wirkt auf alle Knotenpaare</li>
+  </ul>
+  <p>Ziel: gleichmäßige Verteilung im Raum</p>
+
+  <p><strong>3. Gleichgewichtszustand</strong></p>
+  <p>Die endgültige Position entsteht, wenn sich alle Kräfte ausgleichen:</p>
+  <div class="formula-block"><pre>∑F<sub>a</sub> + ∑F<sub>r</sub> ≈ 0</pre></div>
+  <ul>
+    <li>keine dominante Bewegung mehr</li>
+    <li>das System ist stabil</li>
+    <li>ein visuell lesbares Layout ist entstanden</li>
+  </ul>
+
+  <p>Das System minimiert implizit eine Energiefunktion:</p>
+  <ul>
+    <li>Kanten wollen „kurz“ sein (Attraktion)</li>
+    <li>Knoten wollen „weit weg“ sein (Repulsion)</li>
+  </ul>
+  <p>Das Ergebnis ist ein <strong>kompromissoptimiertes Layout</strong>, das Struktur sichtbar macht.</p>
 </div>
+</details>
+
+## Schritt 4 – Implementierung von D3
+
+D3 (Data-Driven Documents) ist eine JavaScript-Bibliothek zur Visualisierung von Daten im Web.
+
+Sie verbindet **Daten direkt mit DOM-Elementen** (z. B. SVG, HTML) und erlaubt es, diese Elemente dynamisch zu verändern.
+
+Das bedeutet:
+
+- Daten bestimmen die Darstellung
+- Elemente werden nicht statisch gezeichnet, sondern datengetrieben erzeugt
+- jede Änderung an den Daten kann sofort visuell umgesetzt werden
+
+Im Kontext von Graphen ist D3 besonders stark, weil es:
+
+- Knoten und Kanten aus JSON-Daten erstellt
+- physikalische Simulationen ausführen kann
+- kontinuierlich Positionen aktualisiert (Animation über „ticks“)
+
+Dadurch eignet sich D3 ideal für **interaktive Netzwerkvisualisierungen im Browser**.
+
+Platzhalter: D3 Force Simulation
+<div id="graph-step4"></div>
+
+<details class="acc">
+<summary>
+<span class="acc-toggle"></span>
+<span class="acc-title">Welche Kräfte D3 berechnet</span>
+<span class="acc-tag tag-impl">Implementierung</span>
+</summary> <div class="acc-body">
+```json
+const simulation = d3.forceSimulation(nodes)
+  .force("link", ...)
+  .force("charge", ...)
+  .force("center", ...);
+```
+  <div class="force-grid">
+
+  <div class="force-card">
+  <p><strong>forceLink</strong></p>
+  Verbundene Knoten werden durch eine virtuelle Feder miteinander verbunden.
+  Die Kraft versucht, eine gleichmäßige Distanz zwischen benachbarten Knoten einzuhalten und bildet so die Grundstruktur des Graphen.
+  </div>
+
+  <div class="force-card">
+  <p><strong>forceManyBody</strong></p>
+  Alle Knoten stoßen sich gegenseitig ab.
+  Dadurch werden Überlagerungen vermieden und der verfügbare Raum gleichmäßig genutzt.
+  </div>
+
+  <div class="force-card">
+  <p><strong>forceCenter</strong></p>
+  Die gesamte Simulation wird zur Mitte der Zeichenfläche gezogen.
+  Dadurch bleibt der Graph im sichtbaren Bereich und driftet nicht aus dem Fenster.
+  </div>
+
+  </div>
+</div> </details>
+
+Die Positionen der Knoten werden anschließend bei jedem Simulationsschritt aktualisiert.
+
+## Schritt 5 – Das Ergebnis
+
+Nach vielen Iterationen entsteht eine stabile Anordnung. Jetzt werden Zusammenhänge sichtbar.
+
+- Cluster
+- zentrale Figuren
+- Gruppen
+- Nachbarschaften
+
+Da der Datensatz klein ist, können komfortable Interaktionen ergänzt werden.
+
+- Hover
+- Drag
+- Zoom
+- Charakterbilder
+
+<details class="acc"> <summary>
+
+<span class="acc-toggle"></span>
+<span class="acc-title">Warum SVG hier die richtige Wahl ist</span>
+<span class="acc-tag tag-arch">Architektur</span>
+</summary> <div class="acc-body">
+SVG eignet sich besonders gut für kleine Graphen, weil jedes Element (Knoten und Kante) direkt im DOM existiert und dadurch einzeln angesprochen werden kann. 
+Das ermöglicht einfache Interaktionen wie Hover, Drag oder Animationen ohne zusätzliche Rendering-Schichten.
+Da der Datensatz nur wenige hundert Elemente umfasst, reicht die Performance des Browsers problemlos aus und bleibt flüssig und interaktiv.
+</div> </details>
+
+## Schritt 6 – Wo liegt die Grenze?
+
+Das Verfahren funktioniert hervorragend für kleine Netzwerke.
+
+Mit zunehmender Größe entstehen jedoch neue Probleme.
+
+Der Graph wächst.
+
+77 -> 154 -> 308 ->616 -> 1232
+
+Immer mehr Knoten und Kanten überlagern sich.
+Die Darstellung entwickelt sich zu einem sogenannten Hairball.
+
+Platzhalter: Graph wächst schrittweise; Buttons zum Vergrößern und Verkleinern
+<div id="graph-step6"></div>
+
+Was passiert, wenn unser Netzwerk nicht aus 77 Figuren besteht, sondern aus mehreren zehntausend Charaktern?
+Im nächsten Abschnitt betrachten wir deshalb einen deutlich größeren Datensatz.
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="graph-small/graph-small.js"></script>

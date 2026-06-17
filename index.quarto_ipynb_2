@@ -1,0 +1,54 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"Graphdatenvisualisierung\"\n",
+        "author: \"Sara, Silvia, Adam\"\n",
+        "format:\n",
+        "  html:\n",
+        "jupyter: python3\n",
+        "bibliography: references.bib\n",
+        "---\n",
+        "\n",
+        "## 1. Intro (Warum Soziale Netzwerke schwer zu zeichnen sind)\n",
+        "Soziale Netzwerke bestehen aus Menschen und ihren Beziehungen. \n",
+        "Aber wie zeigt man so etwas im Web so, dass man noch wirklich etwas erkennt?\n",
+        "\n",
+        "\n",
+        "## 2. Problemstellung (Wann wird ein Graph unlesbar?)\n",
+        "Eine Graphvisualisierung ist nicht automatisch gut, nur weil alle Knoten und Kanten sichtbar sind. Mit wachsender Größe ändern sich Lesbarkeit, Interaktion und die geeignete Web-Technologie grundlegend.\n",
+        "\n",
+        "[hier Abbildung von Silvia hin]\n",
+        "\n",
+        "## 3a. Kleiner Datensatz\n",
+        "\n",
+        "\n",
+        "\n",
+        "## 4. GNN (Graph Neural Network)\n",
+        "[Hier folgt weiterer Inhalt]\n",
+        "\n",
+        "## 5. How to handle (Rezeptbuch)\n",
+        "Wenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral.\n",
+        "\n",
+        "## 6. Fazit (Welche Visualisierung ist wann sinnvoll?)\n",
+        "Es gibt nicht die eine beste Graphvisualisierung. Was sinnvoll ist, hängt von Größe, Dichte, Richtung der Kanten, gewünschter Interaktion und der Rendering-Technologie im Web ab.\n",
+        "\n",
+        "[Hier folgt weiterer Inhalt]\n"
+      ],
+      "id": "cbba2545"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "/Users/sara/Documents/Uni/MUC.DAI/Semester06/Visual Computing/Graphdatenvisualisierung/repo/graphdatenvisualisierung/.venv/share/jupyter/kernels/python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
