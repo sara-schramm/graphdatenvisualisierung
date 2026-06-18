@@ -396,7 +396,29 @@ Dual-Ansicht wie [GNN-101](https://github.com/Visual-Intelligence-UMN/GNN-101): 
 {{< include cookbook.qmd >}}
 
 
-### Quellen:
-https://www.yworks.com/pages/force-directed-graph-layout
-https://cambridge-intelligence.com/blog/automatic-graph-layouts/
-https://towardsdatascience.com/text-network-analysis-generate-beautiful-network-visualisations-a373dbe183ca/
+
+### Quellen
+
+::: {style="font-size: 0.8rem; color: #888; line-height: 1.9; margin-top: 1.5rem; border-top: 1px solid #e0e0e0; padding-top: 1rem;"}
+1. Jacomy, M., Venturini, T., Heymann, S. and Bastian, M., 2014. ForceAtlas2, a Continuous Graph Layout Algorithm for Handy Network Visualization Designed for the Gephi Software. *PLOS ONE*, 9(6), e98679. [DOI: 10.1371/journal.pone.0098679](https://doi.org/10.1371/journal.pone.0098679)
+
+2. Blondel, V.D., Guillaume, J.-L., Lambiotte, R. and Lefebvre, E., 2008. Fast unfolding of communities in large networks. *Journal of Statistical Mechanics*, P10008. [DOI: 10.1088/1742-5468/2008/10/P10008](https://doi.org/10.1088/1742-5468/2008/10/P10008)
+
+3. Schäfer, T. and Tönnis, M., 2023. t-SGNE: Fast Graph Visualization via t-Distributed Stochastic Graph Neighbor Embedding. [arXiv: 2310.11186](https://arxiv.org/abs/2310.11186)
+
+4. Rozemberczki, B., Allen, C. and Sarkar, R., 2021. Multi-scale Attributed Node Embedding. *Journal of Complex Networks*, 9(2). [DOI: 10.1093/comnet/cnab014](https://doi.org/10.1093/comnet/cnab014)
+
+5. Munzner, T., 2014. *Visualization Analysis & Design*. A K Peters/CRC Press. [vadbook](https://www.cs.ubc.ca/~tmm/vadbook/)
+
+6. Meirelles, I., 2013. *Design for Information*. Rockport Publishers. [Amazon](https://www.amazon.de/Design-Information-Isabel-Meirelles/dp/1592538061)
+
+7. Di Battista, G., Eades, P., Tamassia, R. and Tollis, I.G., 1999. *Graph Drawing: Algorithms for the Visualization of Graphs*. Prentice Hall. [Amazon](https://www.amazon.de/Graph-Drawing-Algorithms-Visualization-Graphs/dp/0133016153)
+
+8. yWorks – Force-Directed Graph Layout. [yworks.com](https://www.yworks.com/pages/force-directed-graph-layout)
+
+9. Cambridge Intelligence – Automatic Graph Layouts. [cambridge-intelligence.com](https://cambridge-intelligence.com/blog/automatic-graph-layouts/)
+
+10. Towards Data Science – Text Network Analysis. [towardsdatascience.com](https://towardsdatascience.com/text-network-analysis-generate-beautiful-network-visualisations-a373dbe183ca/)
+
+**Datensatz:** Facebook Large Page-Page Network – Rozemberczki et al. 2021. [Kaggle](https://www.kaggle.com/datasets/wolfram77/graphs-social/data) · [DOI: 10.1093/comnet/cnab014](https://doi.org/10.1093/comnet/cnab014)
+:::
