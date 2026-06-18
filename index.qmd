@@ -4,6 +4,7 @@ format: html
 jupyter: python3
 bibliography: references.bib
 
+
 ```{=html}
 <script src="assets/js/site.js" defer></script>
 ```
@@ -37,16 +38,12 @@ Das folgende ist nur zur Vorschau:
 Im folgenden werden drei unterschiedliche Ansätze aufgezeigt:
 
 
-## 4a. Kleiner Datensatz
 {{< include small.qmd >}}
 
 
-
-## 4b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)
 {{< include medium.qmd >}}
 
 
-## 4c. Großer Datensatz
 {{< include big.qmd >}}
 
 
@@ -374,8 +371,8 @@ Dual-Ansicht wie [GNN-101](https://github.com/Visual-Intelligence-UMN/GNN-101): 
 </div>
 ```
 
-## 6. How to handle (Rezeptbuch)
-Wenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral.
+
+{{< include cookbook.qmd >}}
 
 
 ### Quellen:

@@ -1,6 +1,6 @@
-# Kleiner Datensatz – Les Misérables
+## 4a. Kleiner Datensatz
 
-### Les Misérables Graph
+### Les Misérables
 
 Der Datensatz basiert auf den Beziehungen der Figuren aus dem Roman Les Misérables. Er umfasst insgesamt 77 Knoten, wobei jeder Knoten eine einzelne Figur aus der Geschichte repräsentiert. Untenstehend sind die Hauptcharaktere dargestellt:
 <div class="image-container">

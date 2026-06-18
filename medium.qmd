@@ -1,4 +1,4 @@
-## 3b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)
+## 4b. Mittlerer Datensatz
 Im kleinen Beispiel stand *eine* Person im Mittelpunkt: Max und sein Ego-Netz. Jetzt drehen wir die Perspektive um und betrachten ein **vollständiges soziales Netzwerk ohne Mittelpunkt** – das Wikipedia-Abstimmungsnetzwerk `wiki-Vote` mit rund **7.000 Nutzer:innen und über 100.000 Beziehungen**. Hier gibt es kein Zentrum, um das wir die Knoten anordnen könnten.
 
 ### Warum ein globales Layout statt eines Ego-Layouts?
