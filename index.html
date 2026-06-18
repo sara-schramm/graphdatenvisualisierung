@@ -24,6 +24,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -208,6 +243,297 @@ Je mehr Knoten und Kanten hinzukommen, desto schneller wird die Struktur unlesba
 </section>
 <section id="a.-kleiner-datensatz" class="level2">
 <h2 class="anchored" data-anchor-id="a.-kleiner-datensatz">4a. Kleiner Datensatz</h2>
+</section>
+<section id="kleiner-datensatz-les-misérables" class="level1">
+<h1>Kleiner Datensatz – Les Misérables</h1>
+<section id="les-misérables-graph" class="level3">
+<h3 class="anchored" data-anchor-id="les-misérables-graph">Les Misérables Graph</h3>
+Der Datensatz basiert auf den Beziehungen der Figuren aus dem Roman Les Misérables. Er umfasst insgesamt 77 Knoten, wobei jeder Knoten eine einzelne Figur aus der Geschichte repräsentiert. Untenstehend sind die Hauptcharaktere dargestellt:
+<div class="image-container">
+<p><img src="assets/data/les_miserables.jpg" alt="Les Misérables Charaktere"></p>
+</div>
+<p>Die 77 Figuren sind durch 254 Kanten miteinander verbunden, die jeweils eine gemeinsame Szene oder eine direkte Interaktion zwischen zwei Charakteren darstellen. Die Verbindungen sind ungerichtet, das heißt, sie besitzen keine feste Richtung, sondern beschreiben lediglich die Existenz einer Beziehung zwischen zwei Figuren.</p>
+<p>Durch diese Struktur entsteht ein klassisches Netzwerk aus Entitäten und Beziehungen, das sich besonders gut für die Visualisierung von Graphalgorithmen eignet. Der Datensatz ist bewusst klein gehalten, sodass sich jeder einzelne Schritt eines Layout-Verfahrens gut nachvollziehen lässt. Dadurch kann beobachtet werden, wie aus einer reinen Liste von Knoten und Kanten schrittweise eine räumliche Struktur entsteht und sich Muster, Cluster und zentrale Figuren im Verlauf der Berechnung herausbilden.</p>
+</section>
+<section id="die-rohdaten" class="level2">
+<h2 class="anchored" data-anchor-id="die-rohdaten">Die Rohdaten</h2>
+<p>Noch bevor ein Algorithmus arbeitet, besteht ein Graph lediglich aus einer Liste von Knoten und Kanten. Zu diesem Zeitpunkt gibt es keine räumliche Ordnung und keine visuelle Struktur, sondern ausschließlich die Information darüber, welche Elemente miteinander verbunden sind.</p>
+<p>Ein Graph beschreibt somit zunächst nur Beziehungen zwischen Objekten, jedoch nicht deren Position im Raum. Die räumliche Anordnung entsteht erst durch einen späteren Layout-Algorithmus.</p>
+<p>Das bedeutet konkret:</p>
+<ul>
+<li>es existieren keine Koordinaten</li>
+<li>es gibt keine geometrische Struktur</li>
+<li>die Darstellung besteht ausschließlich aus Verbindungen zwischen Knoten.</li>
+</ul>
+<p>Eine Liste aller Verbindungen aus dem Roman Les Misérables ist hier dargestellt</p>
+<div id="graph-step1">
+
+</div>
+<p>Abbildung 1: Übersicht der Rohdaten als Kantenliste (alle Verbindungen zwischen Knoten).</p>
+<details class="acc">
+<summary>
+<span class="acc-toggle"></span> <span class="acc-title">Wie D3 einen Graphen intern speichert</span> <span class="acc-tag tag-impl">Implementierung</span>
+</summary>
+<div class="acc-body">
+<p>Ein Graph wird typischerweise als JSON gespeichert.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"nodes"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"A"</span> <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"B"</span> <span class="fu">}</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"links"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"source"</span><span class="fu">:</span> <span class="st">"A"</span><span class="fu">,</span> <span class="dt">"target"</span><span class="fu">:</span> <span class="st">"B"</span> <span class="fu">}</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Dabei gilt:</p>
+<ul>
+<li>nodes enthält alle Elemente des Graphen</li>
+<li>links beschreibt die Beziehungen zwischen diesen Elementen</li>
+<li>source und target definieren jeweils eine Verbindung zwischen zwei Knoten</li>
+</ul>
+<p>Während der Simulation ersetzt D3 diese abstrakten Verweise intern durch konkrete Objekte mit zusätzlichen Eigenschaften wie x, y, vx und vy. Dadurch kann der Graph dynamisch berechnet und animiert werden.</p>
+</div>
+</details>
+</section>
+<section id="schritt-2---was-passiert-damit" class="level2">
+<h2 class="anchored" data-anchor-id="schritt-2---was-passiert-damit">Schritt 2 - Was passiert damit?</h2>
+<p>Die gleichen Knoten werden nun zufällig im Raum verteilt. Obwohl alle Informationen über die Verbindungen vollständig vorhanden sind, entsteht dabei keine sinnvolle räumliche Struktur.</p>
+<p>Jeder Knoten erhält lediglich eine beliebige Position innerhalb der Zeichenfläche, unabhängig davon, ob er stark oder schwach mit anderen Knoten verbunden ist. Dadurch wird die eigentliche Informationsstruktur des Graphen nicht sichtbar gemacht, sondern durch die zufällige Platzierung überdeckt.</p>
+<p>In dieser Darstellung findest du auch unsere Hauptfiguren wieder, klicke auf den Button, um sie sichtbar zu machen.</p>
+<div id="graph-step2">
+
+</div>
+<p>Abbildung 2: Zufällige Anordnung der Knoten zur ersten visuellen Orientierung.</p>
+<details class="acc">
+<summary>
+<span class="acc-toggle"></span> <span class="acc-title">Warum zufällige Koordinaten keine Information enthalten</span> <span class="acc-tag tag-konzept">Konzept</span>
+</summary>
+<div class="acc-body">
+<p>Der Graph definiert ausschließlich Beziehungen. Er beschreibt nicht, an welcher Position sich ein Knoten befinden soll. Die Koordinaten entstehen erst durch einen Layout-Algorithmus. Zusammenhänge, Cluster oder zentrale Knoten lassen sich dadurch kaum erkennen, da räumliche Nähe hier nicht mit inhaltlicher Nähe übereinstimmt.</p>
+<ul>
+<li>keine Cluster erkennbar</li>
+<li>keine Hierarchie sichtbar</li>
+<li>keine Orientierung im Raum</li>
+<li>Positionen sind rein zufällig und bedeutungslos</li>
+</ul>
+<p>Damit wird deutlich, dass ein Graph ohne geeigneten Layout-Algorithmus zwar vollständig definiert ist, aber visuell kaum interpretierbar bleibt.</p>
+</div>
+</details>
+</section>
+<section id="schritt-3-die-idee-eines-force-directed-layouts" class="level2">
+<h2 class="anchored" data-anchor-id="schritt-3-die-idee-eines-force-directed-layouts">Schritt 3 – Die Idee eines Force-Directed Layouts</h2>
+<p>Wie kann aus einer ungeordneten Punktmenge eine lesbare Struktur entstehen?</p>
+<p>Die Grundidee besteht darin, den Graphen nicht mehr als reine Sammlung von Punkten und Verbindungen zu betrachten, sondern als ein dynamisches System, das sich wie ein physikalisches Modell verhält. Die einzelnen Knoten besitzen dabei keine festen Positionen, sondern reagieren aufeinander, sobald Kräfte zwischen ihnen wirken. Im Zentrum stehen zwei gegensätzliche Effekte, die gleichzeitig auftreten.</p>
+<p>Einerseits ziehen sich Knoten, die durch eine Kante verbunden sind, gegenseitig an. Diese „Anziehung“ sorgt dafür, dass verwandte oder direkt verbundene Elemente näher zusammenrücken.</p>
+<p>Andererseits stoßen sich alle Knoten gegenseitig ab, unabhängig davon, ob sie verbunden sind oder nicht. Diese „Abstoßung“ verhindert, dass alle Punkte in einem einzigen Cluster kollabieren.</p>
+<p>Durch das Zusammenspiel dieser beiden Kräfte entsteht eine kontinuierliche Bewegung im System. Die Knoten verschieben sich Schritt für Schritt, bis sich ein Zustand einstellt, in dem sich die Kräfte weitgehend ausgleichen. In diesem Gleichgewicht gibt es keine dominante Bewegung mehr, und die Struktur wirkt stabil und lesbar. Das Ergebnis ist keine vorgegebene Anordnung, sondern eine emergente Struktur, die sich aus den zugrunde liegenden Beziehungen selbst entwickelt.</p>
+In der folgenden Animation ist das Verhalten der Kräfte sichtbar. Versuche die Knoten näher aneinander zu bringen und erkenne was passiert.
+<div id="graph-step3">
+
+</div>
+<p>Abbildung 3: Animierte Darstellung der physischen Kräfte.</p>
+<details class="acc">
+<summary>
+<span class="acc-toggle"></span> <span class="acc-title">Die Kräfte hinter dem Layout</span> <span class="acc-tag tag-algo">Algorithmus</span>
+</summary>
+<div class="acc-body">
+<p>
+Das <strong>Fruchterman-Reingold-Modell</strong> betrachtet den Graphen als physikalisches System, in dem sich Knoten gegenseitig beeinflussen.
+</p>
+<p>
+Jeder Knoten besitzt eine Position <em>x<sub>i</sub> ∈ ℝ²</em>. Die Simulation passt diese Positionen iterativ an, bis ein stabiles Gleichgewicht entsteht.
+</p>
+<p>
+<strong>1. Attraction (Anziehung entlang der Kanten)</strong>
+</p>
+<p>
+Verbundene Knoten wirken wie durch Federn gekoppelt.
+</p>
+<div class="formula-block">
+<pre>F<sub>a</sub>(i,j) = k · (‖x<sub>i</sub> - x<sub>j</sub>‖ - l) · (x<sub>j</sub> - x<sub>i</sub>) / ‖x<sub>j</sub> - x<sub>i</sub>‖</pre>
+</div>
+<ul>
+<li>
+<strong>l</strong> = optimale Kantenlänge
+</li>
+<li>
+Knoten werden zusammengezogen, wenn sie zu weit auseinander liegen
+</li>
+<li>
+und abgestoßen, wenn sie zu nah sind
+</li>
+</ul>
+<p>
+Ziel: gleichmäßige Kantenlängen
+</p>
+<p>
+<strong>2. Repulsion (Abstoßung aller Knoten)</strong>
+</p>
+<p>
+Alle Knoten stoßen sich gegenseitig ab, um Überlagerungen zu vermeiden.
+</p>
+<div class="formula-block">
+<pre>F<sub>r</sub>(i,j) = k² / ‖x<sub>i</sub> - x<sub>j</sub>‖² · (x<sub>i</sub> - x<sub>j</sub>) / ‖x<sub>i</sub> - x<sub>j</sub>‖</pre>
+</div>
+<ul>
+<li>
+starke Abstoßung bei kleinen Distanzen
+</li>
+<li>
+schwächer werdend mit wachsendem Abstand
+</li>
+<li>
+wirkt auf alle Knotenpaare
+</li>
+</ul>
+<p>
+Ziel: gleichmäßige Verteilung im Raum
+</p>
+<p>
+<strong>3. Gleichgewichtszustand</strong>
+</p>
+<p>
+Die endgültige Position entsteht, wenn sich alle Kräfte ausgleichen:
+</p>
+<div class="formula-block">
+<pre>∑F<sub>a</sub> + ∑F<sub>r</sub> ≈ 0</pre>
+</div>
+<ul>
+<li>
+keine dominante Bewegung mehr
+</li>
+<li>
+das System ist stabil
+</li>
+<li>
+ein visuell lesbares Layout ist entstanden
+</li>
+</ul>
+<p>
+Das System minimiert implizit eine Energiefunktion:
+</p>
+<ul>
+<li>
+Kanten wollen „kurz“ sein (Attraktion)
+</li>
+<li>
+Knoten wollen „weit weg“ sein (Repulsion)
+</li>
+</ul>
+<p>
+Das Ergebnis ist ein <strong>kompromissoptimiertes Layout</strong>, das Struktur sichtbar macht.
+</p>
+</div>
+</details>
+</section>
+<section id="schritt-4-implementierung-von-d3" class="level2">
+<h2 class="anchored" data-anchor-id="schritt-4-implementierung-von-d3">Schritt 4 – Implementierung von D3</h2>
+<p>D3 (Data-Driven Documents) ist eine JavaScript-Bibliothek zur Visualisierung von Daten im Web. Sie dient dazu, Daten direkt mit grafischen Elementen im Browser zu verbinden und diese dynamisch darzustellen.</p>
+<p>Im Kern bedeutet das, dass nicht statische Grafiken erstellt werden, sondern eine direkte Kopplung zwischen Daten und DOM-Elementen (z. B. SVG oder HTML) entsteht. Wenn sich die Daten verändern, aktualisiert sich automatisch auch die visuelle Darstellung.</p>
+<p>Die zentrale Idee lässt sich so zusammenfassen:</p>
+<ul>
+<li>Daten steuern die Darstellung vollständig<br>
+</li>
+<li>Elemente werden aus Daten heraus erzeugt, nicht manuell gezeichnet<br>
+</li>
+<li>Änderungen an Daten führen sofort zu visuellen Updates</li>
+</ul>
+<p>Besonders im Bereich von Graphen ist D3 sehr leistungsfähig, da es:</p>
+<ul>
+<li>Knoten und Kanten direkt aus JSON-Strukturen erzeugt<br>
+</li>
+<li>physikalische Simulationen zur Layout-Berechnung unterstützt<br>
+</li>
+<li>Positionen kontinuierlich aktualisiert (über sogenannte „ticks“)</li>
+</ul>
+<p>Dadurch eignet sich D3 besonders gut für <strong>interaktive Netzwerkvisualisierungen im Browser</strong>, bei denen sich Strukturen dynamisch entwickeln und erkunden lassen.</p>
+<div id="graph-step4">
+
+</div>
+<p>Abbildung 4: Klassische Force-Directed Visualisierung des gesamten Netzwerks mit physikalischer Simulation.</p>
+<details class="acc">
+<summary>
+<span class="acc-toggle"></span> <span class="acc-title">Welche Kräfte D3 berechnet</span> <span class="acc-tag tag-impl">Implementierung</span>
+</summary>
+<div class="acc-body">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="er">const</span> <span class="er">simulation</span> <span class="er">=</span> <span class="er">d3.forceSimulation(nodes)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="er">.force(</span><span class="st">"link"</span><span class="er">,</span> <span class="er">...)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="er">.force(</span><span class="st">"charge"</span><span class="er">,</span> <span class="er">...)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="er">.force(</span><span class="st">"center"</span><span class="er">,</span> <span class="er">...);</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="force-grid">
+<div class="force-card">
+<p>
+<strong>forceLink</strong>
+</p>
+Verbundene Knoten werden durch eine virtuelle Feder miteinander verbunden. Die Kraft versucht, eine gleichmäßige Distanz zwischen benachbarten Knoten einzuhalten und bildet so die Grundstruktur des Graphen.
+</div>
+<div class="force-card">
+<p>
+<strong>forceManyBody</strong>
+</p>
+Alle Knoten stoßen sich gegenseitig ab. Dadurch werden Überlagerungen vermieden und der verfügbare Raum gleichmäßig genutzt.
+</div>
+<div class="force-card">
+<p>
+<strong>forceCenter</strong>
+</p>
+Die gesamte Simulation wird zur Mitte der Zeichenfläche gezogen. Dadurch bleibt der Graph im sichtbaren Bereich und driftet nicht aus dem Fenster.
+</div>
+</div>
+</div>
+</details>
+</section>
+<section id="schritt-5-das-ergebnis" class="level2">
+<h2 class="anchored" data-anchor-id="schritt-5-das-ergebnis">Schritt 5 – Das Ergebnis</h2>
+<p>SVG (Scalable Vector Graphics) ist ein vektorbasiertes Grafikformat im Browser, das grafische Elemente wie Kreise, Linien oder Pfade als einzelne, adressierbare Objekte darstellt. Dadurch lassen sich Visualisierungen flexibel aufbauen und dynamisch verändern, ohne sie neu zu rendern.</p>
+<p>Nach mehreren Iterationen der Force-Simulation stabilisiert sich die Struktur des Graphen. Die Knoten bewegen sich so lange, bis sich die Kräfte zwischen Anziehung und Abstoßung weitgehend ausgleichen.</p>
+<p>In diesem Zustand wird die Struktur des Datensatzes sichtbar. Aus einer reinen Liste von Beziehungen entsteht ein räumliches Muster mit klar erkennbarer Ordnung.</p>
+<p>Typische Strukturen treten hervor:</p>
+<ul>
+<li>dicht verbundene Cluster</li>
+<li>zentrale Knoten mit vielen Verbindungen</li>
+<li>klar abgegrenzte Gruppen</li>
+<li>erkennbare Nachbarschaften im Netzwerk</li>
+</ul>
+<details class="acc">
+<summary>
+<span class="acc-toggle"></span> <span class="acc-title">Warum SVG hier die richtige Wahl ist</span> <span class="acc-tag tag-arch">Architektur</span>
+</summary>
+<div class="acc-body">
+<p>SVG eignet sich besonders gut für kleine Graphen, weil jedes Element (Knoten und Kante) direkt im DOM existiert und dadurch einzeln angesprochen werden kann. Das ermöglicht einfache Interaktionen wie Hover, Drag oder Animationen ohne zusätzliche Rendering-Schichten. Da der Datensatz nur wenige Elemente umfasst, reicht die Performance des Browsers problemlos aus und bleibt flüssig und interaktiv.</p>
+</div>
+</details>
+<p>Die Farben zeigen, welche Knoten im Les-Misérables-Datensatz derselben Community bzw. sozialen Gruppe zugeordnet sind (also stärker miteinander verbunden sind als mit anderen Gruppen).</p>
+<div id="graph-step5">
+
+</div>
+<p>Abbildung 5: Interaktive Netzwerkanalyse mit Gruppenkolorierung, Hover-Highlighting und Detailanzeige.</p>
+</section>
+<section id="schritt-6-die-grenze" class="level2">
+<h2 class="anchored" data-anchor-id="schritt-6-die-grenze">Schritt 6 – Die Grenze</h2>
+<p>Das gleiche Verfahren funktioniert nicht nur für kleine Netzwerke, sondern lässt sich grundsätzlich auf größere Datenmengen anwenden. Genau hier zeigt sich jedoch eine entscheidende Schwäche.</p>
+<p>Mit wachsender Größe verändert sich das Verhalten des Graphen deutlich:</p>
+<p>77 → 154 → 308 → 616 → 1232 Knoten</p>
+<p>Je mehr Elemente hinzugefügt werden, desto stärker überlagern sich Knoten und Kanten. Die klare Struktur beginnt sich aufzulösen, bis die Darstellung kaum noch interpretierbar ist.</p>
+<p>Es entsteht ein sogenannter <em>Hairball</em> – ein dichtes Gewirr aus Linien und Punkten, in dem kaum noch einzelne Strukturen erkennbar sind.</p>
+<p>Die Ursachen dafür sind strukturell:</p>
+<ul>
+<li>zu viele Knoten im gleichen Raum<br>
+</li>
+<li>zu viele Kanten pro Fläche<br>
+</li>
+<li>visuelle Überlagerung statt Trennung<br>
+</li>
+<li>begrenzte Auflösung des Bildschirms</li>
+</ul>
+<p>Was passiert, wenn der Roman eine Fortsetzung bekommen würde und irgendwann aus 77 Figuren mehreren zehntausend Charakter werden? Erhöhe die Anzahl der Knoten und siehe was passiert? Ab wann wird es ein Problem?</p>
+<div id="graph-step6">
+
+</div>
+<p>Abbildung 6: Skalierbarer Force-Directed Graph mit wählbarer Netzwerkgröße und dynamischer Erweiterung.</p>
+<p>Im nächsten Abschnitt betrachten wir deshalb einen deutlich größeren Datensatz.</p>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="graph-small/graph-small.js"></script>
 <hr>
 </section>
 <section id="b.-mittlerer-datensatz" class="level2">
@@ -360,7 +686,7 @@ Je mehr Knoten und Kanten hinzukommen, desto schneller wird die Struktur unlesba
 </section>
 <section id="gnn-graph-neural-network" class="level2">
 <h2 class="anchored" data-anchor-id="gnn-graph-neural-network">5. GNN (Graph Neural Network)</h2>
-<p>[Hier folgt weiterer Inhalt]</p>
+<p>Das Problem: <strong>Daten haben keine räumliche Ordnung</strong> – nur Beziehungen.</p>
 </section>
 <section id="how-to-handle-rezeptbuch" class="level2">
 <h2 class="anchored" data-anchor-id="how-to-handle-rezeptbuch">6. How to handle (Rezeptbuch)</h2>
@@ -370,6 +696,7 @@ Je mehr Knoten und Kanten hinzukommen, desto schneller wird die Struktur unlesba
 <p>https://www.yworks.com/pages/force-directed-graph-layout https://cambridge-intelligence.com/blog/automatic-graph-layouts/ https://towardsdatascience.com/text-network-analysis-generate-beautiful-network-visualisations-a373dbe183ca/</p>
 
 
+</section>
 </section>
 </section>
 
