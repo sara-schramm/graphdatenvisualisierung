@@ -1,4 +1,276 @@
-/* Interactive force-directed graph (section 3b) */
+/* =========================
+   Layout Basics
+========================= */
+
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: #2a2a28;
+  line-height: 1.6;
+  background: #fff;
+}
+
+
+.text {
+  font-size: 0.95rem;
+}
+
+.image img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* =========================
+   Graph Containers
+========================= */
+
+#graph,
+#graph-step1,
+#graph-step2,
+#graph-step3,
+#graph-step4,
+#graph-step5,
+#graph-step6,
+#graph-roh {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 420px;
+  max-height: 500px;
+  overflow: hidden;
+  margin: 1rem 0;
+  background: white;
+}
+
+#graph svg,
+#graph-step1 svg,
+#graph-step2 svg,
+#graph-step3 svg,
+#graph-step4 svg,
+#graph-step5 svg,
+#graph-step6 svg,
+#graph-roh svg {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: block;
+}
+
+.character-icon-control {
+  margin-bottom: 0.85rem;
+}
+
+.character-icon-toggle {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.75rem;
+  background: #fff;
+  color: #0f172a;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.character-icon-toggle:hover {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+}
+
+/* List view for step1: show each link as two node names, scrollable */
+#graph-step1 .link-list {
+  height: 100%;
+  max-height: 100%;
+  overflow: auto;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+#graph-step1 .link-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  border-bottom: 1px solid #f1f1f1;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+#graph-step1 .node-badge {
+  background: #fff;
+  padding: 0.25rem 0.45rem;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+#graph-step1 .sep {
+  color: #999;
+}
+
+/* =========================
+   Tooltip
+========================= */
+
+#tooltip {
+  position: absolute;
+  display: none;
+  background: white;
+  border: 1px solid #ddd;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  pointer-events: none;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* =========================
+   Buttons
+========================= */
+
+button {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #d0cdc7;
+  background: #fafaf8;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+button:hover {
+  background: #f0eee9;
+}
+
+/* =========================
+   Accordion (acc)
+========================= */
+
+.acc {
+  margin: 0.75rem 0;
+  border: 1px solid #e2e0da;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.acc summary {
+  cursor: pointer;
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  user-select: none;
+  list-style: none;
+}
+
+.acc summary::-webkit-details-marker {
+  display: none;
+}
+
+.acc-toggle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid #d0cdc7;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #888;
+  background: #fafaf8;
+}
+
+.acc-toggle::before {
+  content: "+";
+}
+
+.acc[open] .acc-toggle::before {
+  content: "−";
+}
+
+.acc-title {
+  flex: 1;
+}
+
+/* Tag System */
+.acc-tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+/* Colors */
+.tag-konzept {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.tag-algo {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.tag-impl {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+
+.tag-arch {
+  background: #f0f9ff;
+  color: #0369a1;
+}
+
+.acc-body {
+  padding: 0.75rem 1rem 1rem;
+  font-size: 0.9rem;
+  color: #555;
+  border-top: 1px solid #e2e0da;
+}
+
+/* =========================
+   SVG Styling Defaults
+========================= */
+
+.formula-block {
+  border: 1px solid #d0d0d0;
+  border-radius: 12px;
+  background: #f7f8fb;
+  padding: 1rem;
+  margin: 1rem 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  overflow-x: auto;
+}
+
+.formula-block pre {
+  margin: 0;
+  font-size: 1.1rem;
+  white-space: pre-wrap;
+}
+
+line {
+  stroke-linecap: round;
+}
+
+circle {
+  cursor: pointer;
+}
+
+/* =========================
+   Optional: subtle caption
+========================= */
+
+.figure-caption {
+  font-size: 0.8rem;
+  color: #777;
+  margin-top: 0.5rem;
+}
+
+----------
 
 .force-graph {
   position: relative;
@@ -96,4 +368,307 @@
 
 .force-graph .fg-tooltip strong {
   color: #fff;
+}
+
+
+/* =========================
+   Accordion
+========================= */
+
+.acc {
+  margin: .5rem 0;
+  border: 1px solid #e2e0da;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.acc summary {
+  cursor: pointer;
+  padding: .8rem 1rem .8rem .875rem;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  list-style: none;
+  font-size: .875rem;
+  font-weight: 500;
+  color: #2a2a28;
+  user-select: none;
+}
+
+.acc summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Toggle Button */
+.acc-toggle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid #d0cdc7;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #aaa;
+  background: #fafaf8;
+  font-size: 14px;
+  line-height: 1;
+  transition: all .15s;
+}
+
+.acc-toggle::before {
+  content: '+';
+}
+
+.acc[open] .acc-toggle {
+  background: #eceae4;
+  color: #555;
+  border-color: #bbb;
+}
+
+.acc[open] .acc-toggle::before {
+  content: '−';
+}
+
+.acc-title {
+  flex: 1;
+}
+
+.acc-tag {
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+  padding: 2px 9px;
+  border-radius: 20px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.acc-body {
+  padding: .75rem 1rem 1rem;
+  font-size: .875rem;
+  line-height: 1.75;
+  color: #555552;
+  border-top: 1px solid #e2e0da;
+}
+
+.acc-note {
+  margin-top: .75rem;
+  padding-left: .875rem;
+  border-left: 2px solid #d3d1c7;
+  font-size: .85rem;
+  color: #666;
+}
+
+.tag-konzept {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.tag-algo {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.tag-impl {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.tag-arch {
+  background: #f0f9ff;
+  color: #0369a1;
+}
+
+
+#graph {
+  margin-top: 1rem;
+  border: 1px solid #e2e0da;
+  border-radius: 10px;
+  background: #fafaf8;
+}
+
+.physics-animation {
+  width: 100%;
+  max-width: 800px;
+  min-height: 400px;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.physics-placeholder {
+  color: #666;
+  font-style: italic;
+}
+
+.physics-animation.active {
+  animation: pulse-background 2s ease-in-out infinite alternate;
+}
+
+.physics-toggle {
+  margin-top: 1rem;
+}
+
+@keyframes pulse-background {
+  from {
+    background: #f8f9fa;
+  }
+  to {
+    background: #e0f2fe;
+  }
+}
+
+#graph line {
+  stroke: #b0b0b0;
+  stroke-width: 1;
+  opacity: 0.4;
+}
+
+#graph circle {
+  fill: #6b6b6b;
+}
+
+#graph svg {
+  background: #fafaf8;
+  border: 1px solid #e2e0da;
+  border-radius: 10px;
+}
+
+#tooltip {
+  position: absolute;
+  background: white;
+  border: 1px solid #ddd;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  display: none;
+  pointer-events: none;
+}
+
+button {
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+}
+
+#graph-random {
+  margin-top: 1rem;
+  border: 1px solid #e2e0da;
+  border-radius: 10px;
+  background: #fafaf8;
+}
+
+#graph-random circle {
+  fill: #7a7a7a;
+  opacity: 0.8;
+}
+
+#graph-random line {
+  stroke: #b0b0b0;
+  stroke-width: 1;
+  opacity: 0.25;
+}
+
+#force-intro {
+  border: 1px solid #e2e0da;
+  border-radius: 10px;
+  background: #fafaf8;
+  min-height: 420px;
+}
+
+#force-intro svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+#force-intro line {
+  stroke: #c6c6c6;
+  stroke-width: 1;
+  opacity: .45;
+}
+
+#force-intro circle {
+  fill: #666;
+}
+
+.physics-animation {
+  width: 100%;
+  max-width: 800px;
+  min-height: 400px;
+  background: #f8f9fa;
+  border: 1px solid #e2e0da;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.physics-animation svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.physics-animation.active {
+  animation: pulse-background 2s ease-in-out infinite alternate;
+}
+
+.physics-toggle {
+  margin-top: 1rem;
+}
+
+.figure-caption {
+  margin-top: .75rem;
+  font-size: .85rem;
+  color: #666;
+  text-align: center;
+}
+
+.force-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.force-card {
+  padding: 1.25rem;
+  border: 1px solid #e2e0da;
+  border-radius: 10px;
+  background: #fafaf8;
+}
+
+.force-card h4 {
+  margin-top: 0;
+  margin-bottom: .8rem;
+  color: #2a2a28;
+}
+
+.force-card p {
+  margin: 0;
+  line-height: 1.7;
+  color: #555552;
+}
+
+@media (max-width: 900px) {
+  .force-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.caption {
+  text-align: center;
+  font-size: 12px;
+  color: #666;
+  margin-top: 6px;
 }
