@@ -1,10 +1,8 @@
----
 title: "Graphdatenvisualisierung im Web"
 author: "Sara, Silvia, Adam"
 format: html
 jupyter: python3
 bibliography: references.bib
----
 
 ```{=html}
 <script src="assets/js/site.js" defer></script>
@@ -35,26 +33,22 @@ Mit wachsender Größe entstehen Probleme:
 Ab einem gewissen Punkt entsteht ein sogenannter **Hairball-Effekt**.
 
 Das folgende ist nur zur Vorschau:
-```{=html}
 
 Im folgenden werden drei unterschiedliche Ansätze aufgezeigt:
 
----
 
 ## 4a. Kleiner Datensatz
 {{< include small.qmd >}}
----
+
 
 
 ## 4b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)
 {{< include medium.qmd >}}
 
----
 
 ## 4c. Großer Datensatz
 {{< include big.qmd >}}
 
----
 
 ## 5. Warum Graphen schwer darstellbar sind — und was GNNs anders machen {#gnn-topology}
 
