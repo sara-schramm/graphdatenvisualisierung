@@ -213,6 +213,7 @@ window.Quarto = {
 </header>
 
 
+<script src="assets/js/site.js" defer=""></script>
 <section id="intro-warum-soziale-netzwerke-schwer-zu-zeichnen-sind" class="level2">
 <h2 class="anchored" data-anchor-id="intro-warum-soziale-netzwerke-schwer-zu-zeichnen-sind">1. Intro (Warum Soziale Netzwerke schwer zu zeichnen sind)</h2>
 <p>Soziale Netzwerke bestehen aus tausenden bis Millionen von Verbindungen.<br>
@@ -237,61 +238,76 @@ Je mehr Knoten und Kanten hinzukommen, desto schneller wird die Struktur unlesba
 <li>Orientierung geht verloren</li>
 </ul>
 <p>Ab einem gewissen Punkt entsteht ein sogenannter <strong>Hairball-Effekt</strong>.</p>
-<p>[hier Abbildung von Silvia hin]</p>
-<p>Im folgenden werden drei unterschiedliche Ansätze aufgezeigt:</p>
-<hr>
-</section>
-<section id="a.-kleiner-datensatz" class="level2">
-<h2 class="anchored" data-anchor-id="a.-kleiner-datensatz">4a. Kleiner Datensatz</h2>
-</section>
-<section id="kleiner-datensatz-les-misérables" class="level1">
-<h1>Kleiner Datensatz – Les Misérables</h1>
-<section id="les-misérables-graph" class="level3">
-<h3 class="anchored" data-anchor-id="les-misérables-graph">Les Misérables Graph</h3>
+<p>Das folgende ist nur zur Vorschau:</p>
+
+Im folgenden werden drei unterschiedliche Ansätze aufgezeigt:
+
+---
+
+## 4a. Kleiner Datensatz
+# Kleiner Datensatz – Les Misérables
+
+### Les Misérables Graph
+
 Der Datensatz basiert auf den Beziehungen der Figuren aus dem Roman Les Misérables. Er umfasst insgesamt 77 Knoten, wobei jeder Knoten eine einzelne Figur aus der Geschichte repräsentiert. Untenstehend sind die Hauptcharaktere dargestellt:
 <div class="image-container">
-<p><img src="assets/data/les_miserables.jpg" alt="Les Misérables Charaktere"></p>
-</div>
-<p>Die 77 Figuren sind durch 254 Kanten miteinander verbunden, die jeweils eine gemeinsame Szene oder eine direkte Interaktion zwischen zwei Charakteren darstellen. Die Verbindungen sind ungerichtet, das heißt, sie besitzen keine feste Richtung, sondern beschreiben lediglich die Existenz einer Beziehung zwischen zwei Figuren.</p>
-<p>Durch diese Struktur entsteht ein klassisches Netzwerk aus Entitäten und Beziehungen, das sich besonders gut für die Visualisierung von Graphalgorithmen eignet. Der Datensatz ist bewusst klein gehalten, sodass sich jeder einzelne Schritt eines Layout-Verfahrens gut nachvollziehen lässt. Dadurch kann beobachtet werden, wie aus einer reinen Liste von Knoten und Kanten schrittweise eine räumliche Struktur entsteht und sich Muster, Cluster und zentrale Figuren im Verlauf der Berechnung herausbilden.</p>
-</section>
-<section id="die-rohdaten" class="level2">
-<h2 class="anchored" data-anchor-id="die-rohdaten">Die Rohdaten</h2>
-<p>Noch bevor ein Algorithmus arbeitet, besteht ein Graph lediglich aus einer Liste von Knoten und Kanten. Zu diesem Zeitpunkt gibt es keine räumliche Ordnung und keine visuelle Struktur, sondern ausschließlich die Information darüber, welche Elemente miteinander verbunden sind.</p>
-<p>Ein Graph beschreibt somit zunächst nur Beziehungen zwischen Objekten, jedoch nicht deren Position im Raum. Die räumliche Anordnung entsteht erst durch einen späteren Layout-Algorithmus.</p>
-<p>Das bedeutet konkret:</p>
-<ul>
-<li>es existieren keine Koordinaten</li>
-<li>es gibt keine geometrische Struktur</li>
-<li>die Darstellung besteht ausschließlich aus Verbindungen zwischen Knoten.</li>
-</ul>
-<p>Eine Liste aller Verbindungen aus dem Roman Les Misérables ist hier dargestellt</p>
-<div id="graph-step1">
+
+<img src="assets/data/les_miserables.jpg" alt="Les Misérables Charaktere">
 
 </div>
-<p>Abbildung 1: Übersicht der Rohdaten als Kantenliste (alle Verbindungen zwischen Knoten).</p>
+
+Die 77 Figuren sind durch 254 Kanten miteinander verbunden, die jeweils eine gemeinsame Szene oder eine direkte Interaktion zwischen zwei Charakteren darstellen. Die Verbindungen sind ungerichtet, das heißt, sie besitzen keine feste Richtung, sondern beschreiben lediglich die Existenz einer Beziehung zwischen zwei Figuren.
+
+Durch diese Struktur entsteht ein klassisches Netzwerk aus Entitäten und Beziehungen, das sich besonders gut für die Visualisierung von Graphalgorithmen eignet. Der Datensatz ist bewusst klein gehalten, sodass sich jeder einzelne Schritt eines Layout-Verfahrens gut nachvollziehen lässt. Dadurch kann beobachtet werden, wie aus einer reinen Liste von Knoten und Kanten schrittweise eine räumliche Struktur entsteht und sich Muster, Cluster und zentrale Figuren im Verlauf der Berechnung herausbilden.
+
+## Die Rohdaten
+
+Noch bevor ein Algorithmus arbeitet, besteht ein Graph lediglich aus einer Liste von Knoten und Kanten. Zu diesem Zeitpunkt gibt es keine räumliche Ordnung und keine visuelle Struktur, sondern ausschließlich die Information darüber, welche Elemente miteinander verbunden sind.
+
+Ein Graph beschreibt somit zunächst nur Beziehungen zwischen Objekten, jedoch nicht deren Position im Raum. Die räumliche Anordnung entsteht erst durch einen späteren Layout-Algorithmus.
+
+Das bedeutet konkret:
+
+- es existieren keine Koordinaten
+- es gibt keine geometrische Struktur
+- die Darstellung besteht ausschließlich aus Verbindungen zwischen Knoten.
+
+Eine Liste aller Verbindungen aus dem Roman Les Misérables ist hier dargestellt
+
+<div id="graph-step1"></div>
+
+Abbildung 1: Übersicht der Rohdaten als Kantenliste (alle Verbindungen zwischen Knoten).
+
 <details class="acc">
+
 <summary>
-<span class="acc-toggle"></span> <span class="acc-title">Wie D3 einen Graphen intern speichert</span> <span class="acc-tag tag-impl">Implementierung</span>
+
+<span class="acc-toggle"></span>
+<span class="acc-title">Wie D3 einen Graphen intern speichert</span>
+<span class="acc-tag tag-impl">Implementierung</span>
 </summary>
+
 <div class="acc-body">
-<p>Ein Graph wird typischerweise als JSON gespeichert.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"nodes"</span><span class="fu">:</span> <span class="ot">[</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"A"</span> <span class="fu">}</span><span class="ot">,</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"B"</span> <span class="fu">}</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"links"</span><span class="fu">:</span> <span class="ot">[</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"source"</span><span class="fu">:</span> <span class="st">"A"</span><span class="fu">,</span> <span class="dt">"target"</span><span class="fu">:</span> <span class="st">"B"</span> <span class="fu">}</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+Ein Graph wird typischerweise als JSON gespeichert.
+
+```json
+{
+  "nodes": [
+    { "id": "A" },
+    { "id": "B" }
+  ],
+  "links": [
+    { "source": "A", "target": "B" }
+  ]
+}
 <p>Dabei gilt:</p>
 <ul>
 <li>nodes enthält alle Elemente des Graphen</li>
 <li>links beschreibt die Beziehungen zwischen diesen Elementen</li>
 <li>source und target definieren jeweils eine Verbindung zwischen zwei Knoten</li>
 </ul>
-<p>Während der Simulation ersetzt D3 diese abstrakten Verweise intern durch konkrete Objekte mit zusätzlichen Eigenschaften wie x, y, vx und vy. Dadurch kann der Graph dynamisch berechnet und animiert werden.</p>
+Während der Simulation ersetzt D3 diese abstrakten Verweise intern durch konkrete Objekte mit zusätzlichen Eigenschaften wie x, y, vx und vy. Dadurch kann der Graph dynamisch berechnet und animiert werden.
 </div>
 </details>
 </section>
@@ -456,10 +472,10 @@ Das Ergebnis ist ein <strong>kompromissoptimiertes Layout</strong>, das Struktur
 <span class="acc-toggle"></span> <span class="acc-title">Welche Kräfte D3 berechnet</span> <span class="acc-tag tag-impl">Implementierung</span>
 </summary>
 <div class="acc-body">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="er">const</span> <span class="er">simulation</span> <span class="er">=</span> <span class="er">d3.forceSimulation(nodes)</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="er">.force(</span><span class="st">"link"</span><span class="er">,</span> <span class="er">...)</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="er">.force(</span><span class="st">"charge"</span><span class="er">,</span> <span class="er">...)</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="er">.force(</span><span class="st">"center"</span><span class="er">,</span> <span class="er">...);</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="er">const</span> <span class="er">simulation</span> <span class="er">=</span> <span class="er">d3.forceSimulation(nodes)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="er">.force(</span><span class="st">"link"</span><span class="er">,</span> <span class="er">...)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="er">.force(</span><span class="st">"charge"</span><span class="er">,</span> <span class="er">...)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="er">.force(</span><span class="st">"center"</span><span class="er">,</span> <span class="er">...);</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="force-grid">
 <div class="force-card">
 <p>
@@ -536,11 +552,11 @@ Die gesamte Simulation wird zur Mitte der Zeichenfläche gezogen. Dadurch bleibt
 <script src="graph-small/graph-small.js"></script>
 <hr>
 </section>
-<section id="b.-mittlerer-datensatz" class="level2">
-<h2 class="anchored" data-anchor-id="b.-mittlerer-datensatz">4b. Mittlerer Datensatz</h2>
-</section>
 <section id="b.-mittlerer-datensatz-ein-ganzes-netzwerk-statt-eines-freundeskreises" class="level2">
-<h2 class="anchored" data-anchor-id="b.-mittlerer-datensatz-ein-ganzes-netzwerk-statt-eines-freundeskreises">3b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)</h2>
+<h2 class="anchored" data-anchor-id="b.-mittlerer-datensatz-ein-ganzes-netzwerk-statt-eines-freundeskreises">4b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)</h2>
+</section>
+<section id="b.-mittlerer-datensatz-ein-ganzes-netzwerk-statt-eines-freundeskreises-1" class="level2">
+<h2 class="anchored" data-anchor-id="b.-mittlerer-datensatz-ein-ganzes-netzwerk-statt-eines-freundeskreises-1">3b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)</h2>
 <p>Im kleinen Beispiel stand <em>eine</em> Person im Mittelpunkt: Max und sein Ego-Netz. Jetzt drehen wir die Perspektive um und betrachten ein <strong>vollständiges soziales Netzwerk ohne Mittelpunkt</strong> – das Wikipedia-Abstimmungsnetzwerk <code>wiki-Vote</code> mit rund <strong>7.000 Nutzer:innen und über 100.000 Beziehungen</strong>. Hier gibt es kein Zentrum, um das wir die Knoten anordnen könnten.</p>
 <section id="warum-ein-globales-layout-statt-eines-ego-layouts" class="level3">
 <h3 class="anchored" data-anchor-id="warum-ein-globales-layout-statt-eines-ego-layouts">Warum ein globales Layout statt eines Ego-Layouts?</h3>
@@ -684,10 +700,309 @@ Die gesamte Simulation wird zur Mitte der Zeichenfläche gezogen. Dadurch bleibt
 <hr>
 </section>
 </section>
-<section id="gnn-graph-neural-network" class="level2">
-<h2 class="anchored" data-anchor-id="gnn-graph-neural-network">5. GNN (Graph Neural Network)</h2>
-<p>Das Problem: <strong>Daten haben keine räumliche Ordnung</strong> – nur Beziehungen.</p>
+<section id="gnn-topology" class="level2">
+<h2 class="anchored" data-anchor-id="gnn-topology">5. Warum Graphen schwer darstellbar sind — und was GNNs anders machen</h2>
+<div class="section-gnn">
+<div class="section-hero reveal-on-scroll">
+<p>Abschnitte 1–4 zeigen, <strong>wie</strong> man Graphen zeichnet und skaliert. Hier geht es um die tiefere Frage: Warum ist ein Netzwerk <strong>kein Bild</strong> — und wie übersetzen Graph Neural Networks (GNNs) irregularer Topologie in nutzbare Repräsentationen?</p>
+</div>
+<nav class="gnn-section-nav" aria-label="Abschnitt 5 Navigation">
+  <a href="#grid-as-graph">Gitter</a>
+  <a href="#topology-challenge">Topologie</a>
+  <a href="#embedding-projection">Einbettung</a>
+  <a href="#perm-invariance-demo">Permutation</a>
+  <a href="#cnn-gnn-compare">CNN ↔ GNN</a>
+  <a href="#gnn-math">Message Passing</a>
+  <a href="#gnn-playground-widget">Simulator</a>
+  <a href="#gnn-quiz-widget">Quiz</a>
+</nav>
+<script src="assets/js/gnn-section.js" defer=""></script>
+<script src="assets/js/gnn-playground.js" defer=""></script>
+<p>Du kennst bereits <strong>CNNs</strong> und <strong>Fully Connected Networks</strong>: Bei Bildern liegen Pixel auf einem regulären Gitter, Faltungen nutzen lokale Nachbarschaft mit <strong>geteilten Gewichten</strong>. Bei Graphen fehlt genau dieses Gitter — und genau deshalb scheitern naïve Übertragungen.</p>
+<section id="grid-as-graph-heading" class="level3">
+<h3 class="anchored" data-anchor-id="grid-as-graph-heading">Was ist ein Graph — und warum Bilder special sind</h3>
+<p>Ein <strong>Graph</strong> verbindet Entitäten (<strong>Knoten</strong>) über <strong>Kanten</strong>. Auf <strong>Bildern</strong> ist jeder Pixel ein Knoten mit genau vier Nachbarn — die Adjazenzmatrix ist <strong>bandiert</strong> und für alle Pixel gleich strukturiert. Auf <strong>Sozialen Netzwerken</strong> oder <strong>Molekülen</strong> variiert die Nachbarschaft: kein reguläres Raster, keine feste Reihenfolge.</p>
+<p>GNNs lösen drei Arten von Aufgaben (vereinfacht): <strong>Graphen-Ebene</strong> (z. B. „riecht dieses Molekül nach X?“), <strong>Knoten-Ebene</strong> (z. B. Community-Zugehörigkeit) und <strong>Kanten-Ebene</strong> (z. B. „besteht eine Beziehung?“). Für Visualisierung interessiert uns vor allem, wie <strong>Knoten-Repräsentationen</strong> Topologie kodieren — bevor man sie in 2D malt.</p>
+<div id="grid-as-graph" class="grid-as-graph reveal-on-scroll">
+  <p><strong>Interaktiv:</strong> Klicke Pixel an/aus — drei Ansichten desselben Objekts (Distill-Muster).</p>
+  <div class="triple-view">
+    <div class="triple-panel">
+      <h5 class="anchored">Pixel-Gitter</h5>
+      <svg class="grid-pixel-svg" viewbox="0 0 112 112" width="112" height="112" aria-label="5x5 Pixel"></svg>
+    </div>
+    <div class="triple-panel">
+      <h5 class="anchored">Knoten-Kanten</h5>
+      <svg class="grid-graph-svg" viewbox="0 0 112 112" width="112" height="112" aria-hidden="true"></svg>
+    </div>
+    <div class="triple-panel">
+      <h5 class="anchored">Adjazenzmatrix</h5>
+      <svg class="grid-matrix-svg" viewbox="0 0 25 25" width="112" height="112" aria-hidden="true"></svg>
+    </div>
+  </div>
+  <p class="grid-caption" data-grid-hover="">Klicke oder fahre über ein Pixel</p>
+  <small>Reguläres Gitter → bandierte Matrix. Bei echten Graphen fehlt dieses Muster.</small>
+</div>
 </section>
+<section id="topology-challenge-heading" class="level3">
+<h3 class="anchored" data-anchor-id="topology-challenge-heading">Warum Graphen kein Bild sind</h3>
+<p>Ein Bild ist ein <strong>reguläres Gitter</strong>: Jeder Pixel (außer am Rand) hat vier Nachbarn, die Reihenfolge der Pixel ist fest, die euklidische Distanz im Bild entspricht der visuellen Nähe. Ein Graph dagegen hat <strong>variable Gradzahl</strong>, <strong>keine kanonische Knotenreihenfolge</strong> (Permutationsinvarianz) und <strong>Distanz = kürzester Pfad</strong>, nicht Luftlinie in der Zeichnung.</p>
+<p>Wenn wir einen Graphen in die Ebene legen, <strong>verzerrt</strong> jede Anordnung die Struktur. <strong>Nicht-euklidische Topologie:</strong> Zwei Knoten können im Graphen nah sein, in der Zeichnung aber weit — oder umgekehrt.</p>
+<div id="topology-challenge" class="topology-challenge reveal-on-scroll">
+  <p><strong>Interaktiv:</strong> Ziehe Knoten — Pfad u→w→z (grün) bleibt gleich, Layout-Distanz ändert sich.</p>
+  <div class="topology-challenge-layout">
+    <svg viewbox="0 0 320 200" width="320" height="200" aria-label="Topologie-Demo"></svg>
+    <div class="topology-metrics">
+      <div class="topology-preset-row">
+        <button type="button" class="topology-preset-btn" data-topo-preset="good">Stress-arm</button>
+        <button type="button" class="topology-preset-btn" data-topo-preset="bad">Irreführend</button>
+      </div>
+      <div class="topology-metric-row">
+        <label><span>Paar u–z</span></label>
+        <div class="topology-values">
+          <span>Pfad: <strong data-topo-graph="">—</strong></span>
+          <span>Layout: <strong data-topo-euclid="">—</strong></span>
+        </div>
+      </div>
+      <div class="topology-metric-row">
+        <label><span>Verzerrungs-Score</span><span data-topo-distortion="">0</span></label>
+        <div class="stress-bar" data-topo-bar=""><span style="width:20%"></span></div>
+      </div>
+      <div class="topology-metric-row">
+        <label><span>Paar-Fehler (Heatmap)</span></label>
+        <div class="distortion-heatmap" data-topo-heatmap=""></div>
+      </div>
+      <p class="topology-hint">Preset „Irreführend“: Pfaddistanz 2, Layout weit entfernt.</p>
+    </div>
+  </div>
+</div>
+</section>
+<section id="embedding-projection-heading" class="level3">
+<h3 class="anchored" data-anchor-id="embedding-projection-heading">Das Einbettungsproblem</h3>
+<p><strong>Einbetten</strong> heißt: Struktur aus dem Graphen in einen Vektorraum (oder die Zeichnungsebene) überführen, ohne sie zu zerstören. Das ist grundsätzlich <strong>verlustbehaftet</strong> — wie jede Projektion von hochdimensionaler Struktur in 2D (<a href="https://distill.pub/2016/misread-tsne/">Distill: How to Use t-SNE</a> warnt vor Overinterpretation solcher Plots).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 18%">
+<col style="width: 56%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Ansatz</th>
+<th>Idee</th>
+<th>Wo auf der Seite</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Klassisches Layout</strong></td>
+<td>Optimiere 2D-Positionen direkt (z. B. Stress in 3b)</td>
+<td>Abschnitt 3b</td>
+</tr>
+<tr class="even">
+<td><strong>GNN-Repräsentation</strong></td>
+<td>Lerne zuerst <strong>topologie-bewusste Feature-Vektoren</strong> pro Knoten; projiziere oder layoute danach</td>
+<td>Dieser Abschnitt</td>
+</tr>
+</tbody>
+</table>
+<p>GNNs lösen nicht „magisch“ das Layout-Problem — sie lernen <strong>Repräsentationen</strong>, die Nachbarschaft im Graphen berücksichtigen. Erst danach projiziert man (PCA/UMAP) oder trainiert explizit Layout-Koordinaten.</p>
+<div id="embedding-projection" class="embedding-projection reveal-on-scroll">
+  <p><strong>Interaktiv:</strong> Layout vs. gelernte Embeddings — orange Linien = Paare mit Distanz-Diskrepanz.</p>
+  <div class="embedding-layout">
+    <canvas width="240" height="220" aria-label="Einbettungs-Demo"></canvas>
+    <div class="embedding-controls">
+      <div class="embed-mode-toggle" data-embed-mode="">
+        <button type="button" class="is-active" data-embed-mode="layout">Klassisches Layout</button>
+        <button type="button" data-embed-mode="embed">Gelernte Embeddings</button>
+      </div>
+      <p>Stress-ähnlicher Score: <strong data-embed-stress="">0</strong></p>
+      <small>Ziehe Knoten — Projektionen können Graph-Distanzen verzerren.</small>
+    </div>
+  </div>
+</div>
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Embeddings sind kein Beweis</span><span class="acc-tag tag-konzept">Konzept</span></summary>
+<div class="acc-body">
+<p>2D-Plots von Embeddings sind <strong>explorativ</strong>. Nähe im Plot bedeutet nicht automatisch Nähe im Graphen.</p>
+</div>
+</details>
+</section>
+<section id="perm-invariance-heading" class="level3">
+<h3 class="anchored" data-anchor-id="perm-invariance-heading">Permutationsinvarianz</h3>
+<p>Die <strong>Reihenfolge</strong> der Knoten in einer Adjazenzmatrix ist willkürlich — dieselbe Topologie hat viele Matrix-Darstellungen. Ein GNN darf deshalb <strong>nicht</strong> von Zeilenposition abhängen. Deshalb aggregieren wir Nachbarn symmetrisch (Summe, Mittel) — das Ergebnis bleibt gleich.</p>
+<div id="perm-invariance-demo" class="perm-invariance-demo reveal-on-scroll">
+  <p><strong>Interaktiv:</strong> Permutiere Knoten — Matrix ändert sich, Nachbarschaftssumme an A nicht.</p>
+  <div class="perm-layout">
+    <div class="perm-matrix-wrap">
+      <div class="perm-matrix" data-perm-matrix=""></div>
+    </div>
+    <div class="perm-side">
+      <p>Reihenfolge: <strong data-perm-order="">A → B → C → D</strong></p>
+      <p>Summe an A: <strong data-perm-sum="">15</strong></p>
+      <button type="button" data-perm-shuffle="">Knoten permutieren</button>
+    </div>
+  </div>
+</div>
+</section>
+<section id="cnn-gnn-compare-heading" class="level3">
+<h3 class="anchored" data-anchor-id="cnn-gnn-compare-heading">Von CNN zu GNN: Faltung auf Nachbarschaft</h3>
+<p>Beide teilen eine Idee: <strong>lokales Receptive Field</strong> + <strong>geteilte Gewichte</strong>. Der Unterschied ist die Nachbarschaftsstruktur — beim CNN fest, beim GNN aus Kanten abgeleitet.</p>
+<div id="cnn-gnn-compare" class="compare-cards cnn-gnn-compare reveal-on-scroll">
+  <p class="sync-step-label" data-sync-step="">Kernel-Schritt 1 ↔ MP-Phase 1</p>
+  <div class="compare-film-controls">
+    <button type="button" class="cnn-step-btn" data-cnn-step="">Nächster Schritt</button>
+    <button type="button" class="cnn-film-btn" data-cnn-film="">Film abspielen</button>
+  </div>
+  <div class="compare-row">
+    <div class="compare-card cnn-panel">
+      <h4 class="anchored">CNN: Faltung auf Gitter</h4>
+      <p>3×3-Kernel mit Gewichten (+1, 0, −1) gleitet über Pixel.</p>
+      <div class="cnn-grid-wrap">
+        <svg class="cnn-grid-svg" viewbox="0 0 120 120" width="120" height="120" aria-hidden="true"></svg>
+      </div>
+      <small>Gleiche Gewichte an jeder Position</small>
+    </div>
+    <div class="compare-card gnn-panel">
+      <h4 class="anchored">GNN: Nachbarschaft statt Kernel</h4>
+      <p>Aggregation über verbundene Knoten — synchron zum Kernel-Schritt.</p>
+      <div class="gnn-receptive-wrap">
+        <svg class="gnn-receptive-svg" viewbox="0 0 160 120" width="160" height="120" aria-hidden="true"></svg>
+      </div>
+      <small>Nachrichten fließen → Update am Zentrum</small>
+    </div>
+  </div>
+</div>
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Didaktische Vereinfachung</span><span class="acc-tag tag-konzept">Konzept</span></summary>
+<div class="acc-body">
+<p>Echte GNNs können Kantenfeatures, Attention (GAT) oder Richtungen modellieren. Für den Einstieg reicht die Analogie: <strong>Kernel = Nachbarschaft</strong>, <strong>Faltungsschritt = Message Passing</strong>.</p>
+</div>
+</details>
+</section>
+<section id="gnn-math" class="level3">
+<h3 class="anchored" data-anchor-id="gnn-math">Die Mathematik: Message Passing</h3>
+<p>Wie bei CNNs stapelt man Schichten — nur dass „Nachbarn“ aus dem Graphen kommen, nicht aus dem Pixelraster. Jeder Knoten <span class="math inline">\(v\)</span> hat einen Feature-Vektor <span class="gnn-math-term" data-term="hv"><span class="math inline">\(h_v^{(l)}\)</span></span> in Schicht <span class="math inline">\(l\)</span>.</p>
+<ol type="1">
+<li><strong>Aggregation</strong> (Nachrichten sammeln — wie Summe im Kernel-Fenster): <span class="gnn-math-term" data-term="aggregate"><span class="math inline">\(m_v^{(l)} = \text{AGGREGATE}(\{ h_u^{(l-1)} \mid u \in \mathcal{N}(v) \})\)</span></span></li>
+<li><strong>Update</strong> (neuer Zustand — wie Gewichte + Nichtlinearität): <span class="gnn-math-term" data-term="update"><span class="math inline">\(h_v^{(l)} = \sigma(W \cdot m_v^{(l)} + B \cdot h_v^{(l-1)})\)</span></span> mit Aktivierung <span class="gnn-math-term" data-term="sigma"><span class="math inline">\(\sigma\)</span></span></li>
+</ol>
+<p><strong>Zahlenbeispiel (Stern, Layer 0):</strong> <span class="math inline">\(h_A=2\)</span>, Nachbarn <span class="math inline">\(B=5, C=3, D=7\)</span> → Aggregation <span class="math inline">\(m_A=15\)</span> → Update <span class="math inline">\(h_A' = 2 + 15 = 17\)</span> (didaktisch vereinfacht als Summe).</p>
+</section>
+<section id="gnn-playground" class="level3">
+<h3 class="anchored" data-anchor-id="gnn-playground">Interaktiver Message-Passing-Simulator</h3>
+<p>Dual-Ansicht wie <a href="https://github.com/Visual-Intelligence-UMN/GNN-101">GNN-101</a>: Knoten-Kanten <strong>und</strong> Adjazenzmatrix. Wähle <strong>Stern</strong> für MP-Grundlagen oder <strong>Pfad</strong> für wachsendes k-Hop-Feld.</p>
+<div id="gnn-playground-widget" class="gnn-playground reveal-on-scroll">
+  <div class="gnn-playground-header">
+    <h4 class="anchored">Message Passing — Dual View</h4>
+    <div class="gnn-preset-tabs">
+      <button type="button" class="gnn-preset-tab is-active" data-preset="star">Stern</button>
+      <button type="button" class="gnn-preset-tab" data-preset="path">Pfad (k-hop)</button>
+    </div>
+    <div class="gnn-layer-tabs">
+      <button type="button" class="gnn-layer-tab is-active" data-layer="0">Layer 0</button>
+      <button type="button" class="gnn-layer-tab" data-layer="1">Layer 1</button>
+      <button type="button" class="gnn-layer-tab" data-layer="2">Layer 2</button>
+    </div>
+  </div>
+  <div class="gnn-stage">
+    <svg id="gnn-svg" viewbox="0 0 400 250" width="400" height="250" role="img" aria-label="GNN Spielgraph"></svg>
+    <div class="gnn-side-panels">
+      <div class="gnn-adj-panel-wrap">
+        <strong style="font-size:0.78rem;">Adjazenzmatrix</strong>
+        <div class="gnn-adj-panel" data-gnn-adj=""></div>
+      </div>
+      <div class="gnn-sidebar">
+        <strong style="font-size:0.78rem;">Feature-Vektoren</strong>
+        <ul class="gnn-feature-list" id="gnn-feature-list"></ul>
+      </div>
+    </div>
+  </div>
+  <div class="gnn-pseudocode">
+    <div class="pseudo-line is-active" data-step="0"># Init: h_v = Feature-Vektor pro Knoten</div>
+    <div class="pseudo-line" data-step="1">m_v = AGGREGATE({ h_u : u ∈ N(v) })</div>
+    <div class="pseudo-line" data-step="2">h_v = UPDATE(m_v, h_v)</div>
+  </div>
+  <div class="gnn-status" id="gnn-status">Schritt 0: Initialer Zustand</div>
+  <div class="gnn-controls">
+    <button type="button" id="gnn-step-btn" class="primary">Nächster Schritt</button>
+    <button type="button" id="gnn-autoplay-btn">Auto-Play</button>
+    <button type="button" id="gnn-reset-btn">Zurücksetzen</button>
+    <button type="button" data-gnn-explore="">Erkunden</button>
+  </div>
+</div>
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Was GNNs für Visualisierung bedeuten</span><span class="acc-tag tag-konzept">Konzept</span></summary>
+<div class="acc-body">
+<p>GNNs ersetzen nicht automatisch klassisches Layout — sie <strong>repräsentieren</strong> Knoten so, dass Graph-Struktur in den Feature-Vektoren steckt. Für Visualisierung heißt das:</p>
+<ul>
+<li><strong>Embeddings</strong> können mit PCA/UMAP in 2D projiziert werden (explorativ, nicht als Beweis).</li>
+<li><strong>Layout-Training</strong> kann dieselbe Stress-Idee wie in <a href="#stress-majorization">3b</a> nutzen — dann lernt das Netz Koordinaten statt sie per Majorization zu optimieren.</li>
+<li>Der Vorteil liegt oft in <strong>downstream tasks</strong> (Klassifikation, Link Prediction) und generalisierbaren Repräsentationen — nicht in „schneller als Canvas".</li>
+</ul>
+</div>
+</details>
+</section>
+<section id="gnn-quiz" class="level3">
+<h3 class="anchored" data-anchor-id="gnn-quiz">Didaktik-Check: Hast du es verstanden?</h3>
+<div id="gnn-quiz-widget" class="quiz-root reveal-on-scroll">
+  <div class="quiz-progress">
+    <span class="quiz-progress-text">Frage 1 von 4</span>
+    <div class="quiz-progress-bar"><span style="width:0%"></span></div>
+  </div>
+
+  <div class="quiz-container" id="q1-container">
+    <div class="quiz-question">1. Warum reicht ein CNN-Filter nicht direkt auf einem Graphen?</div>
+    <div class="quiz-options">
+      <button type="button" class="quiz-btn">A) Weil Graphen kein festes Pixelgitter haben und Nachbarschaften variabel sind.</button>
+      <button type="button" class="quiz-btn">B) Weil CNNs nur für Farbbilder trainiert werden können.</button>
+      <button type="button" class="quiz-btn">C) Weil Graphen immer zu viele Knoten haben.</button>
+    </div>
+    <div class="quiz-feedback"></div>
+    <div class="quiz-actions"><button type="button" class="quiz-retry-btn" hidden="">Nochmal</button></div>
+  </div>
+
+  <div class="quiz-container is-hidden" id="q2-container">
+    <div class="quiz-question">2. Welche zwei Schritte bilden den Kern des Message Passing?</div>
+    <div class="quiz-options">
+      <button type="button" class="quiz-btn">A) Abstoßung und Anziehung.</button>
+      <button type="button" class="quiz-btn">B) Filtern und Sortieren.</button>
+      <button type="button" class="quiz-btn">C) Aggregation und Update.</button>
+    </div>
+    <div class="quiz-feedback"></div>
+    <div class="quiz-actions"><button type="button" class="quiz-retry-btn" hidden="">Nochmal</button></div>
+  </div>
+
+  <div class="quiz-container is-hidden" id="q3-container">
+    <div class="quiz-question">3. Was macht das Einbetten von Graphen schwerer als das von Bildern?</div>
+    <div class="quiz-options">
+      <button type="button" class="quiz-btn">A) Bilder haben weniger Pixel als Graphen Knoten.</button>
+      <button type="button" class="quiz-btn">B) Graphen haben keine feste Gitterstruktur und keine kanonische Knotenreihenfolge.</button>
+      <button type="button" class="quiz-btn">C) Graphen können nicht in JSON gespeichert werden.</button>
+    </div>
+    <div class="quiz-feedback"></div>
+    <div class="quiz-actions"><button type="button" class="quiz-retry-btn" hidden="">Nochmal</button></div>
+  </div>
+
+  <div class="quiz-container is-hidden" id="q4-container">
+    <div class="quiz-question">4. Was passiert bei Permutation der Knotenreihenfolge?</div>
+    <div class="quiz-options">
+      <button type="button" class="quiz-btn">A) Die Adjazenzmatrix ändert sich, aber die Aggregations-Summe bleibt gleich.</button>
+      <button type="button" class="quiz-btn">B) Alle Feature-Werte werden neu berechnet.</button>
+      <button type="button" class="quiz-btn">C) Der Graph verliert seine Kanten.</button>
+    </div>
+    <div class="quiz-feedback"></div>
+    <div class="quiz-actions"><button type="button" class="quiz-retry-btn" hidden="">Nochmal</button></div>
+  </div>
+
+  <div class="quiz-complete" hidden="">
+    <h4 class="anchored">Geschafft!</h4>
+    <p>Du hast <strong data-quiz-score="">0 / 4</strong> Fragen richtig beantwortet.</p>
+    <p style="font-size:0.88rem;color:#64748b;">Tipp: Tasten <kbd>1</kbd>–<kbd>3</kbd> wählen Antworten.</p>
+  </div>
+</div>
+</section></div>
+</section>
+
 <section id="how-to-handle-rezeptbuch" class="level2">
 <h2 class="anchored" data-anchor-id="how-to-handle-rezeptbuch">6. How to handle (Rezeptbuch)</h2>
 <p>Wenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral.</p>
@@ -696,7 +1011,6 @@ Die gesamte Simulation wird zur Mitte der Zeichenfläche gezogen. Dadurch bleibt
 <p>https://www.yworks.com/pages/force-directed-graph-layout https://cambridge-intelligence.com/blog/automatic-graph-layouts/ https://towardsdatascience.com/text-network-analysis-generate-beautiful-network-visualisations-a373dbe183ca/</p>
 
 
-</section>
 </section>
 </section>
 
