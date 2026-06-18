@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Sara, Silvia, Adam">
 
-<title>Graphdatenvisualisierung im Web – Graphdatenvisualisierung</title>
+<title>Graphdatenvisualisierung</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -186,33 +185,12 @@ window.Quarto = {
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Graphdatenvisualisierung im Web</h1>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Sara, Silvia, Adam </p>
-          </div>
-  </div>
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
+<p>title: “Graphdatenvisualisierung im Web” author: “Sara, Silvia, Adam” format: html jupyter: python3 bibliography: references.bib</p>
 <script src="assets/js/site.js" defer=""></script>
 <section id="intro-warum-soziale-netzwerke-schwer-zu-zeichnen-sind" class="level2">
 <h2 class="anchored" data-anchor-id="intro-warum-soziale-netzwerke-schwer-zu-zeichnen-sind">1. Intro (Warum Soziale Netzwerke schwer zu zeichnen sind)</h2>
@@ -239,75 +217,59 @@ Je mehr Knoten und Kanten hinzukommen, desto schneller wird die Struktur unlesba
 </ul>
 <p>Ab einem gewissen Punkt entsteht ein sogenannter <strong>Hairball-Effekt</strong>.</p>
 <p>Das folgende ist nur zur Vorschau:</p>
-
-Im folgenden werden drei unterschiedliche Ansätze aufgezeigt:
-
----
-
-## 4a. Kleiner Datensatz
-# Kleiner Datensatz – Les Misérables
-
-### Les Misérables Graph
-
+<p>Im folgenden werden drei unterschiedliche Ansätze aufgezeigt:</p>
+</section>
+<section id="a.-kleiner-datensatz" class="level2">
+<h2 class="anchored" data-anchor-id="a.-kleiner-datensatz">4a. Kleiner Datensatz</h2>
+</section>
+<section id="kleiner-datensatz-les-misérables" class="level1">
+<h1>Kleiner Datensatz – Les Misérables</h1>
+<section id="les-misérables-graph" class="level3">
+<h3 class="anchored" data-anchor-id="les-misérables-graph">Les Misérables Graph</h3>
 Der Datensatz basiert auf den Beziehungen der Figuren aus dem Roman Les Misérables. Er umfasst insgesamt 77 Knoten, wobei jeder Knoten eine einzelne Figur aus der Geschichte repräsentiert. Untenstehend sind die Hauptcharaktere dargestellt:
 <div class="image-container">
-
-<img src="assets/data/les_miserables.jpg" alt="Les Misérables Charaktere">
+<p><img src="assets/data/les_miserables.jpg" alt="Les Misérables Charaktere"></p>
+</div>
+<p>Die 77 Figuren sind durch 254 Kanten miteinander verbunden, die jeweils eine gemeinsame Szene oder eine direkte Interaktion zwischen zwei Charakteren darstellen. Die Verbindungen sind ungerichtet, das heißt, sie besitzen keine feste Richtung, sondern beschreiben lediglich die Existenz einer Beziehung zwischen zwei Figuren.</p>
+<p>Durch diese Struktur entsteht ein klassisches Netzwerk aus Entitäten und Beziehungen, das sich besonders gut für die Visualisierung von Graphalgorithmen eignet. Der Datensatz ist bewusst klein gehalten, sodass sich jeder einzelne Schritt eines Layout-Verfahrens gut nachvollziehen lässt. Dadurch kann beobachtet werden, wie aus einer reinen Liste von Knoten und Kanten schrittweise eine räumliche Struktur entsteht und sich Muster, Cluster und zentrale Figuren im Verlauf der Berechnung herausbilden.</p>
+</section>
+<section id="die-rohdaten" class="level2">
+<h2 class="anchored" data-anchor-id="die-rohdaten">Die Rohdaten</h2>
+<p>Noch bevor ein Algorithmus arbeitet, besteht ein Graph lediglich aus einer Liste von Knoten und Kanten. Zu diesem Zeitpunkt gibt es keine räumliche Ordnung und keine visuelle Struktur, sondern ausschließlich die Information darüber, welche Elemente miteinander verbunden sind.</p>
+<p>Ein Graph beschreibt somit zunächst nur Beziehungen zwischen Objekten, jedoch nicht deren Position im Raum. Die räumliche Anordnung entsteht erst durch einen späteren Layout-Algorithmus.</p>
+<p>Das bedeutet konkret:</p>
+<ul>
+<li>es existieren keine Koordinaten</li>
+<li>es gibt keine geometrische Struktur</li>
+<li>die Darstellung besteht ausschließlich aus Verbindungen zwischen Knoten.</li>
+</ul>
+<p>Eine Liste aller Verbindungen aus dem Roman Les Misérables ist hier dargestellt</p>
+<div id="graph-step1">
 
 </div>
-
-Die 77 Figuren sind durch 254 Kanten miteinander verbunden, die jeweils eine gemeinsame Szene oder eine direkte Interaktion zwischen zwei Charakteren darstellen. Die Verbindungen sind ungerichtet, das heißt, sie besitzen keine feste Richtung, sondern beschreiben lediglich die Existenz einer Beziehung zwischen zwei Figuren.
-
-Durch diese Struktur entsteht ein klassisches Netzwerk aus Entitäten und Beziehungen, das sich besonders gut für die Visualisierung von Graphalgorithmen eignet. Der Datensatz ist bewusst klein gehalten, sodass sich jeder einzelne Schritt eines Layout-Verfahrens gut nachvollziehen lässt. Dadurch kann beobachtet werden, wie aus einer reinen Liste von Knoten und Kanten schrittweise eine räumliche Struktur entsteht und sich Muster, Cluster und zentrale Figuren im Verlauf der Berechnung herausbilden.
-
-## Die Rohdaten
-
-Noch bevor ein Algorithmus arbeitet, besteht ein Graph lediglich aus einer Liste von Knoten und Kanten. Zu diesem Zeitpunkt gibt es keine räumliche Ordnung und keine visuelle Struktur, sondern ausschließlich die Information darüber, welche Elemente miteinander verbunden sind.
-
-Ein Graph beschreibt somit zunächst nur Beziehungen zwischen Objekten, jedoch nicht deren Position im Raum. Die räumliche Anordnung entsteht erst durch einen späteren Layout-Algorithmus.
-
-Das bedeutet konkret:
-
-- es existieren keine Koordinaten
-- es gibt keine geometrische Struktur
-- die Darstellung besteht ausschließlich aus Verbindungen zwischen Knoten.
-
-Eine Liste aller Verbindungen aus dem Roman Les Misérables ist hier dargestellt
-
-<div id="graph-step1"></div>
-
-Abbildung 1: Übersicht der Rohdaten als Kantenliste (alle Verbindungen zwischen Knoten).
-
+<p>Abbildung 1: Übersicht der Rohdaten als Kantenliste (alle Verbindungen zwischen Knoten).</p>
 <details class="acc">
-
 <summary>
-
-<span class="acc-toggle"></span>
-<span class="acc-title">Wie D3 einen Graphen intern speichert</span>
-<span class="acc-tag tag-impl">Implementierung</span>
+<span class="acc-toggle"></span> <span class="acc-title">Wie D3 einen Graphen intern speichert</span> <span class="acc-tag tag-impl">Implementierung</span>
 </summary>
-
 <div class="acc-body">
-
-Ein Graph wird typischerweise als JSON gespeichert.
-
-```json
-{
-  "nodes": [
-    { "id": "A" },
-    { "id": "B" }
-  ],
-  "links": [
-    { "source": "A", "target": "B" }
-  ]
-}
+<p>Ein Graph wird typischerweise als JSON gespeichert.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"nodes"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"A"</span> <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"B"</span> <span class="fu">}</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"links"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"source"</span><span class="fu">:</span> <span class="st">"A"</span><span class="fu">,</span> <span class="dt">"target"</span><span class="fu">:</span> <span class="st">"B"</span> <span class="fu">}</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Dabei gilt:</p>
 <ul>
 <li>nodes enthält alle Elemente des Graphen</li>
 <li>links beschreibt die Beziehungen zwischen diesen Elementen</li>
 <li>source und target definieren jeweils eine Verbindung zwischen zwei Knoten</li>
 </ul>
-Während der Simulation ersetzt D3 diese abstrakten Verweise intern durch konkrete Objekte mit zusätzlichen Eigenschaften wie x, y, vx und vy. Dadurch kann der Graph dynamisch berechnet und animiert werden.
+<p>Während der Simulation ersetzt D3 diese abstrakten Verweise intern durch konkrete Objekte mit zusätzlichen Eigenschaften wie x, y, vx und vy. Dadurch kann der Graph dynamisch berechnet und animiert werden.</p>
 </div>
 </details>
 </section>
@@ -472,10 +434,10 @@ Das Ergebnis ist ein <strong>kompromissoptimiertes Layout</strong>, das Struktur
 <span class="acc-toggle"></span> <span class="acc-title">Welche Kräfte D3 berechnet</span> <span class="acc-tag tag-impl">Implementierung</span>
 </summary>
 <div class="acc-body">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="er">const</span> <span class="er">simulation</span> <span class="er">=</span> <span class="er">d3.forceSimulation(nodes)</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="er">.force(</span><span class="st">"link"</span><span class="er">,</span> <span class="er">...)</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="er">.force(</span><span class="st">"charge"</span><span class="er">,</span> <span class="er">...)</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="er">.force(</span><span class="st">"center"</span><span class="er">,</span> <span class="er">...);</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="er">const</span> <span class="er">simulation</span> <span class="er">=</span> <span class="er">d3.forceSimulation(nodes)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="er">.force(</span><span class="st">"link"</span><span class="er">,</span> <span class="er">...)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="er">.force(</span><span class="st">"charge"</span><span class="er">,</span> <span class="er">...)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="er">.force(</span><span class="st">"center"</span><span class="er">,</span> <span class="er">...);</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="force-grid">
 <div class="force-card">
 <p>
@@ -550,7 +512,6 @@ Die gesamte Simulation wird zur Mitte der Zeichenfläche gezogen. Dadurch bleibt
 <p>Im nächsten Abschnitt betrachten wir deshalb einen deutlich größeren Datensatz.</p>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="graph-small/graph-small.js"></script>
-<hr>
 </section>
 <section id="b.-mittlerer-datensatz-ein-ganzes-netzwerk-statt-eines-freundeskreises" class="level2">
 <h2 class="anchored" data-anchor-id="b.-mittlerer-datensatz-ein-ganzes-netzwerk-statt-eines-freundeskreises">4b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)</h2>
@@ -676,29 +637,463 @@ Die gesamte Simulation wird zur Mitte der Zeichenfläche gezogen. Dadurch bleibt
 <li>Die <strong>Positionen</strong> werden um die Geschwindigkeit weitergeschoben.</li>
 </ol>
 <p>Dieses Integrationsverfahren heißt <strong>Velocity-Verlet</strong> – dasselbe Schema, mit dem auch Teilchensimulationen in der Physik rechnen; es ist stabil und günstig. Gesteuert wird alles über eine „Temperatur” <strong><code>alpha</code></strong>, die pro Schritt abklingt (<code>alphaDecay</code>) und die Kräfte mitskaliert: Das System startet „heiß” und beweglich und „friert” allmählich ein – im Kern ein <strong>Simulated Annealing</strong>. Genau deshalb kommt der Graph nach „Neu anordnen” nach kurzer Zeit von selbst zur Ruhe.</p>
-<hr>
 </section>
 </section>
 <section id="c.-großer-datensatz" class="level2">
 <h2 class="anchored" data-anchor-id="c.-großer-datensatz">4c. Großer Datensatz</h2>
+<p>Stell dir vor, du öffnest Facebook im November 2017 und siehst nicht einzelne Nutzer, sondern nur offizielle, verifizierte Seiten. Regierungen, Politiker, TV-Sender, Konzerne. Wer ist mit wem vernetzt?</p>
+<p>Das ist das <strong>Facebook Large Page-Page Network</strong>, ein sozialer Graph aus gegenseitigen Likes zwischen verifizierten Seiten, organisiert in vier klar getrennten Kategorien.</p>
+<div style="margin: 2rem 0;">
+
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 1px solid #e5e4e0; border-bottom: 1px solid #e5e4e0; padding: 1.5rem 0; margin-bottom: 2rem;">
+
+    <div style="padding-right: 1.5rem;">
+      <div style="width: 24px; height: 3px; background: #3b82f6; border-radius: 2px; margin-bottom: 10px;"></div>
+      <p style="font-size: 11px; color: #aaa; margin: 0 0 6px; text-transform: uppercase; letter-spacing: 0.07em;">Knoten</p>
+      <p style="font-size: 28px; font-weight: 400; margin: 0; color: #1a1a18; letter-spacing: -0.02em;">22.470</p>
+      <p style="font-size: 12px; color: #aaa; margin: 4px 0 0;">verifizierte Seiten</p>
+    </div>
+
+    <div style="padding-right: 1.5rem; border-left: 1px solid #e5e4e0; padding-left: 1.5rem;">
+      <div style="width: 24px; height: 3px; background: #ef4444; border-radius: 2px; margin-bottom: 10px;"></div>
+      <p style="font-size: 11px; color: #aaa; margin: 0 0 6px; text-transform: uppercase; letter-spacing: 0.07em;">Kanten</p>
+      <p style="font-size: 28px; font-weight: 400; margin: 0; color: #1a1a18; letter-spacing: -0.02em;">171.002</p>
+      <p style="font-size: 12px; color: #aaa; margin: 4px 0 0;">gegenseitige Likes</p>
+    </div>
+
+    <div style="padding-right: 1.5rem; border-left: 1px solid #e5e4e0; padding-left: 1.5rem;">
+      <div style="width: 24px; height: 3px; background: #f59e0b; border-radius: 2px; margin-bottom: 10px;"></div>
+      <p style="font-size: 11px; color: #aaa; margin: 0 0 6px; text-transform: uppercase; letter-spacing: 0.07em;">Dichte</p>
+      <p style="font-size: 28px; font-weight: 400; margin: 0; color: #1a1a18; letter-spacing: -0.02em;">0,001</p>
+      <p style="font-size: 12px; color: #aaa; margin: 4px 0 0;">0,1 % aller möglichen Kanten</p>
+    </div>
+
+    <div style="border-left: 1px solid #e5e4e0; padding-left: 1.5rem;">
+      <div style="width: 24px; height: 3px; background: #22c55e; border-radius: 2px; margin-bottom: 10px;"></div>
+      <p style="font-size: 11px; color: #aaa; margin: 0 0 6px; text-transform: uppercase; letter-spacing: 0.07em;">Transitivität</p>
+      <p style="font-size: 28px; font-weight: 400; margin: 0; color: #1a1a18; letter-spacing: -0.02em;">0,232</p>
+      <p style="font-size: 12px; color: #aaa; margin: 4px 0 0;">Clustering-Koeffizient</p>
+    </div>
+
+  </div>
+
+  <p style="font-size: 13px; color: #888780; margin: 0 0 10px 0;">Knotenverteilung nach Kategorie</p>
+  <div id="ds-legend" style="display:flex; flex-wrap:wrap; gap:14px; margin-bottom:10px; font-size:13px; color:#5F5E5A;"></div>
+  <div style="position:relative; width:100%; height:210px;">
+    <canvas id="ds-chart" role="img" aria-label="Balkendiagramm der Knotenverteilung: Government 6880, Company 6495, Politician 5768, TV Show 3327">Government 6880, Company 6495, Politician 5768, TV Show 3327.</canvas>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+(function() {
+  var cats = ['Government', 'Company', 'Politician', 'TV show'];
+  var counts = [6880, 6495, 5768, 3327];
+  var total = 22470;
+  var palette = ['#3b82f6', '#eab308', '#ef4444', '#22c55e'];
+  var leg = document.getElementById('ds-legend');
+  cats.forEach(function(c, i) {
+    var pct = ((counts[i] / total) * 100).toFixed(1);
+    leg.innerHTML += '<span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;border-radius:2px;background:' + palette[i] + ';display:inline-block;"></span>' + c + ' ' + counts[i].toLocaleString('de-DE') + ' (' + pct + ' %)</span>';
+  });
+  new Chart(document.getElementById('ds-chart'), {
+    type: 'bar',
+    data: {
+      labels: cats,
+      datasets: [{ data: counts, backgroundColor: palette, borderRadius: 4, borderSkipped: false }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: function(ctx) {
+          return ' ' + ctx.raw.toLocaleString('de-DE') + ' Knoten (' + ((ctx.raw / total) * 100).toFixed(1) + ' %)';
+        }}}
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(0,0,0,0.06)' },
+          ticks: { color: '#5F5E5A', font: { size: 12 }, callback: function(v) { return v.toLocaleString('de-DE'); } }
+        },
+        y: { grid: { display: false }, ticks: { color: '#444441', font: { size: 13 } } }
+      }
+    }
+  });
+})();
+</script>
+<details class="acc">
+<summary>
+<span class="acc-toggle"></span><span class="acc-title">Was die Zahlen bedeuten</span><span class="acc-tag tag-konzept">Konzept</span>
+</summary>
+<div class="acc-body">
+<p>
+Eine Kante entsteht nur bei gegenseitigem Like, also ein bewusstes, wechselseitiges Signal. Die Dichte von 0,001 zeigt, dass nur 0,1 % aller möglichen Verbindungen existieren, typisch für reale soziale Netzwerke, die in Clustern statt gleichmäßig wachsen. Der Clustering-Koeffizient von 0,232 bestätigt das: 23 % aller möglichen Dreiecke sind geschlossen, ein Zufallsgraph gleicher Größe läge nahe null. Das Netzwerk enthält also schon vor der Visualisierung erkennbare Community-Struktur.
+</p>
+</div>
+</details>
+<p style="text-align:center; font-size:1.3rem; font-weight:600; margin:3rem 0 1rem; color:#2C2C2A;">
+  Wie macht man Struktur in einem 22.000-Knoten-Graphen sichtbar?
+</p>
+
+<p style="text-align:center; font-size:0.95rem; color:#888; margin:0 0 2rem;">
+  Die Antwort liegt in einer Kombination aus Layout, Clustering und Datenvereinfachung.
+</p>
 </section>
-<section id="c.-großer-datensatz-vom-freundesnetz-zum-follow-graph" class="level2">
-<h2 class="anchored" data-anchor-id="c.-großer-datensatz-vom-freundesnetz-zum-follow-graph">3c. Großer Datensatz (Vom Freundesnetz zum Follow-Graph)</h2>
-<p>Beim Twitter-Netz wird aus einem lesbaren sozialen Bild schnell ein massives Strukturobjekt.</p>
-<section id="warum-gut" class="level3">
-<h3 class="anchored" data-anchor-id="warum-gut">Warum gut?</h3>
-<p>Dieses Netzwerk zeigt sehr deutlich, wie sich Maßstab und Bedeutung gleichzeitig verändern. Ihr könnt hier nicht nur Größe thematisieren, sondern auch den Unterschied zwischen Freundschaft und Follow-Beziehung.</p>
 </section>
-<section id="was-ist-das-problem-1" class="level3">
-<h3 class="anchored" data-anchor-id="was-ist-das-problem-1">Was ist das Problem?</h3>
-<p>Einzelne Knoten sind kaum noch direkt lesbar, Pfeile oder Richtungen lassen sich nicht mehr für jede Kante sinnvoll zeigen, und klassische Browser-Darstellung kommt an Performance-Grenzen. Die Herausforderung ist jetzt nicht mehr nur Zeichnen, sondern sinnvolle Reduktion.</p>
-</section>
-<section id="layout-graphalg-1" class="level3">
-<h3 class="anchored" data-anchor-id="layout-graphalg-1">Layout + GraphAlg</h3>
-<p>Hier passt die Argumentation für WebGL/GPU sehr gut. Inhaltlich könnt ihr zusätzlich auf In-Degree/Out-Degree, Hubs, Communities, Filterung und Abstraktion eingehen, weil bei dieser Größenordnung nicht mehr jede Einzelkante der eigentliche Erkenntnisträger ist.</p>
-<p>[Hier folgt weiterer Inhalt]</p>
+<section id="mit-forceatlas2-und-louvain" class="level1">
+<h1>Mit ForceAtlas2 und Louvain</h1>
+<p>22.470 Knoten und 171.002 Kanten. Das sind die Größenordnungen, an denen jede naive Visualisierungsstrategie scheitert.</p>
+<p>Verteilt man alle Knoten gleichmäßig und zeichnet alle Kanten, entsteht ein Hairball, ein dichter schwarzer Klumpen, aus dem keine Struktur ablesbar ist. Das ist kein Darstellungsproblem, sondern ein Informationsproblem. Die relevante Frage lautet nicht, wie sich das zeichnen lässt, sondern welche Struktur überhaupt vorhanden ist und wie sie sichtbar wird.</p>
+<p>Drei Schritte führen von der reinen Struktur zur interaktiven Exploration. Erst Positionen aus der Verbindungsstruktur ableiten, dann Bedeutung durch Farbe hinzufügen, dann Interaktion ermöglichen, mit der sich der Graph gezielt befragen lässt.</p>
+<hr>
+<section id="forceatlas2-struktur-sichtbar-machen" class="level3">
+<h3 class="anchored" data-anchor-id="forceatlas2-struktur-sichtbar-machen">ForceAtlas2: Struktur sichtbar machen</h3>
+<p>Eine Facebook-Seite hat keine natürliche Position im Raum. ForceAtlas2 erzeugt Koordinaten aus der Struktur des Graphen selbst. Verbundene Knoten ziehen sich an, alle Knotenpaare stoßen sich ab, und das System läuft iterativ in ein Kräftegleichgewicht. Der Algorithmus zählt zu den kräftebasierten Layouts, wurde aber gezielt für große, skalenfreie Netzwerke entwickelt, also für Graphen, in denen wenige Knoten extrem viele Verbindungen haben und der Rest nur wenige.</p>
+<p>Nach 800 Iterationen sieht das Gleichgewicht so aus.</p>
+<iframe src="graph_big/visuals/fa2_greygraph.html" width="100%" height="600px" style="border: 1px solid #e5e4e0;" loading="lazy">
+</iframe>
+<p style="text-align:center; font-size:12px; color:#888; margin:8px 0 16px;">
+  22.470 Knoten · ForceAtlas2 · 800 Iterationen · Knotengröße = Degree (Anzahl direkter Verbindungen)
+</p>
+<p>Ein dichter Kern aus stark vernetzten Seiten, dünn verbundene Knoten am Rand, einzelne Ausreißer weit außen. Diese Ausreißer sind kein Fehler im Layout. ForceAtlas2 schiebt Seiten mit sehr wenigen Likes konsequent vom Hauptcluster weg, und das ist bereits eine Aussage über den Datensatz selbst.</p>
+<style>
+.acc{margin:.5rem 0;border:1px solid #e2e0da;border-radius:10px;overflow:hidden;background:#fff}
+.acc summary{cursor:pointer;padding:.8rem 1rem .8rem .875rem;display:flex;align-items:center;gap:.6rem;list-style:none;font-size:.875rem;font-weight:500;color:#2a2a28;user-select:none}
+.acc summary::-webkit-details-marker{display:none}
+.acc-toggle{width:20px;height:20px;border-radius:50%;border:1.5px solid #d0cdc7;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;color:#aaa;background:#fafaf8;font-size:14px;line-height:1;transition:all .15s}
+.acc-toggle::before{content:'+'}
+.acc[open] .acc-toggle{background:#eceae4;color:#555;border-color:#bbb}
+.acc[open] .acc-toggle::before{content:'−'}
+.acc-title{flex:1}
+.acc-tag{font-size:.68rem;font-weight:700;letter-spacing:.05em;padding:2px 9px;border-radius:20px;flex-shrink:0;text-transform:uppercase}
+.acc-body{padding:.75rem 1rem 1rem;font-size:.875rem;line-height:1.75;color:#555552;border-top:1px solid #e2e0da}
+.acc-note{margin-top:.75rem;padding-left:.875rem;border-left:2px solid #d3d1c7;font-size:.85rem;color:#666}
+.tag-konzept{background:#dbeafe;color:#1e40af}
+.tag-algo{background:#dcfce7;color:#166534}
+.tag-impl{background:#fef3c7;color:#92400e}
+.tag-ux{background:#ede9fe;color:#5b21b6}
+.tag-arch{background:#f0f9ff;color:#0369a1}
+</style>
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">FA2 in der Algorithmenfamilie: die Kräfteformeln</span><span class="acc-tag tag-konzept">Konzept</span></summary>
+<div class="acc-body">
+
+<p>Fruchterman und Reingold legten 1991 das Grundprinzip kräftebasierter Layouts fest. Zwischen jedem Knotenpaar wirkt eine Abstoßungskraft, die mit dem Abstand abnimmt, und für jede Kante zusätzlich eine Anziehungskraft, die mit dem Abstand wächst.</p>
+
+<p>$$F_{repulsion}(i, j) = \frac{k^2}{d(i,j)}, \qquad F_{attraction}(i, j) = \frac{d(i,j)^2}{k}$$</p>
+
+<p>$d(i,j)$ ist der Abstand zwischen zwei Knoten, $k$ eine Konstante für den idealen Kantenabstand. Das System läuft so lange, bis sich Anziehung und Abstoßung an jedem Knoten ungefähr ausgleichen.</p>
+
+<p>Das Problem dabei ist, dass jeder Knoten gleich behandelt wird. Für kleine, gleichmäßige Graphen reicht das aus. Bei einem skalenfreien Netzwerk wie diesem, mit extrem schiefer Gradverteilung, einige Seiten mit tausenden Verbindungen, die meisten mit einer Handvoll, führt das zu Problemen. Hochgrad-Knoten ziehen über ihre vielen Kanten so viel Anziehung auf sich, dass sie das gesamte Layout zu einem Punkt zusammenziehen.</p>
+
+<p>Genau hier setzt ForceAtlas2 an. Die Abstoßung wird nicht mehr konstant pro Knotenpaar berechnet, sondern hängt vom Grad $deg(i)$ der beteiligten Knoten ab.</p>
+
+<p>$$F_{repulsion}(i, j) = k_r \cdot \frac{(deg(i)+1)(deg(j)+1)}{d(i,j)}$$</p>
+
+<p>Hochgrad-Knoten stoßen damit stärker ab als Knoten mit wenigen Verbindungen. Das hält Hubs sichtbar zentriert, ohne dass sie den restlichen Graphen an sich ziehen. Die Knotengröße in der Visualisierung oben kodiert genau diesen Grad $deg(i)$, also dieselbe Größe, die in die Abstoßungsformel eingeht.</p>
+
+</div>
+</details>
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Barnes-Hut, Iterationen und Reproduzierbarkeit</span><span class="acc-tag tag-impl">Implementierung</span></summary>
+<div class="acc-body">
+
+<p>Die Abstoßungsformel oben gilt für jedes Knotenpaar einzeln, also quadratisch mit der Anzahl der Knoten. Bei 22.470 Knoten sind das über 252 Millionen Paare pro Iteration, bei 800 Iterationen schlicht nicht durchführbar.</p>
+
+<p>Barnes-Hut löst dieses Problem, indem der Layoutraum in einen Quadtree unterteilt wird. Eine ganze Gruppe weit entfernter Knoten wird dann als ein einzelner Schwerpunkt mit Gesamtmasse behandelt, statt jeden Knoten einzeln zu berücksichtigen. Das senkt die Komplexität von quadratisch auf annähernd linear.</p>
+
+<p>Wie grob diese Annäherung ausfällt, steuert ein Parameter namens Theta: Eine entfernte Knotengruppe wird zusammengefasst, sobald ihr Durchmesser im Verhältnis zur Distanz klein genug ist. Hier wurde Theta auf 1.2 gesetzt, ein eher hoher Wert, der Gruppen früh zusammenfasst und damit Geschwindigkeit auf Kosten von Präzision bringt. Kleinere Werte nähern sich der exakten Berechnung an.</p>
+
+<p>Auch die Anzahl der Iterationen wurde getestet: Bei 500 Durchläufen war die Simulation noch nicht konvergiert, die Cluster blieben schlechter getrennt. Bei 800 Iterationen rechtfertigt der Zugewinn an Trennschärfe den zusätzlichen Rechenaufwand.</p>
+
+<div class="acc-note">
+  ForceAtlas2 arbeitet nicht deterministisch. <code>np.random.seed(42)</code> sorgt dafür, dass jeder Durchlauf dasselbe Layout erzeugt.
+</div>
+
+</div>
+</details>
+
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Verwendete FA2-Parameter</span><span class="acc-tag tag-impl">Implementierung</span></summary>
+<div class="acc-body">
+
+<pre><code>forceatlas2 = ForceAtlas2(
+    outboundAttractionDistribution=True,  # Anziehung proportional zum Degree
+    edgeWeightInfluence=1.0,              # Kantengewichte fließen linear ein
+    jitterTolerance=1.0,                  # Konvergenzschwelle
+    barnesHutOptimize=True,               # O(n log n) statt O(n²)
+    barnesHutTheta=1.2,                   # Approximationsgranularität
+    scalingRatio=10,                      # Abstoßungsstärke
+    strongGravityMode=False,
+    gravity=0.5,                          # Zieht Knoten zur Mitte
+)
+
+positions = forceatlas2.forceatlas2_networkx_layout(G, pos=None, iterations=800)</code></pre>
+
+</div>
+</details>
 <hr>
 </section>
+<section id="kategorien-bedeutung-als-farbe" class="level3">
+<h3 class="anchored" data-anchor-id="kategorien-bedeutung-als-farbe">Kategorien: Bedeutung als Farbe</h3>
+<p>Das Layout kodiert Verbindungsstruktur, aber keine Inhalte. Die vier Kategorien, Politiker, Regierung, TV-Sender und Unternehmen, hat Facebook selbst vergeben. ForceAtlas2 hat sie nie gesehen, der Algorithmus kennt nur Kanten.</p>
+<iframe src="graph_big/visuals/fa2_categorygraph.html" width="100%" height="600px" style="border: 1px solid #e5e4e0;" loading="lazy">
+</iframe>
+<p style="text-align:center; font-size:12px; color:#888; margin:8px 0 16px;">
+  Gleiche Positionen · Färbung nach Facebook-Kategorie
+</p>
+<p>Gleichfarbige Knoten stehen häufig beisammen, obwohl die Farbe das Layout nicht beeinflusst hat. Seiten derselben Kategorie verlinken sich offenbar häufiger gegenseitig, und FA2 hat diese Struktur allein aus den Kanten rekonstruiert.</p>
+<p>Die Farbgrenzen bleiben dabei unscharf. Ein Politiker, der viele TV-Sender liked, landet näher an diesen Sendern als an anderen Politikern. Kategorie und Verbindungsstruktur stimmen also nicht perfekt überein, und genau diese Abweichung trägt Information.</p>
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Warum FA2 keine Kategorien erzwingen kann</span><span class="acc-tag tag-konzept">Konzept</span></summary>
+<div class="acc-body">
+
+<p>ForceAtlas2 ist blind für Attribute. Kategoriähnlichkeit als Kraft ins Layout einzuspeisen würde bedeuten, die Kantenstruktur zu manipulieren, was die Visualisierung verfälschen würde. FA2 kann Kategoriecluster zeigen, wenn sie in der Verbindungsstruktur vorhanden sind, kann sie aber nicht erzwingen.</p>
+
+<p>Die Trennung von Layout und Attribut ist eine bewusste Entscheidung. Erst die rohe Struktur sichtbar machen, dann Bedeutung einblenden. Beides gleichzeitig würde das Ergebnis vorwegnehmen.</p>
+
+</div>
+</details>
+<hr>
+</section>
+<section id="communities-und-interaktion" class="level3">
+<h3 class="anchored" data-anchor-id="communities-und-interaktion">Communities und Interaktion</h3>
+<p>Kategorien beantworten die Frage, was eine Seite ist. Louvain Community Detection stellt eine andere Frage: Mit wem ist sie verbunden, und was entsteht dabei? Auf diesem Datensatz entstehen so 54 Communities mit einer Modularität von Q ≈ 0.8, ein Wert, der auf eine ausgeprägt klare Struktur hindeutet.Die Visualisierung unten kombiniert beide Perspektiven, Kategorie und Community, auf denselben FA2-Positionen. Knotengröße und Hover helfen dabei, sich in den 171.000 Kanten zu orientieren.</p>
+<iframe src="graph_big/visuals/fa2_graphbig.html" width="100%" height="600px" style="border: 1px solid #e5e4e0;" loading="lazy">
+</iframe>
+
+<div style="margin: 10px 0 20px; display: flex; flex-wrap: wrap; gap: 20px; font-size: 12px; color: #888;">
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <svg width="72" height="16" style="overflow: visible; flex-shrink: 0;">
+      <circle cx="6" cy="8" r="3" fill="#aaa"></circle>
+      <circle cx="20" cy="8" r="5" fill="#aaa"></circle>
+      <circle cx="38" cy="8" r="7" fill="#aaa"></circle>
+      <circle cx="60" cy="8" r="10" fill="#aaa"></circle>
+    </svg>
+    <span>Knotengröße = Degree</span>
+  </div>
+  <div>Hover isoliert den Knoten und seine direkten Verbindungen</div>
+  <div>Toggle schaltet zwischen Kategorie- und Community-Färbung</div>
+  <div>54 Communities · Q ≈ 0.8</div>
+</div>
+<p>FA2 und Louvain haben unabhängig voneinander gearbeitet. FA2 kennt keine Communities, Louvain kennt keine Koordinaten. Dass beide räumlich zu ähnlichen Clustern kommen, ist ein starker Hinweis darauf, dass diese Struktur tatsächlich im Datensatz vorhanden ist.</p>
+<details class="acc">
+<summary>
+<span class="acc-toggle"></span><span class="acc-title">Wie Louvain Communities findet</span><span class="acc-tag tag-algo">Algorithmus</span>
+</summary>
+<div class="acc-body">
+<p>
+Louvain betrachtet ausschließlich Kanten und gruppiert Knoten so, dass innerhalb der Gruppen deutlich mehr Verbindungen liegen, als in einem Zufallsgraphen mit derselben Gradverteilung zu erwarten wäre. Formal wird dabei die Modularität <span class="math inline">\(Q\)</span> maximiert.
+</p>
+<p><span class="math display">\[Q = \frac{1}{2m} \sum_{i,j} \left[ A_{ij} - \frac{deg(i) \cdot deg(j)}{2m} \right] \delta(c_i, c_j)\]</span></p>
+<p>
+<span class="math inline">\(A_{ij}\)</span> gibt an, ob eine Kante zwischen <span class="math inline">\(i\)</span> und <span class="math inline">\(j\)</span> existiert, <span class="math inline">\(m\)</span> ist die Gesamtzahl der Kanten, und <span class="math inline">\(\delta(c_i, c_j)\)</span> ist 1, wenn beide Knoten zur selben Community gehören, sonst 0. Ein <span class="math inline">\(Q\)</span> nahe 0 bedeutet keine erkennbare Struktur, <span class="math inline">\(Q \approx 0.8\)</span> wie hier bedeutet ausgeprägte Communities.
+</p>
+<p>
+<strong>Phase 1.</strong> Jeder Knoten startet als eigene Community. Für jeden Nachbarn wird geprüft, ob <span class="math inline">\(Q\)</span> steigt, wenn der Knoten in dessen Community wechselt. Falls ja, erfolgt der Wechsel. Das wiederholt sich, bis kein Wechsel <span class="math inline">\(Q\)</span> weiter erhöht.
+</p>
+<p>
+<strong>Phase 2.</strong> Die gefundenen Communities werden zu Superknoten komprimiert, Verbindungen zwischen ihnen zu gewichteten Kanten. Auf diesem komprimierten Graphen beginnt Phase 1 erneut. Der Algorithmus arbeitet sich hierarchisch von fein nach grob vor, was ihn schnell genug für 22.470 Knoten macht.
+</p>
+<div class="acc-note">
+<p>Auch Louvain ist nicht-deterministisch. <code>random_state=42</code> sorgt für reproduzierbare Community-Zuordnungen.</p>
+</div>
+</div>
+</details>
+<details class="acc">
+<summary>
+<span class="acc-toggle"></span><span class="acc-title">Hover, Toggle und das Focus+Context-Prinzip</span><span class="acc-tag tag-ux">Interaktionsdesign</span>
+</summary>
+<div class="acc-body">
+<p>
+Die Interaktionsstruktur folgt Shneidermans Mantra. Overview first, zoom and filter, then details on demand. Die Grundansicht ist die Übersicht, Hover liefert das Detail, Toggle wechselt den Kontext.
+</p>
+<p>
+<strong>Knotengröße.</strong> Der Degree, also die Anzahl der Verbindungen eines Knotens, bestimmt seine Größe. Stark vernetzte Hubs werden so allein durch ihre Fläche erkennbar, ohne zusätzliche Beschriftung.
+</p>
+<p>
+<strong>Hover.</strong> Der hoverReducer in Sigma.js setzt alle nicht betroffenen Kanten auf niedrige Opazität und hebt nur die direkten Nachbarn hervor, ohne die Gesamtpositionierung zu verändern. Bei 171.000 Kanten ist ein einzelner Knoten mit seinen direkten Verbindungen die kleinstmögliche Einheit, die noch Sinn ergibt.
+</p>
+<p>
+<strong>Toggle.</strong> Kategorie gegen Community, beide Male dieselben Positionen, andere Einfärbung. Der Kontextwechsel passiert ohne Neuberechnung, weil Layout und Attribut konsequent getrennt gehalten wurden. Wo beide Färbungen räumlich übereinstimmen, spiegeln Facebook-Kategorien echte Verbindungsgemeinschaften. Wo sie auseinanderfallen, etwa bei einem Louvain-Cluster, der Politiker und Regierungsseiten gemeinsam enthält, entstehen kategorieübergreifende Muster, die Labels allein nicht abbilden.
+</p>
+</div>
+</details>
+<hr>
+</section>
+<section id="pipeline-vom-datensatz-zur-interaktiven-visualisierung" class="level2">
+<h2 class="anchored" data-anchor-id="pipeline-vom-datensatz-zur-interaktiven-visualisierung">Pipeline: vom Datensatz zur interaktiven Visualisierung</h2>
+<div style="margin: 1.5rem 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #e5e4e0; font-size: 0.875rem;">
+
+  <div style="background: white; padding: 1.25rem 1rem;">
+    <p style="font-size: 11px; color: #aaa; margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.07em;">01 · Rohdaten</p>
+    <p style="font-weight: 500; margin: 0 0 6px; color: #2C2C2A;">CSV-Dateien</p>
+    <p style="font-size: 12px; color: #888; margin: 0;">edges.csv<br>target.csv</p>
+  </div>
+
+  <div style="background: white; padding: 1.25rem 1rem;">
+    <p style="font-size: 11px; color: #aaa; margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.07em;">02 · Preprocessing</p>
+    <p style="font-weight: 500; margin: 0 0 6px; color: #2C2C2A;">Python</p>
+    <p style="font-size: 12px; color: #888; margin: 0;">NetworkX · FA2 · Louvain</p>
+  </div>
+
+  <div style="background: white; padding: 1.25rem 1rem;">
+    <p style="font-size: 11px; color: #aaa; margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.07em;">03 · Export</p>
+    <p style="font-weight: 500; margin: 0 0 6px; color: #2C2C2A;">graph.json</p>
+    <p style="font-size: 12px; color: #888; margin: 0;">id · x · y · community<br>category · name</p>
+  </div>
+
+  <div style="background: white; padding: 1.25rem 1rem;">
+    <p style="font-size: 11px; color: #aaa; margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.07em;">04 · Rendering</p>
+    <p style="font-weight: 500; margin: 0 0 6px; color: #2C2C2A;">Sigma.js</p>
+    <p style="font-size: 12px; color: #888; margin: 0;">WebGL · Zoom<br>Hover · Toggle</p>
+  </div>
+
+</div>
+<details class="acc" style="margin-bottom: 1.5rem;">
+<summary><span class="acc-toggle"></span><span class="acc-title">Warum die Berechnung nicht im Browser stattfindet</span><span class="acc-tag tag-arch">Architekturentscheidung</span></summary>
+<div class="acc-body">
+
+<p>FA2 im Browser zu berechnen wäre möglich, es gibt JavaScript-Implementierungen dafür. Bei 22.470 Knoten und 800 Iterationen würde die Berechnung mehrere Minuten dauern und den Browser-Hauptthread blockieren.</p>
+
+<p>Die Entscheidung war deshalb, die Berechnung offline in Python durchzuführen und das Ergebnis als statische JSON-Datei abzulegen. Sigma.js bekommt fertige Koordinaten und rendert sofort per WebGL, was auch 171.000 Kanten flüssig darstellt.</p>
+
+<p>Der Nachteil ist real. Parameter wie Iterationszahl oder Barnes-Hut-Theta lassen sich nicht interaktiv anpassen. Für ein didaktisches Tool, das ein bestimmtes Ergebnis zeigen soll, ist das vertretbar.</p>
+
+</div>
+</details>
+</section>
+<section id="alternative-ansätze-im-vergleich" class="level2">
+<h2 class="anchored" data-anchor-id="alternative-ansätze-im-vergleich">Alternative Ansätze im Vergleich</h2>
+<p>FA2 und Louvain sind nicht die einzigen Antworten auf dieses Problem. Zwei weitere Algorithmen werden für große Graphen regelmäßig vorgeschlagen, beide mit eigenen Stärken und eigenen Grenzen für diesen Anwendungsfall.</p>
+<section id="sfdp-scalable-force-directed-placement" class="level3">
+<h3 class="anchored" data-anchor-id="sfdp-scalable-force-directed-placement">SFDP: Scalable Force-Directed Placement</h3>
+<iframe src="graph_big/visuals/sfdp_graph.html" width="100%" height="600px" style="border: 1px solid #e5e4e0;" loading="lazy">
+</iframe>
+<p>Das Layout ist gleichmäßig verteilt, rund und gut lesbar, beantwortet aber nicht die Frage, die hier interessiert.</p>
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Was SFDP technisch macht</span><span class="acc-tag tag-algo">Algorithmus</span></summary>
+<div class="acc-body">
+<p>SFDP steht für Scalable Force-Directed Placement. Klassische kräftebasierte Layouts berechnen pro Iteration alle Knotenpaare, also $O(n^2)$. Bei 22.470 Knoten ist das nicht praktikabel.</p>
+<p>SFDP löst das mit Multilevel Coarsening. Der Graph wird schrittweise vergröbert, ähnliche Knoten werden zu Superknoten zusammengefasst. Das Layout wird auf dem kleinen Graphen berechnet und dann schrittweise auf den Originalgraphen zurückübertragen.</p>
+</div>
+</details>
+
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Warum das hier nicht funktioniert</span><span class="acc-tag tag-konzept">Konzept</span></summary>
+<div class="acc-body">
+<p>SFDP optimiert auf globale Übersichtlichkeit, nicht auf Community-Auflösung. Dichteunterschiede werden geglättet, Cluster verschmieren. Ein Graph mit $Q \approx 0.8$, also mit ausgeprägten Communities, sieht im SFDP-Layout aus wie ein Zufallsgraph.</p>
+<p>Das Layout ist als solches korrekt, beantwortet aber eine andere Fragestellung. Gleichmäßige Verteilung im Raum statt Zugehörigkeit der Knoten zueinander.</p>
+</div>
+</details>
+<hr>
+</section>
+<section id="umap-uniform-manifold-approximation-and-projection" class="level3">
+<h3 class="anchored" data-anchor-id="umap-uniform-manifold-approximation-and-projection">UMAP: Uniform Manifold Approximation and Projection</h3>
+<iframe src="graph_big/visuals/umap_graph.html" width="100%" height="600px" style="border: 1px solid #e5e4e0;" loading="lazy">
+</iframe>
+<p>Scharfe Cluster, klare Trennung, auf den ersten Blick ein überzeugendes Bild. UMAP beantwortet hier jedoch eine andere Frage als FA2 und Louvain.</p>
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Was UMAP technisch macht</span><span class="acc-tag tag-algo">Algorithmus</span></summary>
+<div class="acc-body">
+<p>UMAP, Uniform Manifold Approximation and Projection, ist kein Graphlayout-Algorithmus, sondern ein Dimensionsreduktionsverfahren aus dem maschinellen Lernen. Es baut einen gewichteten k-nächste-Nachbarn-Graphen im hochdimensionalen Raum und optimiert dann eine 2D-Einbettung, die lokale Nachbarschaftsstruktur erhält.</p>
+<p>Für Graphdaten heißt das, UMAP projiziert entweder die Adjazenzmatrix oder Knotenfeatures als Zahlenvektoren. Die 171.002 Kanten des Facebook-Datensatzes werden dabei nicht als Verbindungen behandelt, sondern als Merkmalsdaten umgerechnet.</p>
+</div>
+</details>
+
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Wo die Grenze liegt</span><span class="acc-tag tag-konzept">Konzept</span></summary>
+<div class="acc-body">
+<p>Was UMAP als Cluster zeigt, ist Ähnlichkeit in den Seitenbeschreibungen oder der Adjazenzstruktur als Feature-Vektor, kein Verbindungsmuster. Die Frage, welche Seiten sich gegenseitig liken und was dabei entsteht, bleibt unbeantwortet.</p>
+<p>UMAP hat sinnvolle Anwendungsfälle, etwa wenn Knotenähnlichkeit die relevante Dimension ist, beispielsweise für Klassifikationsaufgaben. Als Graphlayout zur Darstellung von Netzwerktopologie ist es hier nicht geeignet.</p>
+</div>
+</details>
+
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Wann UMAP sinnvoll wäre</span><span class="acc-tag tag-konzept">Konzept</span></summary>
+<div class="acc-body">
+
+<p>UMAP hat klare Stärken, wenn die relevante Frage Ähnlichkeit betrifft, nicht Verbindung. Für den Facebook-Datensatz wäre das, welche Seiten ähnliche Beschreibungstexte haben. Die <code>musae_facebook_features.json</code> enthält genau diese Knotenfeatures als hochdimensionale Vektoren. Eine UMAP-Projektion würde inhaltlich ähnliche Seiten zusammenführen, unabhängig davon, ob sie sich gegenseitig liken.</p>
+
+<p>Für die primäre Task des Datensatzes, Multi-Class Node Classification, ist das ein legitimer Ansatz. Als Graphlayout zur Darstellung von Netzwerktopologie ist UMAP dagegen ungeeignet. Die 171.002 Kanten werden nicht als Verbindungen behandelt, sondern als Merkmalsdaten umgerechnet. Was UMAP als Cluster zeigt, ist Feature-Ähnlichkeit, kein Verbindungsmuster.</p>
+
+</div>
+</details>
+<hr>
+</section>
+</section>
+<section id="layout-algorithmen-im-vergleich" class="level2">
+<h2 class="anchored" data-anchor-id="layout-algorithmen-im-vergleich">Layout-Algorithmen im Vergleich</h2>
+<table style="width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.9rem;">
+<thead>
+<tr style="border-bottom:2px solid #2C2C2A;">
+<th style="text-align:left; padding:10px 12px; color:#888; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">
+Kriterium
+</th>
+<th style="text-align:left; padding:10px 12px; color:#534AB7; font-weight:600;">
+ForceAtlas2
+</th>
+<th style="text-align:left; padding:10px 12px; color:#444; font-weight:600;">
+SFDP
+</th>
+<th style="text-align:left; padding:10px 12px; color:#444; font-weight:600;">
+UMAP
+</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #e5e4e0;">
+<td style="padding:10px 12px; color:#888;">
+Komplexität
+</td>
+<td style="padding:10px 12px;">
+O(n log n) mit Barnes-Hut
+</td>
+<td style="padding:10px 12px;">
+O(n log n) durch Multilevel Coarsening
+</td>
+<td style="padding:10px 12px;">
+O(n log n) approximiert über k-NN
+</td>
+</tr>
+<tr style="border-bottom:1px solid #e5e4e0;">
+<td style="padding:10px 12px; color:#888;">
+Cluster-Trennschärfe
+</td>
+<td style="padding:10px 12px;">
+Hoch, deckt sich mit Louvain
+</td>
+<td style="padding:10px 12px;">
+Niedrig, Communities verschmieren
+</td>
+<td style="padding:10px 12px;">
+Hoch, aber andere Bedeutung
+</td>
+</tr>
+<tr>
+<td style="padding:10px 12px; color:#888;">
+Eignung
+</td>
+<td style="padding:10px 12px;">
+Verbindungsstruktur sichtbar machen
+</td>
+<td style="padding:10px 12px;">
+Globale Übersichtlichkeit großer Graphen
+</td>
+<td style="padding:10px 12px;">
+Feature-Ähnlichkeit, Klassifikation
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="fa2-als-standard-für-diesen-anwendungsfall" class="level2">
+<h2 class="anchored" data-anchor-id="fa2-als-standard-für-diesen-anwendungsfall">FA2 als Standard für diesen Anwendungsfall</h2>
+<p>FA2 ist nicht der schnellste Algorithmus und liefert nicht die schärfsten Cluster. Er ist aber der einzige Algorithmus in diesem Vergleich, der Verbindungsstruktur respektiert, Community-Muster sichtbar macht und dabei im Browser interaktiv bleibt.</p>
+<p>Für Graphen, bei denen die Kanten die eigentliche Information tragen, ist ForceAtlas2 der pragmatische Standard für interaktive Web-Visualisierungen.</p>
 </section>
 <section id="gnn-topology" class="level2">
 <h2 class="anchored" data-anchor-id="gnn-topology">5. Warum Graphen schwer darstellbar sind — und was GNNs anders machen</h2>
@@ -1002,7 +1397,7 @@ Die gesamte Simulation wird zur Mitte der Zeichenfläche gezogen. Dadurch bleibt
 </div>
 </section></div>
 </section>
-
+</section>
 <section id="how-to-handle-rezeptbuch" class="level2">
 <h2 class="anchored" data-anchor-id="how-to-handle-rezeptbuch">6. How to handle (Rezeptbuch)</h2>
 <p>Wenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral.</p>
@@ -1013,6 +1408,7 @@ Die gesamte Simulation wird zur Mitte der Zeichenfläche gezogen. Dadurch bleibt
 
 </section>
 </section>
+
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
