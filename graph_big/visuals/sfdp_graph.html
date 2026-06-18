@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { margin: 0; background: #0f0f1a; font-family: sans-serif; }
+    #controls {
+      padding: 12px 16px 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    #controls button {
+      padding: 6px 16px;
+      border: 1px solid #ffffff44;
+      background: #ffffff11;
+      color: #dcdcdc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #controls button.active {
+      background: #ffffff33;
+      border-color: #fff;
+    }
+    #legend {
+      display: flex;
+      gap: 16px;
+      color: #ccc;
+      font-size: 13px;
+    }
+    .legend-dot {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+    #filter-row {
+      padding: 0 16px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    #filter-row span {
+      color: #888;
+      font-size: 12px;
+    }
+    .filter-btn {
+      padding: 4px 12px;
+      border: 1px solid #ffffff33;
+      background: #ffffff08;
+      color: #aaa;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-family: sans-serif;
+    }
+    .filter-btn.active[data-cat="all"]        { border-color: #fff;     color: #fff;     background: #ffffff22; }
+    .filter-btn.active[data-cat="politician"] { border-color: #e74c3c;  color: #e74c3c;  background: #e74c3c22; }
+    .filter-btn.active[data-cat="government"] { border-color: #3498db;  color: #3498db;  background: #3498db22; }
+    .filter-btn.active[data-cat="tvshow"]     { border-color: #2ecc71;  color: #2ecc71;  background: #2ecc7122; }
+    .filter-btn.active[data-cat="company"]    { border-color: #f39c12;  color: #f39c12;  background: #f39c1222; }
+    #sigma-container { width: 100%; height: 555px; }
+    #node-tooltip {
+      position: fixed;
+      pointer-events: none;
+      background: #1a1a2eee;
+      border: 1px solid #ffffff33;
+      border-radius: 6px;
+      padding: 7px 12px;
+      color: #ffffff;
+      font-size: 13px;
+      line-height: 1.5;
+      display: none;
+      z-index: 10;
+      white-space: nowrap;
+    }
+    #node-tooltip .tt-type {
+      font-size: 11px;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+
+<div id="controls">
+  <button id="btn-category" class="active" onclick="colorBy('category')">Nach Kategorie</button>
+  <button id="btn-community" onclick="colorBy('community')">Nach Community</button>
+  <div id="legend">
+    <span><span class="legend-dot" style="background:#e74c3c"></span>Politician</span>
+    <span><span class="legend-dot" style="background:#3498db"></span>Government</span>
+    <span><span class="legend-dot" style="background:#2ecc71"></span>TV Show</span>
+    <span><span class="legend-dot" style="background:#f39c12"></span>Company</span>
+  </div>
+</div>
+<div id="filter-row">
+  <span>Kategorie-Filter:</span>
+  <button class="filter-btn active" data-cat="all"        onclick="setFilter('all')">Alle</button>
+  <button class="filter-btn"        data-cat="politician" onclick="setFilter('politician')">Politician</button>
+  <button class="filter-btn"        data-cat="government" onclick="setFilter('government')">Government</button>
+  <button class="filter-btn"        data-cat="tvshow"     onclick="setFilter('tvshow')">TV Show</button>
+  <button class="filter-btn"        data-cat="company"    onclick="setFilter('company')">Company</button>
+</div>
+<div id="node-tooltip"><div class="tt-name"></div><div class="tt-type"></div></div>
+<div id="sigma-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/graphology@0.25.4/dist/graphology.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sigma@2.4.0/build/sigma.min.js"></script>
+
+<script>
+const CATEGORY_COLORS = {
+  "politician": "#e74c3c",
+  "government": "#3498db",
+  "tvshow":     "#2ecc71",
+  "company":    "#f39c12"
+};
+
+const CATEGORY_DISPLAY = {
+  "politician": "Politician",
+  "government": "Government",
+  "tvshow":     "TV Show",
+  "company":    "Company"
+};
+
+function communityColor(id) {
+  const hue = Math.round((id * 137.5) % 360);
+  const s = (65 + (id % 3) * 10) / 100;
+  const l = (50 + (id % 2) * 10) / 100;
+  const a = s * Math.min(l, 1 - l);
+  const f = n => {
+    const k = (n + (hue / 360) * 12) % 12;
+    return l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1));
+  };
+  const h = x => Math.round(x * 255).toString(16).padStart(2, '0');
+  return `#${h(f(0))}${h(f(8))}${h(f(4))}`;
+}
+
+const tooltip = document.getElementById("node-tooltip");
+let mouseX = 0, mouseY = 0;
+document.addEventListener("mousemove", e => { mouseX = e.clientX; mouseY = e.clientY; });
+
+let renderer    = null;
+let graphData   = null;
+let hoveredNode = null;
+let neighborSet = new Set();
+let activeFilter = "all";
+
+function setFilter(cat) {
+  activeFilter = cat;
+  document.querySelectorAll(".filter-btn").forEach(b =>
+    b.classList.toggle("active", b.dataset.cat === cat)
+  );
+  if (renderer) renderer.refresh();
+}
+
+fetch("graph_sfdp.json")
+  .then(r => r.json())
+  .then(data => { graphData = data; buildGraph("category"); });
+
+function buildGraph(mode) {
+  hoveredNode = null;
+  neighborSet = new Set();
+
+  document.getElementById("btn-category").classList.toggle("active", mode === "category");
+  document.getElementById("btn-community").classList.toggle("active", mode === "community");
+  document.getElementById("legend").style.display = mode === "category" ? "flex" : "none";
+
+  if (renderer) renderer.kill();
+
+  const graph = new graphology.Graph();
+
+  const degrees = {};
+  graphData.nodes.forEach(n => { degrees[String(n.id)] = 0; });
+  graphData.edges.forEach(e => {
+    if (e.source === e.target) return;
+    const s = String(e.source), t = String(e.target);
+    degrees[s] = (degrees[s] || 0) + 1;
+    degrees[t] = (degrees[t] || 0) + 1;
+  });
+  const maxDeg = Math.max(1, ...Object.values(degrees));
+
+  graphData.nodes.forEach(n => {
+    const id  = String(n.id);
+    const deg = degrees[id] || 0;
+    graph.addNode(id, {
+      x: n.x, y: n.y,
+      size:  2 + (deg / maxDeg) * 7,
+      label: n.name || id,
+      category: n.category,
+      color: mode === "category"
+        ? (CATEGORY_COLORS[n.category] || "#999")
+        : communityColor(n.community)
+    });
+  });
+
+  graphData.edges.forEach(e => {
+    if (e.source === e.target) return;
+    try { graph.addEdge(String(e.source), String(e.target)); } catch(_) {}
+  });
+
+  renderer = new Sigma(graph, document.getElementById("sigma-container"), {
+    renderEdgeLabels: false,
+    labelRenderedSizeThreshold: 999,
+    hoverRenderer: (context, data) => {
+      // only draw halo ring, skip sigma's built-in white label
+      context.beginPath();
+      context.arc(data.x, data.y, data.size + 6, 0, Math.PI * 2);
+      context.closePath();
+      context.fillStyle = data.color + "44";
+      context.fill();
+    },
+
+    nodeReducer: (node, data) => {
+      const inFilter = activeFilter === "all" || data.category === activeFilter;
+
+      // Node doesn't match active filter → always dim
+      if (!inFilter) {
+        return { ...data, color: "#ffffff12", size: Math.max(1.5, data.size * 0.4) };
+      }
+
+      if (hoveredNode === null) return data;
+      if (node === hoveredNode)   return { ...data, zIndex: 1 };
+      if (neighborSet.has(node)) return { ...data, zIndex: 1 };
+      return { ...data, color: "#ffffff18", size: Math.max(1.5, data.size * 0.5) };
+    },
+
+    edgeReducer: (edge, data) => {
+      if (hoveredNode === null) return { ...data, hidden: true };
+      const src = graph.source(edge), tgt = graph.target(edge);
+      if (src !== hoveredNode && tgt !== hoveredNode) return { ...data, hidden: true };
+      return {
+        ...data,
+        hidden: false,
+        color: graph.getNodeAttribute(hoveredNode, "color") + "99",
+        size: 0.5
+      };
+    }
+  });
+
+  renderer.on("enterNode", ({ node }) => {
+    hoveredNode = node;
+    neighborSet = new Set(graph.neighbors(node));
+    renderer.refresh();
+
+    const cat   = graph.getNodeAttribute(node, "category");
+    const label = graph.getNodeAttribute(node, "label");
+    tooltip.querySelector(".tt-name").textContent = label;
+    tooltip.querySelector(".tt-type").textContent = CATEGORY_DISPLAY[cat] || cat || "–";
+    tooltip.style.left    = (mouseX + 14) + "px";
+    tooltip.style.top     = (mouseY - 10) + "px";
+    tooltip.style.display = "block";
+  });
+
+  renderer.on("leaveNode", () => {
+    hoveredNode = null;
+    neighborSet = new Set();
+    renderer.refresh();
+    tooltip.style.display = "none";
+  });
+
+  document.getElementById("sigma-container").addEventListener("mousemove", () => {
+    if (tooltip.style.display === "block") {
+      tooltip.style.left = (mouseX + 14) + "px";
+      tooltip.style.top  = (mouseY - 10) + "px";
+    }
+  });
+}
+
+function colorBy(mode) { buildGraph(mode); }
+</script>
+</body>
+</html>
