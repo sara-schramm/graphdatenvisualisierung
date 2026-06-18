@@ -10,32 +10,53 @@ bibliography: references.bib
 ```
 
 ## 1. Intro (Warum Soziale Netzwerke schwer zu zeichnen sind)
-Soziale Netzwerke bestehen aus tausenden bis Millionen von Verbindungen.  
-Je mehr Knoten und Kanten hinzukommen, desto schneller wird die Struktur unlesbar.
+Soziale Netzwerke gehören zu den anschaulichsten Beispielen für Graphdaten. Menschen, Webseiten, Accounts oder Gruppen lassen sich als Knoten darstellen, ihre Beziehungen als Kanten. Genau diese Einfachheit macht Graphen so attraktiv: Viele wichtige Fragen lassen sich damit direkt formulieren, etwa wer mit wem verbunden ist, welche Gruppen entstehen oder welche Knoten besonders zentral sind.
 
-Das Problem: **Daten haben keine räumliche Ordnung** – nur Beziehungen.
+Ein solches Netzwerk besteht aus tausenden bis Millionen von Verbindungen. Je mehr Knoten und Kanten hinzukommen, desto schneller wird die Struktur unlesbar. Das Problem ist nicht nur die reine Datenmenge, sondern die Tatsache, dass **Daten keine räumliche Ordnung besitzen**, sie enthalten nur Beziehungen.
+
+Graphdatenvisualisierung versucht deshalb, Beziehungen so im Raum anzuordnen, dass Muster sichtbar werden. Ziel ist nicht nur, alle Daten darzustellen, sondern sie lesbar zu machen. Dazu werden unterschiedliche Layouts, Filter, Interaktionen und Rendering-Techniken verwendet.ehungen.
 
 ## 2. Was ist Graphdatenvisualisierung?
 
-Ein Graph besteht aus:
+Ein Graph besteht aus zwei Grundelementen:
 
-- **Knoten** (z. B. Personen, Seiten)
-- **Kanten** (Beziehungen zwischen ihnen)
+- Knoten (z. B. Personen, Seiten, Accounts)
+- Kanten (Beziehungen zwischen ihnen, z. B. Freundschaften, Likes, Follows)
 
-Ziel der Visualisierung ist es, diese Struktur **räumlich sinnvoll anzuordnen**, sodass Muster sichtbar werden.
+Ziel der Graphdatenvisualisierung ist es, diese Struktur räumlich sinnvoll anzuordnen, sodass Muster sichtbar werden. Im Gegensatz zu Karten, Gebäuden oder anderen geografischen Daten gibt es für ein Netzwerk keine natürliche räumliche Ordnung. Die Positionen der Knoten müssen erst durch eine Visualisierung festgelegt werden.
 
-## 3. Herausforderung (Wann wird ein Graph unlesbar?)
-Mit wachsender Größe entstehen Probleme:
+Die wichtigsten Fragen in der Visualisierung sind:
 
-- Kanten überlagern sich
-- Cluster verschwinden
-- Orientierung geht verloren
+- Welche Knoten sind besonders zentral?
+- Welche Gruppen oder Communities entstehen?
+- Welche Knoten verbinden verschiedene Gruppen miteinander?
+- Wie verändert sich die Struktur bei wachsender Netzgröße?
 
-Ab einem gewissen Punkt entsteht ein sogenannter **Hairball-Effekt**.
+Je nach Größe und Ziel der Visualisierung werden unterschiedliche Methoden verwendet:
 
-Das folgende ist nur zur Vorschau:
+- Knoten und Kanten können als Punkte und Linien dargestellt werden.
+- Cluster können durch Farben oder Umrisse markiert werden.
+- Hubs können durch größere Knoten hervorgehoben werden.
+- Gerichtete Kanten können als Pfeile codiert werden.
 
-Im folgenden werden drei unterschiedliche Ansätze aufgezeigt:
+## 3. Herausforderung: Wann wird ein Graph unlesbar?
+Mit wachsender Größe entstehen vier zentrale Probleme:
+
+1. Kanten überlagern sich
+Bei vielen Kanten entsteht ein dichtes Netz aus Linien, das kaum noch einzelne Verbindungen unterscheidbar macht. Dieses Phänomen wird als Hairball-Effekt bezeichnet.
+
+2. Cluster verschwinden
+In kleinen Netzwerken sind Gruppen oft noch gut sichtbar. In größeren Netzwerken überlagern sich Clusters, und die Struktur wird schwerer lesbar.
+
+3. Orientierung geht verloren
+Bei vielen Knoten ohne natürliche räumliche Ordnung verlieren Nutzer schnell die Orientierung. Es ist nicht klar, wo sich wichtige Akteure befinden, welche Gruppen existieren und welche Knoten besonders verbunden sind.
+
+4. Interaktion bricht zusammen
+Bei kleinen Graphen lassen sich einzelne Knoten noch direkt untersuchen, etwa durch Hover, Labels oder Drag. Bei sehr großen Graphen werden Interaktionen wie Zoom, Hover oder Nachbarschaft-Ansicht technisch anspruchsvoll oder brechen an Performance-Grenzen.
+
+Ab einem gewissen Punkt reicht eine einfache Darstellung daher nicht mehr aus. Dann braucht man effizientere Rendering-Techniken (Canvas, WebGL), Filter, Aggregation oder andere Formen der Reduktion.
+
+Im folgenden werden drei unterschiedliche Ansätze aufgezeigt, wie sich Graphdatenvisualisierung im Web mit wachsender Netzgröße verändert. An drei unterschiedlich großen Social Graphen wird gezeigt, wann eine Visualisierung noch gut lesbar ist, wann sie an Grenzen stößt und welche Methoden jeweils sinnvoll sind.
 
 
 {{< include small.qmd >}}

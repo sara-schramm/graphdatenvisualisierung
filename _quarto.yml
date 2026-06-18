@@ -27,6 +27,8 @@ website:
         text: Mittlerer Datensatz
       - href: big.qmd
         text: Großer Datensatz
+      - href: cookbook.qmd
+        text: Rezeptbuch
 
 format:
   html:
