@@ -104,7 +104,7 @@ Technisch motiviert diese Größenordnung den Wechsel zu **Canvas**: Statt tause
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-<script src="assets/js/force-graph.js"></script>
+<script src="js/force-graph.js"></script>
 ```
 
 ```{=html}

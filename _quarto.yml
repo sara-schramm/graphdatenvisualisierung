@@ -33,5 +33,7 @@ website:
 format:
   html:
     theme: flatly
-    css: styles.scss
+    css:
+      - styles.css
+      - custom.css
 

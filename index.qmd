@@ -6,7 +6,7 @@ bibliography: references.bib
 
 
 ```{=html}
-<script src="assets/js/site.js" defer></script>
+<script src="js/site.js" defer></script>
 ```
 
 ## 1. Intro (Warum Soziale Netzwerke schwer zu zeichnen sind)
@@ -89,8 +89,8 @@ Abschnitte 1–4 zeigen, **wie** man Graphen zeichnet und skaliert. Hier geht es
   <a href="#gnn-playground-widget">Simulator</a>
   <a href="#gnn-quiz-widget">Quiz</a>
 </nav>
-<script src="assets/js/gnn-section.js" defer></script>
-<script src="assets/js/gnn-playground.js" defer></script>
+<script src="js/gnn-section.js" defer></script>
+<script src="js/gnn-playground.js" defer></script>
 ```
 
 Du kennst bereits **CNNs** und **Fully Connected Networks**: Bei Bildern liegen Pixel auf einem regulären Gitter, Faltungen nutzen lokale Nachbarschaft mit **geteilten Gewichten**. Bei Graphen fehlt genau dieses Gitter — und genau deshalb scheitern naïve Übertragungen.
@@ -420,5 +420,11 @@ Dual-Ansicht wie [GNN-101](https://github.com/Visual-Intelligence-UMN/GNN-101): 
 
 10. Towards Data Science – Text Network Analysis. [towardsdatascience.com](https://towardsdatascience.com/text-network-analysis-generate-beautiful-network-visualisations-a373dbe183ca/)
 
-**Datensatz:** Facebook Large Page-Page Network – Rozemberczki et al. 2021. [Kaggle](https://www.kaggle.com/datasets/wolfram77/graphs-social/data) · [DOI: 10.1093/comnet/cnab014](https://doi.org/10.1093/comnet/cnab014)
+11. Emden R. Gansner, Yehuda Koren and Stephen North Graph Drawing by Stress Majorization [graphviz.org](https://www.graphviz.org/documentation/GKN04.pdf)
+
+12. Yunhai Wang, Yanyan Wang, Yinqi Sun, Lifeng Zhu, Kecheng Lu Chi-Wing Fu, Michael Sedlmair, Oliver Deussen, and Baoquan Chen - Revisiting Stress Majorization as a Unified Framework for Interactive Constrained Graph Visualization [vis.uni-stuttgart.de](https://www.vis.uni-stuttgart.de/documentcenter/staff/sedlmaml/papers/wang2017graph.pdf)
+
+**Datensatz:**
+  - Facebook Large Page-Page Network – Rozemberczki et al. 2021. [Kaggle](https://www.kaggle.com/datasets/wolfram77/graphs-social/data) · [DOI: 10.1093/comnet/cnab014](https://doi.org/10.1093/comnet/cnab014)
+  - Wiki-Vote [Kaggle](https://www.kaggle.com/datasets/vimanshmahajan/wiki-vote)
 :::
