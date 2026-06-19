@@ -136,7 +136,8 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="styles.scss">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="custom.css">
 </head>
 
 <body class="nav-fixed fullcontent quarto-light">
@@ -195,7 +196,7 @@ window.Quarto = {
 
 
 <p>title: “Graphdatenvisualisierung im Web” author: “Sara, Silvia, Adam” format: html jupyter: python3 bibliography: references.bib</p>
-<script src="assets/js/site.js" defer=""></script>
+<script src="js/site.js" defer=""></script>
 <section id="intro-warum-soziale-netzwerke-schwer-zu-zeichnen-sind" class="level2">
 <h2 class="anchored" data-anchor-id="intro-warum-soziale-netzwerke-schwer-zu-zeichnen-sind">1. Intro (Warum Soziale Netzwerke schwer zu zeichnen sind)</h2>
 <p>Soziale Netzwerke gehören zu den anschaulichsten Beispielen für Graphdaten. Menschen, Webseiten, Accounts oder Gruppen lassen sich als Knoten darstellen, ihre Beziehungen als Kanten. Genau diese Einfachheit macht Graphen so attraktiv: Viele wichtige Fragen lassen sich damit direkt formulieren, etwa wer mit wem verbunden ist, welche Gruppen entstehen oder welche Knoten besonders zentral sind.</p>
@@ -528,130 +529,208 @@ Die gesamte Simulation wird zur Mitte der Zeichenfläche gezogen. Dadurch bleibt
 <p>Im nächsten Abschnitt betrachten wir deshalb einen deutlich größeren Datensatz.</p>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="graph-small/graph-small.js"></script>
-</section>
-<section id="b.-mittlerer-datensatz" class="level2">
-<h2 class="anchored" data-anchor-id="b.-mittlerer-datensatz">4b. Mittlerer Datensatz</h2>
+<div class="section-medium">
 <p>Im kleinen Beispiel stand <em>eine</em> Person im Mittelpunkt: Max und sein Ego-Netz. Jetzt drehen wir die Perspektive um und betrachten ein <strong>vollständiges soziales Netzwerk ohne Mittelpunkt</strong> – das Wikipedia-Abstimmungsnetzwerk <code>wiki-Vote</code> mit rund <strong>7.000 Nutzer:innen und über 100.000 Beziehungen</strong>. Hier gibt es kein Zentrum, um das wir die Knoten anordnen könnten.</p>
 <section id="warum-ein-globales-layout-statt-eines-ego-layouts" class="level3">
 <h3 class="anchored" data-anchor-id="warum-ein-globales-layout-statt-eines-ego-layouts">Warum ein globales Layout statt eines Ego-Layouts?</h3>
-<p>Das egozentrische Layout aus 3a funktioniert nur, solange es einen klaren Mittelpunkt gibt. Bei einem Netzwerk dieser Größe gibt es viele gleichberechtigte Knoten, dichte Bereiche und sich überlappende Communities. Deshalb verwenden wir ein <strong>globales, kräftebasiertes Layout (ForceAtlas2)</strong>: Kanten ziehen verbundene Knoten zusammen, alle Knoten stoßen sich gegenseitig ab. So entstehen Cluster aus der Struktur heraus, ohne dass wir einen Mittelpunkt vorgeben.</p>
+<p>Das egozentrische Layout aus 3a funktioniert nur, solange es einen klaren Mittelpunkt gibt. Bei einem Netzwerk dieser Größe gibt es viele gleichberechtigte Knoten, dichte Bereiche und sich überlappende Communities. Deshalb verwenden wir ein <strong>globales Stress-Majorization-Layout</strong>: Die Positionen werden so gewählt, dass <strong>Layout-Distanzen</strong> den <strong>kürzesten Pfaddistanzen</strong> im Graphen möglichst nahekommen — ohne einen Mittelpunkt vorzugeben.</p>
 </section>
 <section id="was-ist-das-problem" class="level3">
 <h3 class="anchored" data-anchor-id="was-ist-das-problem">Was ist das Problem?</h3>
 <p>Genau hier zeigt sich die Grenze: Bei mehreren tausend Knoten und über hunderttausend Kanten wird die Darstellung schnell zum „Hairball”. Einzelne Kanten lassen sich kaum noch verfolgen, Labels überlagern sich, und ein SVG-/DOM-basiertes Layout würde unter der Knotenzahl einbrechen. Lesbarkeit entsteht nicht mehr durch jede Einzelkante, sondern erst durch <strong>Reduktion</strong>: Wir färben nach Community (Louvain) und skalieren die Knotengröße nach eingehenden Stimmen (In-Degree), damit zentrale Hubs sichtbar bleiben.</p>
 </section>
+<section id="stress-majorization" class="level3">
+<h3 class="anchored" data-anchor-id="stress-majorization">Die Loss-Funktion: Stress Majorization</h3>
+<p>Ab der mittleren Größenordnung wird Layout zur <strong>Optimierung von Distanzen</strong>, nicht mehr zum Ausschwingen von Kräften. Die Stress-Funktion misst, wie gut die Zeichnung die Graph-Struktur abbildet:</p>
+<p><span class="math display">\[ \mathcal{L} = \sum_{i \neq j} w_{i,j} \left( \|p_i - p_j\|_2 - d_{i,j} \right)^2 \]</span></p>
+<p>Hier ist <span class="math inline">\(d_{i,j}\)</span> die <strong>kürzeste Pfaddistanz</strong> zwischen Knoten <span class="math inline">\(i\)</span> und <span class="math inline">\(j\)</span> im Graphen, <span class="math inline">\(p_i\)</span> die <strong>Position</strong> von Knoten <span class="math inline">\(i\)</span> in der Zeichnung, und <span class="math inline">\(w_{i,j}\)</span> ein Gewicht (typisch <span class="math inline">\(1/d_{i,j}^2\)</span>). <strong>Stress-Majorization</strong> minimiert diese Funktion iterativ — ein Verfahren, das auch in gelernten Layout-Ansätzen als Trainingsziel auftaucht (siehe Abschnitt 5).</p>
+<div id="stress-majorization-demo" class="stress-demo reveal-on-scroll">
+  <p><strong>Interaktiv:</strong> Ziehe die Knoten — je näher Layout-Distanz und Pfaddistanz, desto geringer der Stress.</p>
+  <div class="stress-demo-layout">
+    <svg viewbox="0 0 320 160" width="320" height="160" aria-label="Stress-Demo Layout"></svg>
+    <div class="stress-metrics">
+      <div class="stress-bar-row">
+        <label><span>Gesamt-Stress</span><span data-stress-total="">0</span></label>
+        <div class="stress-bar" data-stress-bar=""><span style="width:40%"></span></div>
+      </div>
+      <div class="stress-bar-row" data-pair-stress="" data-a="u" data-b="v">
+        <label><span>u–v (Pfad 1)</span><span>0</span></label>
+        <div class="stress-bar"><span></span></div>
+      </div>
+      <div class="stress-bar-row" data-pair-stress="" data-a="u" data-b="z">
+        <label><span>u–z (Pfad 2)</span><span>0</span></label>
+        <div class="stress-bar"><span></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
 <section id="layout-graphalg" class="level3">
 <h3 class="anchored" data-anchor-id="layout-graphalg">Layout + GraphAlg</h3>
-<p>Technisch motiviert diese Größenordnung den Wechsel zu <strong>Canvas</strong>: Statt tausender DOM-Knoten zeichnen wir alles in ein einziges <code>&lt;canvas&gt;</code>-Element und rendern nur bei Interaktion neu. Das Layout wird einmalig offline mit ForceAtlas2 vorberechnet, sodass die Seite sofort lädt; im Browser sorgt eine D3-Force-Simulation für Interaktivität (Ziehen, Nachbarschaft hervorheben, neu anordnen). Probiere es aus – fahre über Knoten, zoome hinein und beobachte, wie dicht das Netz wirklich ist:</p>
-<div class="force-graph" data-src="assets/data/social_graph.json">
+<p>Technisch motiviert diese Größenordnung den Wechsel zu <strong>Canvas</strong>: Statt tausender DOM-Knoten zeichnen wir alles in ein einziges <code>&lt;canvas&gt;</code>-Element und rendern nur bei Interaktion neu. Das Layout wird <strong>einmalig offline</strong> per Stress-Majorization vorberechnet, sodass die Seite sofort lädt. Im Browser kannst du den Graphen erkunden (Zoomen, Nachbarschaft hervorheben, Knoten kurz verschieben) — ohne das Layout neu zu berechnen. Probiere es aus:</p>
+<div class="force-graph" data-src="graph_medium/stress/social_graph.json" tabindex="0" aria-label="Interaktiver wiki-Vote Graph">
+  <div class="fg-onboarding" hidden="">
+    <div class="fg-onboarding-card">
+      <h3 class="anchored">Willkommen</h3>
+      <p>…</p>
+      <div class="fg-onboarding-actions">
+        <button type="button" data-onboarding-skip="">Überspringen</button>
+        <button type="button" class="primary" data-onboarding-next="">Weiter</button>
+      </div>
+    </div>
+  </div>
+  <div class="fg-header">
+    <span class="fg-title">wiki-Vote · Stress-Layout (offline)</span>
+    <button type="button" class="fg-help-btn" data-control="help" aria-label="Kurzanleitung anzeigen">?</button>
+  </div>
+  <div class="fg-discovery">
+    <span style="font-size:0.78rem;color:#64748b;margin-right:0.25rem;">Entdecken:</span>
+    <button type="button" class="discovery-chip" data-discovery="hub">Hub finden</button>
+    <button type="button" class="discovery-chip" data-discovery="community">Community isolieren</button>
+    <button type="button" class="discovery-chip" data-discovery="neighbor">Nachbarn zeigen</button>
+  </div>
   <div class="fg-controls">
-    <div class="fg-control">
-      <label for="fg-charge">Abstoßung</label>
-      <input id="fg-charge" type="range" min="5" max="120" value="30" data-control="charge">
-    </div>
-    <div class="fg-control">
-      <label for="fg-distance">Kantenlänge</label>
-      <input id="fg-distance" type="range" min="5" max="120" value="30" data-control="distance">
-    </div>
     <div class="fg-control">
       <label for="fg-labels">Hub-Labels</label>
       <input id="fg-labels" type="checkbox" data-control="labels">
     </div>
-    <button type="button" data-control="resimulate">Neu anordnen</button>
+    <div class="fg-control">
+      <label for="fg-louvain">Louvain-Farben</label>
+      <input id="fg-louvain" type="checkbox" data-control="louvain" checked="">
+    </div>
+    <button type="button" data-control="reset-layout">Layout zurücksetzen</button>
     <button type="button" data-control="reset">Ansicht zurücksetzen</button>
   </div>
+  <div class="fg-legend">
+    <span class="fg-legend-label">Community:</span>
+    <span class="fg-legend-items"></span>
+    <span class="fg-legend-size-demo">
+      Größe ∝ Stimmen
+      <span style="width:6px;height:6px;"></span>
+      <span style="width:10px;height:10px;"></span>
+      <span style="width:14px;height:14px;"></span>
+    </span>
+  </div>
   <div class="fg-canvas-wrap">
-    <canvas></canvas>
+    <div class="fg-skeleton">
+      <div class="fg-skeleton-text">Layout wird geladen …</div>
+      <div class="fg-skeleton-bar"><span></span></div>
+    </div>
+    <canvas class="fg-main"></canvas>
+    <div class="fg-minimap" aria-hidden="true"><canvas></canvas></div>
     <div class="fg-tooltip"></div>
   </div>
-  <div class="fg-status">Lade Graphdaten ...</div>
+  <div class="fg-keyboard-hint">
+    Zuerst Graph anklicken · <kbd>+</kbd>/<kbd>−</kbd> Zoom · <kbd>R</kbd> Reset · <kbd>Esc</kbd> Auswahl aufheben
+  </div>
+  <div class="fg-status">Lade Graphdaten …</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-<script src="assets/js/force-graph.js"></script>
-</section>
-<section id="so-liest-du-den-graphen" class="level3">
-<h3 class="anchored" data-anchor-id="so-liest-du-den-graphen">So liest du den Graphen</h3>
-<div class="callout callout-style-default callout-tip callout-titled" title="Schnell-Legende">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Schnell-Legende
-</div>
-</div>
-<div class="callout-body-container callout-body">
+<script src="js/force-graph.js"></script>
+<div class="acc-stack">
+
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">So liest du den Graphen</span><span class="acc-tag tag-ux">UX</span></summary>
+<div class="acc-body">
 <ul>
 <li><strong>Farbe = Community.</strong> Jede Farbe ist eine automatisch gefundene Gruppe (siehe Louvain weiter unten) – Knoten, die untereinander dichter verbunden sind als mit dem Rest.</li>
-<li><strong>Knotengröße = eingehende Stimmen (In-Degree).</strong> Große Punkte sind Nutzer:innen, für die besonders viele andere abgestimmt haben – die „Hubs” des Netzwerks.</li>
+<li><strong>Knotengröße = eingehende Stimmen (In-Degree).</strong> Große Punkte sind Nutzer:innen, für die besonders viele andere abgestimmt haben – die „Hubs" des Netzwerks.</li>
 <li><strong>Maus über einen Knoten:</strong> Der Knoten und seine direkten Nachbarn bleiben farbig, alles andere wird ausgegraut; die roten Linien sind seine Kanten. Das Tooltip zeigt ID, Community, Stimmen und Nachbarzahl.</li>
-<li><strong>Mausrad = Zoom, Ziehen = Verschieben.</strong> Einzelne Knoten lassen sich mit gedrückter Maustaste festhalten und umherschieben.</li>
+<li><strong>Mausrad = Zoom, Ziehen = Verschieben.</strong> Einzelne Knoten lassen sich kurz umherschieben — das ändert nur die Anzeige, nicht die offline berechnete Optimierung.</li>
 </ul>
 </div>
-</div>
-</section>
-<section id="die-bedienelemente-erklärt" class="level3">
-<h3 class="anchored" data-anchor-id="die-bedienelemente-erklärt">Die Bedienelemente erklärt</h3>
+</details>
+
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Die Bedienelemente erklärt</span><span class="acc-tag tag-ux">UX</span></summary>
+<div class="acc-body">
 <ul>
-<li><strong>Abstoßung</strong> – wie stark sich alle Knoten gegenseitig wegdrücken (die „Many-Body”-Kraft). Höhere Werte spreizen das Netz weiter auseinander.</li>
-<li><strong>Kantenlänge</strong> – die Ruhelänge der „Federn” entlang der Kanten. Kürzere Kanten ziehen verbundene Knoten enger zusammen.</li>
 <li><strong>Hub-Labels</strong> – blendet die Nummern der <strong>12 Knoten mit den meisten eingehenden Stimmen</strong> ein. Da der Datensatz anonymisiert ist, sind das nur numerische IDs; sie zeigen aber, <em>wo</em> im Knäuel die zentralen Akteure sitzen.</li>
-<li><strong>Neu anordnen</strong> – „heizt” die laufende Simulation neu auf (siehe Kasten).</li>
+<li><strong>Louvain-Farben</strong> – schaltet die Community-Färbung ein oder aus, um die reine Struktur des Stress-Layouts zu sehen.</li>
+<li><strong>Layout zurücksetzen</strong> – stellt alle Knotenpositionen auf die offline optimierten Koordinaten zurück (nach explorativem Verschieben).</li>
 <li><strong>Ansicht zurücksetzen</strong> – stellt Zoom und Ausschnitt so ein, dass der ganze Graph wieder ins Bild passt.</li>
 </ul>
-<div class="callout callout-style-default callout-note callout-titled" title="Warum bewegt „Neu anordnen“ so wenig?">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
 </div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Warum bewegt „Neu anordnen“ so wenig?
+</details>
+
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Warum verschiebt Ziehen das Layout nicht dauerhaft?</span><span class="acc-tag tag-konzept">Konzept</span></summary>
+<div class="acc-body">
+<p>Die Positionen wurden <strong>offline per Stress-Majorization optimiert</strong> — im Browser wird kein Layout neu berechnet. Wenn du einen Knoten ziehst, verschiebst du ihn nur <strong>lokal zur Erkundung</strong>. Mit <strong>Layout zurücksetzen</strong> kehrst du zur optimierten Anordnung zurück. Genau so unterscheidet sich die mittlere Stufe von 3a: dort „wächst" das Layout live; hier ist es ein <strong>fertiges Optimierungsergebnis</strong>.</p>
 </div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</details>
+
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Stress &amp; Majorization — Mini-Schematics</span><span class="acc-tag tag-konzept">Konzept</span></summary>
+<div class="acc-body">
+<div class="schematic-grid">
+  <div class="schematic-card">
+    <h4 class="anchored">Pfaddistanz vs. Layout-Distanz</h4>
+    <svg viewbox="0 0 240 100" aria-hidden="true">
+      <line x1="30" y1="50" x2="90" y2="50" stroke="#2780e3" stroke-width="2"></line>
+      <circle cx="30" cy="50" r="10" fill="#2780e3"></circle>
+      <circle cx="90" cy="50" r="10" fill="#2780e3"></circle>
+      <text x="60" y="42" text-anchor="middle" font-size="9" fill="#64748b">d=1</text>
+      <line x1="120" y1="50" x2="210" y2="50" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3"></line>
+      <circle cx="120" cy="50" r="10" fill="#2780e3" opacity="0.5"></circle>
+      <circle cx="210" cy="50" r="10" fill="#2780e3" opacity="0.5"></circle>
+      <text x="165" y="42" text-anchor="middle" font-size="9" fill="#64748b">||p|| ≠ d</text>
+      <text x="165" y="72" text-anchor="middle" font-size="9" fill="#ff7f0e">Stress ↑</text>
+    </svg>
+    <p class="schematic-caption">Je größer die Abweichung zwischen Pfad- und Layout-Distanz, desto höher der Stress.</p>
+  </div>
+  <div class="schematic-card">
+    <h4 class="anchored">Majorization: iterativ verbessern</h4>
+    <svg viewbox="0 0 240 100" aria-hidden="true">
+      <circle cx="40" cy="50" r="12" fill="#2780e3" opacity="0.4"></circle>
+      <text x="40" y="54" text-anchor="middle" font-size="8" fill="#fff">Init</text>
+      <path d="M58 50 L82 50" stroke="#64748b" marker-end="url(#arr2)"></path>
+      <circle cx="110" cy="50" r="12" fill="#2780e3" opacity="0.7"></circle>
+      <text x="110" y="54" text-anchor="middle" font-size="8" fill="#fff">↓L</text>
+      <path d="M128 50 L152 50" stroke="#64748b" marker-end="url(#arr2)"></path>
+      <circle cx="180" cy="50" r="12" fill="#2780e3"></circle>
+      <text x="180" y="54" text-anchor="middle" font-size="8" fill="#fff">min</text>
+      <defs><marker id="arr2" markerwidth="6" markerheight="6" refx="5" refy="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#64748b"></path></marker></defs>
+    </svg>
+    <p class="schematic-caption">Startposition → Untergrenze berechnen → Positionen aktualisieren, bis Stress minimal.</p>
+  </div>
 </div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Das ist Absicht – und selbst schon lehrreich. Zwei Effekte wirken zusammen:</p>
-<ol type="1">
-<li><strong>Der Graph startet bereits im Gleichgewicht.</strong> Die Positionen sind <em>nicht</em> im Browser berechnet, sondern offline mit ForceAtlas2 vorab optimiert. Da ForceAtlas2 fast dieselbe Physik nutzt wie die Browser-Simulation, sitzt das Layout schon in einem Energie-Minimum. „Neu anordnen” würfelt die Positionen <strong>nicht</strong> neu, sondern erwärmt nur die bestehende Anordnung – es gibt also kaum etwas zu verbessern.</li>
-<li><strong>Die Kräfte sind bewusst sanft eingestellt</strong> (schwache, in der Reichweite begrenzte Abstoßung, schwache Kanten), damit ein Netz mit über 100.000 Kanten flüssig bleibt und nicht „explodiert”. Der dichte Kern verhält sich dadurch wie ein <strong>starrer Körper</strong>. Die einzige Bewegung, die quasi keine Energie kostet, ist eine <strong>globale Drehung/Verschiebung</strong> des gesamten Klumpens – genau die leichte Rotation, die man sieht, bevor alles wieder einfriert.</li>
-</ol>
-<p>Wer ein echtes Neu-Berechnen sehen möchte, müsste die Startpositionen zufällig setzen und die Kräfte stärker wählen – dann „wächst” das Layout sichtbar aus dem Chaos zusammen.</p>
 </div>
+</details>
+
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Wie das Layout entsteht: Stress-Majorization offline</span><span class="acc-tag tag-algo">Algorithmus</span></summary>
+<div class="acc-body">
+<p>Im Gegensatz zu kräftebasierten Layouts (Federn + Abstoßung wie in 3a) optimiert Stress-Majorization <strong>Distanzen</strong>: Für jedes Knotenpaar $(i,j)$ wird die euklidische Distanz $\|p_i - p_j\|$ der kürzesten Pfaddistanz $d_{i,j}$ angeglichen. Das Verfahren iteriert, bis der Stress $\mathcal{L}$ nicht mehr signifikant sinkt.</p>
+<p>Bei ~7.000 Knoten ist das offline auf der CPU in wenigen Minuten machbar — deutlich zu langsam für eine live Browser-Simulation, aber ideal für ein <strong>vorberechnetes</strong> Layout. Wir führen die Berechnung einmalig im Python-Skript aus und speichern die Koordinaten in JSON. Die Website lädt nur das Ergebnis.</p>
+<p>Gelernte Layout-Ansätze (Abschnitt 5) können dieselbe Stress-Idee nutzen — der Unterschied: dort lernt ein Netzwerk die Zuordnung, hier optimiert ein klassischer Algorithmus direkt.</p>
 </div>
-</div>
-</section>
-<section id="wie-das-layout-entsteht-forceatlas2-barnes-hut" class="level3">
-<h3 class="anchored" data-anchor-id="wie-das-layout-entsteht-forceatlas2-barnes-hut">Wie das Layout entsteht: ForceAtlas2 + Barnes-Hut</h3>
-<p>Ein kräftebasiertes („force-directed”) Layout behandelt den Graphen wie ein physikalisches System: <strong>Kanten sind Federn</strong>, die verbundene Knoten anziehen, und <strong>alle Knoten stoßen sich gegenseitig ab</strong> (wie gleichnamige Ladungen). Lässt man das System „ausschwingen”, wandern dicht verbundene Gruppen zusammen und schwach verbundene auseinander – Struktur wird sichtbar, ohne dass wir sie vorgeben.</p>
-<p>Der Knackpunkt ist die Abstoßung: Eigentlich müsste man <em>jedes</em> Knotenpaar vergleichen – bei 7.000 Knoten sind das rund 25 Millionen Paare pro Schritt (Aufwand <span class="math inline">\(O(n^2)\)</span>). ForceAtlas2 nutzt deshalb die <strong>Barnes-Hut-Näherung</strong>: Weit entfernte Knotengruppen werden zu einem Schwerpunkt zusammengefasst und nur einmal verrechnet. Das senkt den Aufwand auf <span class="math inline">\(O(n \log n)\)</span> und macht große Graphen überhaupt erst berechenbar.</p>
-<p>Weil diese Berechnung trotzdem einige Sekunden dauert, führen wir sie <strong>einmalig offline</strong> im Python-Skript aus und speichern die fertigen Koordinaten in einer JSON-Datei. Die Website lädt nur das Ergebnis und ist dadurch sofort da.</p>
-</section>
-<section id="communities-und-hubs-louvain-in-degree" class="level3">
-<h3 class="anchored" data-anchor-id="communities-und-hubs-louvain-in-degree">Communities und Hubs: Louvain + In-Degree</h3>
+</details>
+
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Communities und Hubs: Louvain + In-Degree</span><span class="acc-tag tag-konzept">Konzept</span></summary>
+<div class="acc-body">
 <p>Farbe und Größe sind keine Deko, sondern zwei Analyse-Ebenen:</p>
 <ul>
-<li><strong>Communities (Farbe)</strong> kommen vom <strong>Louvain-Algorithmus</strong>. Er sucht eine Aufteilung in Gruppen mit möglichst hoher <em>Modularität</em> – also viele Kanten <em>innerhalb</em> der Gruppen und wenige <em>zwischen</em> ihnen. Hier entstehen 15 Communities. Das ist der „globale” Ordnungshinweis, der im Ego-Netz aus 3a noch nicht nötig war.</li>
+<li><strong>Communities (Farbe)</strong> kommen vom <strong>Louvain-Algorithmus</strong>. Er sucht eine Aufteilung in Gruppen mit möglichst hoher <em>Modularität</em> – also viele Kanten <em>innerhalb</em> der Gruppen und wenige <em>zwischen</em> ihnen. Hier entstehen 15 Communities. Das ist der „globale" Ordnungshinweis, der im Ego-Netz aus 3a noch nicht nötig war.</li>
 <li><strong>In-Degree (Größe)</strong> ist die Zahl der <strong>eingehenden</strong> Kanten – bei wiki-Vote also: Für wie viele Personen wurde abgestimmt? Große Knoten sind einflussreiche Hubs. (Bei gerichteten Netzen unterscheidet man In- und Out-Degree; fürs Layout behandeln wir die Kanten aber <strong>ungerichtet</strong>, um nicht über 100.000 Pfeilspitzen zeichnen zu müssen.)</li>
 </ul>
-</section>
-<section id="warum-canvas-statt-svg" class="level3">
-<h3 class="anchored" data-anchor-id="warum-canvas-statt-svg">Warum Canvas statt SVG?</h3>
+</div>
+</details>
+
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Warum Canvas statt SVG?</span><span class="acc-tag tag-impl">Implementierung</span></summary>
+<div class="acc-body">
 <p>In 3a (kleines Netz) war <strong>SVG</strong> ideal: Jeder Knoten ist ein eigenes DOM-Element, das man stylen und anklicken kann. Bei ~7.000 Knoten und ~100.000 Kanten wären das aber über hunderttausend DOM-Elemente – der Browser würde beim Zoomen und Scrollen einbrechen.</p>
-<p>Deshalb zeichnen wir hier auf ein <strong><code>&lt;canvas&gt;</code></strong>: eine einzige Zeichenfläche, auf die pro Bild alles in einem Durchgang gemalt wird (Kanten gebündelt, Knoten nach Farbe gruppiert). Das skaliert auf zehntausende Elemente. Der Preis: Es gibt keine einzelnen DOM-Knoten mehr, also müssen Interaktionen wie „über welchem Knoten ist die Maus?” selbst berechnet werden – dafür nutzen wir einen <strong>Quadtree</strong> (eine räumliche Suchstruktur), der den nächstgelegenen Knoten in <span class="math inline">\(O(\log n)\)</span> findet, statt alle 7.000 durchzuprobieren.</p>
+<p>Deshalb zeichnen wir hier auf ein <strong><code>&lt;canvas&gt;</code></strong>: eine einzige Zeichenfläche, auf die pro Bild alles in einem Durchgang gemalt wird (Kanten gebündelt, Knoten nach Farbe gruppiert). Das skaliert auf zehntausende Elemente. Der Preis: Es gibt keine einzelnen DOM-Knoten mehr, also müssen Interaktionen wie „über welchem Knoten ist die Maus?" selbst berechnet werden – dafür nutzen wir einen <strong>Quadtree</strong> (eine räumliche Suchstruktur), der den nächstgelegenen Knoten in $O(\log n)$ findet, statt alle 7.000 durchzuprobieren.</p>
+</div>
+</details>
+
+</div>
+</section></div>
 </section>
-<section id="die-physik-dahinter-d3-force-und-velocity-verlet" class="level3">
-<h3 class="anchored" data-anchor-id="die-physik-dahinter-d3-force-und-velocity-verlet">Die Physik dahinter: d3-force und Velocity-Verlet</h3>
-<p>Die Interaktivität im Browser liefert <strong>d3-force</strong>. Jeder Knoten hat eine Position <span class="math inline">\((x, y)\)</span> und eine Geschwindigkeit <span class="math inline">\((v_x, v_y)\)</span>. In jedem Simulationsschritt passiert:</p>
-<ol type="1">
-<li>Die Kräfte (Federn, Abstoßung, Zentrierung) verändern die <strong>Geschwindigkeiten</strong>.</li>
-<li>Eine <strong>Reibung</strong> (<code>velocityDecay</code>) bremst die Geschwindigkeiten, damit nichts ewig nachschwingt.</li>
-<li>Die <strong>Positionen</strong> werden um die Geschwindigkeit weitergeschoben.</li>
-</ol>
-<p>Dieses Integrationsverfahren heißt <strong>Velocity-Verlet</strong> – dasselbe Schema, mit dem auch Teilchensimulationen in der Physik rechnen; es ist stabil und günstig. Gesteuert wird alles über eine „Temperatur” <strong><code>alpha</code></strong>, die pro Schritt abklingt (<code>alphaDecay</code>) und die Kräfte mitskaliert: Das System startet „heiß” und beweglich und „friert” allmählich ein – im Kern ein <strong>Simulated Annealing</strong>. Genau deshalb kommt der Graph nach „Neu anordnen” nach kurzer Zeit von selbst zur Ruhe.</p>
-</section>
-</section>
+
 <section id="c.-großer-datensatz" class="level2">
 <h2 class="anchored" data-anchor-id="c.-großer-datensatz">4c. Großer Datensatz</h2>
 <p>Stell dir vor, du öffnest Facebook im November 2017 und siehst nicht einzelne Nutzer, sondern nur offizielle, verifizierte Seiten. Regierungen, Politiker, TV-Sender, Konzerne. Wer ist mit wem vernetzt?</p>
@@ -1123,8 +1202,8 @@ Feature-Ähnlichkeit, Klassifikation
   <a href="#gnn-playground-widget">Simulator</a>
   <a href="#gnn-quiz-widget">Quiz</a>
 </nav>
-<script src="assets/js/gnn-section.js" defer=""></script>
-<script src="assets/js/gnn-playground.js" defer=""></script>
+<script src="js/gnn-section.js" defer=""></script>
+<script src="js/gnn-playground.js" defer=""></script>
 <p>Du kennst bereits <strong>CNNs</strong> und <strong>Fully Connected Networks</strong>: Bei Bildern liegen Pixel auf einem regulären Gitter, Faltungen nutzen lokale Nachbarschaft mit <strong>geteilten Gewichten</strong>. Bei Graphen fehlt genau dieses Gitter — und genau deshalb scheitern naïve Übertragungen.</p>
 <section id="grid-as-graph-heading" class="level3">
 <h3 class="anchored" data-anchor-id="grid-as-graph-heading">Was ist ein Graph — und warum Bilder special sind</h3>
@@ -1801,8 +1880,10 @@ Feature-Ähnlichkeit, Klassifikation
 <li><p>yWorks – Force-Directed Graph Layout. <a href="https://www.yworks.com/pages/force-directed-graph-layout">yworks.com</a></p></li>
 <li><p>Cambridge Intelligence – Automatic Graph Layouts. <a href="https://cambridge-intelligence.com/blog/automatic-graph-layouts/">cambridge-intelligence.com</a></p></li>
 <li><p>Towards Data Science – Text Network Analysis. <a href="https://towardsdatascience.com/text-network-analysis-generate-beautiful-network-visualisations-a373dbe183ca/">towardsdatascience.com</a></p></li>
+<li><p>Emden R. Gansner, Yehuda Koren and Stephen North Graph Drawing by Stress Majorization <a href="https://www.graphviz.org/documentation/GKN04.pdf">graphviz.org</a></p></li>
+<li><p>Yunhai Wang, Yanyan Wang, Yinqi Sun, Lifeng Zhu, Kecheng Lu Chi-Wing Fu, Michael Sedlmair, Oliver Deussen, and Baoquan Chen - Revisiting Stress Majorization as a Unified Framework for Interactive Constrained Graph Visualization <a href="https://www.vis.uni-stuttgart.de/documentcenter/staff/sedlmaml/papers/wang2017graph.pdf">vis.uni-stuttgart.de</a></p></li>
 </ol>
-<p><strong>Datensatz:</strong> Facebook Large Page-Page Network – Rozemberczki et al.&nbsp;2021. <a href="https://www.kaggle.com/datasets/wolfram77/graphs-social/data">Kaggle</a> · <a href="https://doi.org/10.1093/comnet/cnab014">DOI: 10.1093/comnet/cnab014</a></p>
+<p><strong>Datensatz:</strong> - Facebook Large Page-Page Network – Rozemberczki et al.&nbsp;2021. <a href="https://www.kaggle.com/datasets/wolfram77/graphs-social/data">Kaggle</a> · <a href="https://doi.org/10.1093/comnet/cnab014">DOI: 10.1093/comnet/cnab014</a> - Wiki-Vote <a href="https://www.kaggle.com/datasets/vimanshmahajan/wiki-vote">Kaggle</a></p>
 </div>
 
 
