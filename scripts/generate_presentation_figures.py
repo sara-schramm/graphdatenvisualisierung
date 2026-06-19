@@ -2,7 +2,7 @@
 """Generate static figures for the Reveal.js presentation on graph visualization.
 
 Uses synthetic small graphs for schematics and optionally samples positions from
-assets/data/social_graph.json for one real-layout thumbnail. No raw SNAP data or
+graph_medium/stress/social_graph.json for one real-layout thumbnail. No raw SNAP data or
 ForceAtlas2 run required.
 
     python scripts/generate_presentation_figures.py
@@ -26,7 +26,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "presentation" / "assets"
-SOCIAL_GRAPH = ROOT / "assets" / "data" / "social_graph.json"
+SOCIAL_GRAPH = ROOT / "graph_medium" / "stress" / "social_graph.json"
 
 # Presentation palette (readable on projector, aligned with cosmo-ish blues)
 C_BG = "#fafafa"
