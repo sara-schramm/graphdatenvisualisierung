@@ -1,118 +1,72 @@
----
-title: "Graphdatenvisualisierung"
+title: "Graphdatenvisualisierung im Web"
 author: "Sara, Silvia, Adam"
-format:
-  html:
-    theme: cosmo
+format: html
 jupyter: python3
 bibliography: references.bib
----
+
 
 ```{=html}
 <script src="assets/js/site.js" defer></script>
 ```
 
 ## 1. Intro (Warum Soziale Netzwerke schwer zu zeichnen sind)
+Soziale Netzwerke gehören zu den anschaulichsten Beispielen für Graphdaten. Menschen, Webseiten, Accounts oder Gruppen lassen sich als Knoten darstellen, ihre Beziehungen als Kanten. Genau diese Einfachheit macht Graphen so attraktiv: Viele wichtige Fragen lassen sich damit direkt formulieren, etwa wer mit wem verbunden ist, welche Gruppen entstehen oder welche Knoten besonders zentral sind.
 
-::: {.section-hero .reveal-on-scroll}
-Soziale Netzwerke bestehen aus Menschen und ihren Beziehungen — aber wie zeigt man so etwas im Web so, dass man noch wirklich etwas erkennt?
-:::
+Ein solches Netzwerk besteht aus tausenden bis Millionen von Verbindungen. Je mehr Knoten und Kanten hinzukommen, desto schneller wird die Struktur unlesbar. Das Problem ist nicht nur die reine Datenmenge, sondern die Tatsache, dass **Daten keine räumliche Ordnung besitzen**, sie enthalten nur Beziehungen.
 
-::: {.reveal-on-scroll}
-Unser Hauptbeispiel **wiki-Vote** hat bereits diese Größenordnung:
+Graphdatenvisualisierung versucht deshalb, Beziehungen so im Raum anzuordnen, dass Muster sichtbar werden. Ziel ist nicht nur, alle Daten darzustellen, sondern sie lesbar zu machen. Dazu werden unterschiedliche Layouts, Filter, Interaktionen und Rendering-Techniken verwendet.ehungen.
 
-<div data-intro-stats></div>
-:::
+## 2. Was ist Graphdatenvisualisierung?
+
+Ein Graph besteht aus zwei Grundelementen:
+
+- Knoten (z. B. Personen, Seiten, Accounts)
+- Kanten (Beziehungen zwischen ihnen, z. B. Freundschaften, Likes, Follows)
+
+Ziel der Graphdatenvisualisierung ist es, diese Struktur räumlich sinnvoll anzuordnen, sodass Muster sichtbar werden. Im Gegensatz zu Karten, Gebäuden oder anderen geografischen Daten gibt es für ein Netzwerk keine natürliche räumliche Ordnung. Die Positionen der Knoten müssen erst durch eine Visualisierung festgelegt werden.
+
+Die wichtigsten Fragen in der Visualisierung sind:
+
+- Welche Knoten sind besonders zentral?
+- Welche Gruppen oder Communities entstehen?
+- Welche Knoten verbinden verschiedene Gruppen miteinander?
+- Wie verändert sich die Struktur bei wachsender Netzgröße?
+
+Je nach Größe und Ziel der Visualisierung werden unterschiedliche Methoden verwendet:
+
+- Knoten und Kanten können als Punkte und Linien dargestellt werden.
+- Cluster können durch Farben oder Umrisse markiert werden.
+- Hubs können durch größere Knoten hervorgehoben werden.
+- Gerichtete Kanten können als Pfeile codiert werden.
+
+## 3. Herausforderung: Wann wird ein Graph unlesbar?
+Mit wachsender Größe entstehen vier zentrale Probleme:
+
+1. Kanten überlagern sich
+Bei vielen Kanten entsteht ein dichtes Netz aus Linien, das kaum noch einzelne Verbindungen unterscheidbar macht. Dieses Phänomen wird als Hairball-Effekt bezeichnet.
+
+2. Cluster verschwinden
+In kleinen Netzwerken sind Gruppen oft noch gut sichtbar. In größeren Netzwerken überlagern sich Clusters, und die Struktur wird schwerer lesbar.
+
+3. Orientierung geht verloren
+Bei vielen Knoten ohne natürliche räumliche Ordnung verlieren Nutzer schnell die Orientierung. Es ist nicht klar, wo sich wichtige Akteure befinden, welche Gruppen existieren und welche Knoten besonders verbunden sind.
+
+4. Interaktion bricht zusammen
+Bei kleinen Graphen lassen sich einzelne Knoten noch direkt untersuchen, etwa durch Hover, Labels oder Drag. Bei sehr großen Graphen werden Interaktionen wie Zoom, Hover oder Nachbarschaft-Ansicht technisch anspruchsvoll oder brechen an Performance-Grenzen.
+
+Ab einem gewissen Punkt reicht eine einfache Darstellung daher nicht mehr aus. Dann braucht man effizientere Rendering-Techniken (Canvas, WebGL), Filter, Aggregation oder andere Formen der Reduktion.
+
+Im folgenden werden drei unterschiedliche Ansätze aufgezeigt, wie sich Graphdatenvisualisierung im Web mit wachsender Netzgröße verändert. An drei unterschiedlich großen Social Graphen wird gezeigt, wann eine Visualisierung noch gut lesbar ist, wann sie an Grenzen stößt und welche Methoden jeweils sinnvoll sind.
 
 
-## 2. Problemstellung (Wann wird ein Graph unlesbar?)
+{{< include small.qmd >}}
 
-::: {.section-hero .reveal-on-scroll}
-Eine Graphvisualisierung ist nicht automatisch gut, nur weil alle Knoten und Kanten sichtbar sind. Mit wachsender Größe ändern sich Lesbarkeit, Interaktion und die geeignete Web-Technologie grundlegend.
-:::
-
-Das folgende ist nur zur Vorschau:
-```{=html}
-
-<script src="https://cdn.babylonjs.com/babylon.js"></script>
-
-<div style="width: 100%; height: 400px; position: relative; margin: 20px 0;">
-    <canvas id="renderCanvas" style="width: 100%; height: 100%; touch-action: none; border: 1px solid #ddd; display: block; border-radius: 8px;"></canvas>
-</div>
-
-<script>
-    window.addEventListener('DOMContentLoaded', function() {
-        const canvas = document.getElementById("renderCanvas");
-        if (!canvas) return;
-
-        const engine = new BABYLON.Engine(canvas, true);
-
-        const createScene = function () {
-            const scene = new BABYLON.Scene(engine);
-            scene.clearColor = new BABYLON.Color3(0.95, 0.95, 0.95);
-
-            const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI/4, Math.PI/3, 5, BABYLON.Vector3.Zero(), scene);
-            camera.attachControl(canvas, true);
-
-            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-            
-            const box = BABYLON.MeshBuilder.CreateBox("box", {size: 1.5}, scene);
-            const material = new BABYLON.StandardMaterial("mat", scene);
-            material.diffuseColor = new BABYLON.Color3(0.1, 0.4, 0.8);
-            box.material = material;
-
-            scene.registerBeforeRender(function () {
-                box.rotation.y += 0.01;
-                box.rotation.x += 0.005;
-            });
-
-            return scene;
-        };
-
-        const scene = createScene();
-        engine.runRenderLoop(() => scene.render());
-        window.addEventListener("resize", () => engine.resize());
-    });
-</script>
-```
-## 3a. Kleiner Datensatz (Max und seine 347 Freunde)
-Das ist Max. Max hat rund 350 Facebook-Freunde. Wie kann man diesen Freundeskreis so darstellen, dass Gruppen, Nachbarschaften und Verbindungen verständlich bleiben?
-
-### Warum gut?
-Kleine Netzwerke sind noch direkt lesbar, man kann einzelne Knoten identifizieren und Interaktionen wie Hover, Highlighting oder Nachbarschaftsansichten gut einsetzen. Ego-Netzwerke sind dafür besonders passend, weil lokale soziale Struktur sichtbar wird.
-
-### Was ist das Problem?
-Selbst bei wenigen hundert Knoten kann ein ungeeignetes Layout schnell chaotisch wirken. Viele Kanten erzeugen visuelle Überlagerung, und ohne gute Positionierung sieht man kaum Communities oder zentrale Personen.
-
-### Layout + GraphAlg
-Hier könnt ihr einen force-directed Ansatz als Hauptbeispiel nehmen und daneben z. B. radial oder community-basiert vergleichen. Für diese Größenordnung ist SVG gut geeignet, weil DOM-basierte Interaktion und feine Gestaltung noch praktikabel sind.
-
-[Hier folgt weiterer Inhalt]
-
-## 3b. Mittlerer Datensatz (Ein ganzes Netzwerk statt eines Freundeskreises)
 
 {{< include medium.qmd >}}
 
-## 3c. Großer Datensatz (Vom Freundesnetz zum Follow-Graph)
-Beim Twitter-Netz wird aus einem lesbaren sozialen Bild schnell ein massives Strukturobjekt.
 
-### Warum gut?
-Dieses Netzwerk zeigt sehr deutlich, wie sich Maßstab und Bedeutung gleichzeitig verändern. Ihr könnt hier nicht nur Größe thematisieren, sondern auch den Unterschied zwischen Freundschaft und Follow-Beziehung.
+{{< include big.qmd >}}
 
-### Was ist das Problem?
-Einzelne Knoten sind kaum noch direkt lesbar, Pfeile oder Richtungen lassen sich nicht mehr für jede Kante sinnvoll zeigen, und klassische Browser-Darstellung kommt an Performance-Grenzen. Die Herausforderung ist jetzt nicht mehr nur Zeichnen, sondern sinnvolle Reduktion.
-
-### Layout + GraphAlg
-Hier passt die Argumentation für WebGL/GPU sehr gut. Inhaltlich könnt ihr zusätzlich auf In-Degree/Out-Degree, Hubs, Communities, Filterung und Abstraktion eingehen, weil bei dieser Größenordnung nicht mehr jede Einzelkante der eigentliche Erkenntnisträger ist.
-
-[Hier folgt weiterer Inhalt]
-
-Klassische Werkzeuge lösen vor allem **Zeichnen und Skalieren**. Warum Graph-Darstellung tiefer problematisch ist — und wie **Graph Neural Networks** Topologie in Vektoren übersetzen — behandeln wir in [Abschnitt 5](#gnn-topology).
-
-## 4. How to handle (Rezeptbuch)
-Wenn der Graph klein und explorativ ist, sind Detail, Labels und SVG sinnvoll. Wenn er mittelgroß und dicht ist, braucht man effizienteres Rendering und stärkere visuelle Reduktion. Wenn er sehr groß oder gerichtet ist, werden WebGL, Filterung und Abstraktion zentral.
-
-Das Rezeptbuch fasst **klassische** Entscheidungen zusammen. Im nächsten Abschnitt wechseln wir die Perspektive: Nicht *wie* zeichne ich, sondern *warum* ist die zugrunde liegende Struktur so schwer in die Ebene zu bringen — und was leisten GNNs dabei?
 
 ## 5. Warum Graphen schwer darstellbar sind — und was GNNs anders machen {#gnn-topology}
 
@@ -438,15 +392,33 @@ Dual-Ansicht wie [GNN-101](https://github.com/Visual-Intelligence-UMN/GNN-101): 
 </div>
 ```
 
-## 6. Add-on: Suchspiel (Kannst du den richtigen Knoten finden?)
-1. Finde einen Hub
-2. Finde eine Brücke zwischen zwei Gruppen
-3. Finde einen Knoten mit vielen eingehenden Verbindungen
 
-[Hier könnte man die Interaktion einbauen für das Suchspiel]
+{{< include cookbook.qmd >}}
 
-## 7. Fazit (Welche Visualisierung ist wann sinnvoll?)
-Es gibt nicht die eine beste Graphvisualisierung. Was sinnvoll ist, hängt von Größe, Dichte, Richtung der Kanten, gewünschter Interaktion und der Rendering-Technologie im Web ab.
 
-[Hier folgt weiterer Inhalt]
 
+### Quellen
+
+::: {style="font-size: 0.8rem; color: #888; line-height: 1.9; margin-top: 1.5rem; border-top: 1px solid #e0e0e0; padding-top: 1rem;"}
+1. Jacomy, M., Venturini, T., Heymann, S. and Bastian, M., 2014. ForceAtlas2, a Continuous Graph Layout Algorithm for Handy Network Visualization Designed for the Gephi Software. *PLOS ONE*, 9(6), e98679. [DOI: 10.1371/journal.pone.0098679](https://doi.org/10.1371/journal.pone.0098679)
+
+2. Blondel, V.D., Guillaume, J.-L., Lambiotte, R. and Lefebvre, E., 2008. Fast unfolding of communities in large networks. *Journal of Statistical Mechanics*, P10008. [DOI: 10.1088/1742-5468/2008/10/P10008](https://doi.org/10.1088/1742-5468/2008/10/P10008)
+
+3. Schäfer, T. and Tönnis, M., 2023. t-SGNE: Fast Graph Visualization via t-Distributed Stochastic Graph Neighbor Embedding. [arXiv: 2310.11186](https://arxiv.org/abs/2310.11186)
+
+4. Rozemberczki, B., Allen, C. and Sarkar, R., 2021. Multi-scale Attributed Node Embedding. *Journal of Complex Networks*, 9(2). [DOI: 10.1093/comnet/cnab014](https://doi.org/10.1093/comnet/cnab014)
+
+5. Munzner, T., 2014. *Visualization Analysis & Design*. A K Peters/CRC Press. [vadbook](https://www.cs.ubc.ca/~tmm/vadbook/)
+
+6. Meirelles, I., 2013. *Design for Information*. Rockport Publishers. [Amazon](https://www.amazon.de/Design-Information-Isabel-Meirelles/dp/1592538061)
+
+7. Di Battista, G., Eades, P., Tamassia, R. and Tollis, I.G., 1999. *Graph Drawing: Algorithms for the Visualization of Graphs*. Prentice Hall. [Amazon](https://www.amazon.de/Graph-Drawing-Algorithms-Visualization-Graphs/dp/0133016153)
+
+8. yWorks – Force-Directed Graph Layout. [yworks.com](https://www.yworks.com/pages/force-directed-graph-layout)
+
+9. Cambridge Intelligence – Automatic Graph Layouts. [cambridge-intelligence.com](https://cambridge-intelligence.com/blog/automatic-graph-layouts/)
+
+10. Towards Data Science – Text Network Analysis. [towardsdatascience.com](https://towardsdatascience.com/text-network-analysis-generate-beautiful-network-visualisations-a373dbe183ca/)
+
+**Datensatz:** Facebook Large Page-Page Network – Rozemberczki et al. 2021. [Kaggle](https://www.kaggle.com/datasets/wolfram77/graphs-social/data) · [DOI: 10.1093/comnet/cnab014](https://doi.org/10.1093/comnet/cnab014)
+:::

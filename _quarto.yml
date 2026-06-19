@@ -4,6 +4,16 @@ project:
   resources:
     - graph_medium/stress/social_graph.json
     - assets
+    - graph_big/visuals/fa2_graphbig.html
+    - graph_big/visuals/fa2_categorygraph.html
+    - graph_big/visuals/fa2_greygraph.html
+    - graph_big/visuals/fa2_biggraph.json
+    - graph_big/visuals/hairball.html
+    - graph_big/visuals/umap_graph.html
+    - graph_big/visuals/sfdp_graph.html
+    - graph_big/visuals/graph_sfdp.json
+    - graph_big/visuals/graph_umap.json
+    - graph_big/visuals/hairball.json
 
 website:
   title: "Graphdatenvisualisierung"
@@ -11,10 +21,17 @@ website:
     left:
       - href: index.qmd
         text: Home
+      - href: small.qmd
+        text: Kleiner Datensatz
+      - href: medium.qmd
+        text: Mittlerer Datensatz
+      - href: big.qmd
+        text: Großer Datensatz
+      - href: cookbook.qmd
+        text: Rezeptbuch
 
 format:
   html:
-    theme: cosmo
-    css:
-      - styles.css
-      - custom.css
+    theme: flatly
+    css: styles.scss
+

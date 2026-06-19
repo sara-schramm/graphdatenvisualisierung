@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { margin: 0; background: #0f0f1a; font-family: sans-serif; }
+    #header {
+      padding: 12px 16px 10px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    #header .info {
+      color: #888;
+      font-size: 13px;
+    }
+    #header .info strong { color: #ccc; }
+    #legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    #legend span {
+      color: #ccc;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .legend-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    #sigma-container { width: 100%; height: 555px; }
+    #node-tooltip {
+      position: fixed;
+      pointer-events: none;
+      background: #1a1a2eee;
+      border: 1px solid #ffffff33;
+      border-radius: 6px;
+      padding: 7px 12px;
+      color: #ffffff;
+      font-size: 13px;
+      line-height: 1.5;
+      display: none;
+      z-index: 10;
+      white-space: nowrap;
+    }
+    #node-tooltip .tt-type {
+      font-size: 11px;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+
+<div id="header">
+  <div class="info">
+    <strong>ForceAtlas2-Layout</strong> &nbsp;·&nbsp; nach Kategorie gefärbt
+  </div>
+  <div id="legend">
+    <span><span class="legend-dot" style="background:#e74c3c"></span>Politician</span>
+    <span><span class="legend-dot" style="background:#3498db"></span>Government</span>
+    <span><span class="legend-dot" style="background:#2ecc71"></span>TV Show</span>
+    <span><span class="legend-dot" style="background:#f39c12"></span>Company</span>
+  </div>
+</div>
+
+<div id="node-tooltip"><div class="tt-name"></div><div class="tt-type"></div></div>
+<div id="sigma-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/graphology@0.25.4/dist/graphology.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sigma@2.4.0/build/sigma.min.js"></script>
+
+<script>
+const CATEGORY_COLORS = {
+  "politician": "#e74c3c",
+  "government": "#3498db",
+  "tvshow":     "#2ecc71",
+  "company":    "#f39c12"
+};
+
+const CATEGORY_DISPLAY = {
+  "politician": "Politician",
+  "government": "Government",
+  "tvshow":     "TV Show",
+  "company":    "Company"
+};
+
+const tooltip = document.getElementById("node-tooltip");
+let mouseX = 0, mouseY = 0;
+document.addEventListener("mousemove", e => { mouseX = e.clientX; mouseY = e.clientY; });
+
+fetch("fa2_biggraph.json")
+  .then(r => r.json())
+  .then(data => {
+    const graph = new graphology.Graph();
+
+    data.nodes.forEach(n => {
+      const id = String(n.id);
+      graph.addNode(id, {
+        x:        n.x,
+        y:        n.y,
+        size:     4,
+        color:    CATEGORY_COLORS[n.category] || "#999999",
+        label:    n.name || String(n.id),
+        category: n.category
+      });
+    });
+
+    data.edges.forEach(e => {
+      if (e.source === e.target) return;
+      try { graph.addEdge(String(e.source), String(e.target)); } catch(_) {}
+    });
+
+    // Vorberechnete Farb-Map: Edge-Key → Quell-Node-Farbe + Alpha
+    const edgeColors = {};
+    graph.forEachEdge((edge, _attrs, source) => {
+      const c = graph.getNodeAttribute(source, "color") || "#888888";
+      edgeColors[edge] = c + "55";
+    });
+
+    const renderer = new Sigma(graph, document.getElementById("sigma-container"), {
+      renderEdgeLabels: false,
+      labelRenderedSizeThreshold: 999,
+
+      hoverRenderer: (context, data) => {
+        context.beginPath();
+        context.arc(data.x, data.y, data.size + 6, 0, Math.PI * 2);
+        context.closePath();
+        context.fillStyle = (data.color || "#888888") + "44";
+        context.fill();
+      },
+
+      nodeReducer: (node, data) => data,
+
+      edgeReducer: (edge, data) => ({
+        ...data,
+        hidden: false,
+        color: edgeColors[edge] || "#88888855",
+        size: 0.3
+      })
+    });
+
+    renderer.on("enterNode", ({ node }) => {
+      const cat   = graph.getNodeAttribute(node, "category");
+      const label = graph.getNodeAttribute(node, "label");
+      tooltip.querySelector(".tt-name").textContent = label;
+      tooltip.querySelector(".tt-type").textContent = CATEGORY_DISPLAY[cat] || cat || "–";
+      tooltip.style.left    = (mouseX + 14) + "px";
+      tooltip.style.top     = (mouseY - 10) + "px";
+      tooltip.style.display = "block";
+    });
+
+    renderer.on("leaveNode", () => {
+      tooltip.style.display = "none";
+    });
+
+    document.getElementById("sigma-container").addEventListener("mousemove", () => {
+      if (tooltip.style.display === "block") {
+        tooltip.style.left = (mouseX + 14) + "px";
+        tooltip.style.top  = (mouseY - 10) + "px";
+      }
+    });
+  });
+</script>
+</body>
+</html>
