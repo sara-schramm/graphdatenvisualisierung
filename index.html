@@ -174,6 +174,10 @@ window.Quarto = {
 <span class="menu-text">Großer Datensatz</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="./gnn.html"> 
+<span class="menu-text">GNNs</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="./cookbook.html"> 
 <span class="menu-text">Rezeptbuch</span></a>
   </li>  
@@ -200,6 +204,7 @@ window.Quarto = {
 <script src="js/site.js" defer=""></script>
 <section id="intro-warum-soziale-netzwerke-schwer-zu-zeichnen-sind" class="level2">
 <h2 class="anchored" data-anchor-id="intro-warum-soziale-netzwerke-schwer-zu-zeichnen-sind">1. Intro (Warum Soziale Netzwerke schwer zu zeichnen sind)</h2>
+<div data-intro-stats="" class="intro-stats reveal-on-scroll"></div>
 <p>Soziale Netzwerke gehören zu den anschaulichsten Beispielen für Graphdaten. Menschen, Webseiten, Accounts oder Gruppen lassen sich als Knoten darstellen, ihre Beziehungen als Kanten. Genau diese Einfachheit macht Graphen so attraktiv: Viele wichtige Fragen lassen sich damit direkt formulieren, etwa wer mit wem verbunden ist, welche Gruppen entstehen oder welche Knoten besonders zentral sind.</p>
 <p>Ein solches Netzwerk besteht aus tausenden bis Millionen von Verbindungen. Je mehr Knoten und Kanten hinzukommen, desto schneller wird die Struktur unlesbar. Das Problem ist nicht nur die reine Datenmenge, sondern die Tatsache, dass <strong>Daten keine räumliche Ordnung besitzen</strong>, sie enthalten nur Beziehungen.</p>
 <p>Graphdatenvisualisierung versucht deshalb, Beziehungen so im Raum anzuordnen, dass Muster sichtbar werden. Ziel ist nicht nur, alle Daten darzustellen, sondern sie lesbar zu machen. Dazu werden unterschiedliche Layouts, Filter, Interaktionen und Rendering-Techniken verwendet.</p>
@@ -629,7 +634,7 @@ Mit den Plus- und Minus-Buttons lässt sich die Größe des Netzwerks verändern
 <h3 class="anchored" data-anchor-id="stress-majorization">Die Loss-Funktion: Stress Majorization</h3>
 <p>Ab der mittleren Größenordnung wird Layout zur <strong>Optimierung von Distanzen</strong>, nicht mehr zum Ausschwingen von Kräften. Die Stress-Funktion misst, wie gut die Zeichnung die Graph-Struktur abbildet:</p>
 <p><span class="math display">\[ \mathcal{L} = \sum_{i \neq j} w_{i,j} \left( \|p_i - p_j\|_2 - d_{i,j} \right)^2 \]</span></p>
-<p>Hier ist <span class="math inline">\(d_{i,j}\)</span> die <strong>kürzeste Pfaddistanz</strong> zwischen Knoten <span class="math inline">\(i\)</span> und <span class="math inline">\(j\)</span> im Graphen, <span class="math inline">\(p_i\)</span> die <strong>Position</strong> von Knoten <span class="math inline">\(i\)</span> in der Zeichnung, und <span class="math inline">\(w_{i,j}\)</span> ein Gewicht (typisch <span class="math inline">\(1/d_{i,j}^2\)</span>). <strong>Stress-Majorization</strong> minimiert diese Funktion iterativ — ein Verfahren, das auch in gelernten Layout-Ansätzen als Trainingsziel auftaucht (siehe Abschnitt 5).</p>
+<p>Hier ist <span class="math inline">\(d_{i,j}\)</span> die <strong>kürzeste Pfaddistanz</strong> zwischen Knoten <span class="math inline">\(i\)</span> und <span class="math inline">\(j\)</span> im Graphen, <span class="math inline">\(p_i\)</span> die <strong>Position</strong> von Knoten <span class="math inline">\(i\)</span> in der Zeichnung, und <span class="math inline">\(w_{i,j}\)</span> ein Gewicht (typisch <span class="math inline">\(1/d_{i,j}^2\)</span>). <strong>Stress-Majorization</strong> minimiert diese Funktion iterativ — ein Verfahren, das auch in gelernten Layout-Ansätzen als Trainingsziel auftaucht (siehe <a href="./gnn.html#gnn-topology">GNNs</a>).</p>
 <div id="stress-majorization-demo" class="stress-demo reveal-on-scroll">
   <p><strong>Interaktiv:</strong> Ziehe die Knoten — je näher Layout-Distanz und Pfaddistanz, desto geringer der Stress.</p>
   <div class="stress-demo-layout">
@@ -714,109 +719,235 @@ Mit den Plus- und Minus-Buttons lässt sich die Größe des Netzwerks verändern
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script src="js/force-graph.js"></script>
+<p>Das wiki-Vote-Layout oben wurde offline mit klassischer Stress-Majorization berechnet (Gansner/NetworkX). Wang et al.&nbsp;(2017) erweitern dasselbe Prinzip zu <strong>vektorisierter</strong> Stress-Majorization: Kanten werden als <strong>Vektoren</strong> modelliert, sodass Constraints (z. B. Cluster-Trennung, Fixierung) ohne separates Optimierungsproblem in dieselbe Stress-Funktion einfließen. Probiere einen Majorization-Schritt interaktiv aus:</p>
+<div id="wang-vsm-demo" class="vsm-demo stress-demo reveal-on-scroll" data-src="graph_medium/stress/vsm_demo.json">
+  <p><strong>Interaktiv:</strong> Ein Majorization-Schritt auf einem wiki-Vote-Teilgraph (12 Knoten, 2 Communities). Klick auf einen Knoten = fixieren. <a href="#stress-majorization">Stress-Funktion</a> · Quellen #12.</p>
+  <div class="vsm-demo-layout stress-demo-layout">
+    <svg viewbox="0 0 320 200" width="320" height="200" aria-label="VSM-Demo Layout"></svg>
+    <div class="stress-metrics vsm-metrics">
+      <div class="stress-bar-row">
+        <label><span>Gesamt-Stress</span><span data-vsm-stress="">0</span></label>
+        <div class="stress-bar" data-vsm-stress-bar=""><span style="width:40%"></span></div>
+      </div>
+      <div class="vsm-sparkline-row">
+        <label><span>Verlauf</span></label>
+        <svg data-vsm-sparkline="" viewbox="0 0 120 28" width="120" height="28" aria-hidden="true"></svg>
+      </div>
+      <div class="vsm-controls">
+        <button type="button" class="vsm-btn primary" data-vsm-step="">Nächster Majorization-Schritt</button>
+        <button type="button" class="vsm-btn" data-vsm-converge="">Bis Konvergenz</button>
+        <button type="button" class="vsm-btn" data-vsm-reset="">Zurücksetzen</button>
+        <label class="vsm-toggle">
+          <input type="checkbox" data-vsm-cluster="">
+          <span>Constraint: Cluster-Trennung</span>
+        </label>
+      </div>
+      <p class="vsm-status" data-vsm-status="">Lade Graphdaten …</p>
+    </div>
+  </div>
+</div>
+<script src="js/stress-vsm.js"></script>
 <div class="acc-stack">
-
 <details class="acc">
-<summary><span class="acc-toggle"></span><span class="acc-title">So liest du den Graphen</span><span class="acc-tag tag-ux">Interaktionsdesign</span></summary>
+<summary>
+<span class="acc-toggle"></span><span class="acc-title">So liest du den Graphen</span><span class="acc-tag tag-ux">Interaktionsdesign</span>
+</summary>
 <div class="acc-body">
 <ul>
-<li><strong>Farbe = Community.</strong> Jede Farbe ist eine automatisch gefundene Gruppe (siehe Louvain weiter unten) – Knoten, die untereinander dichter verbunden sind als mit dem Rest.</li>
-<li><strong>Knotengröße = eingehende Stimmen (In-Degree).</strong> Große Punkte sind Nutzer:innen, für die besonders viele andere abgestimmt haben – die „Hubs" des Netzwerks.</li>
-<li><strong>Maus über einen Knoten:</strong> Der Knoten und seine direkten Nachbarn bleiben farbig, alles andere wird ausgegraut; die roten Linien sind seine Kanten. Das Tooltip zeigt ID, Community, Stimmen und Nachbarzahl.</li>
-<li><strong>Mausrad = Zoom, Ziehen = Verschieben.</strong> Einzelne Knoten lassen sich kurz umherschieben — das ändert nur die Anzeige, nicht die offline berechnete Optimierung.</li>
+<li>
+<strong>Farbe = Community.</strong> Jede Farbe ist eine automatisch gefundene Gruppe (siehe Louvain weiter unten) – Knoten, die untereinander dichter verbunden sind als mit dem Rest.
+</li>
+<li>
+<strong>Knotengröße = eingehende Stimmen (In-Degree).</strong> Große Punkte sind Nutzer:innen, für die besonders viele andere abgestimmt haben – die „Hubs” des Netzwerks.
+</li>
+<li>
+<strong>Maus über einen Knoten:</strong> Der Knoten und seine direkten Nachbarn bleiben farbig, alles andere wird ausgegraut; die roten Linien sind seine Kanten. Das Tooltip zeigt ID, Community, Stimmen und Nachbarzahl.
+</li>
+<li>
+<strong>Mausrad = Zoom, Ziehen = Verschieben.</strong> Einzelne Knoten lassen sich kurz umherschieben — das ändert nur die Anzeige, nicht die offline berechnete Optimierung.
+</li>
 </ul>
 </div>
 </details>
-
 <details class="acc">
-<summary><span class="acc-toggle"></span><span class="acc-title">Die Bedienelemente erklärt</span><span class="acc-tag tag-ux">Interaktionsdesign</span></summary>
+<summary>
+<span class="acc-toggle"></span><span class="acc-title">Die Bedienelemente erklärt</span><span class="acc-tag tag-ux">Interaktionsdesign</span>
+</summary>
 <div class="acc-body">
 <ul>
-<li><strong>Hub-Labels</strong> – blendet die Nummern der <strong>12 Knoten mit den meisten eingehenden Stimmen</strong> ein. Da der Datensatz anonymisiert ist, sind das nur numerische IDs; sie zeigen aber, <em>wo</em> im Knäuel die zentralen Akteure sitzen.</li>
-<li><strong>Louvain-Farben</strong> – schaltet die Community-Färbung ein oder aus, um die reine Struktur des Stress-Layouts zu sehen.</li>
-<li><strong>Layout zurücksetzen</strong> – stellt alle Knotenpositionen auf die offline optimierten Koordinaten zurück (nach explorativem Verschieben).</li>
-<li><strong>Ansicht zurücksetzen</strong> – stellt Zoom und Ausschnitt so ein, dass der ganze Graph wieder ins Bild passt.</li>
+<li>
+<strong>Hub-Labels</strong> – blendet die Nummern der <strong>12 Knoten mit den meisten eingehenden Stimmen</strong> ein. Da der Datensatz anonymisiert ist, sind das nur numerische IDs; sie zeigen aber, <em>wo</em> im Knäuel die zentralen Akteure sitzen.
+</li>
+<li>
+<strong>Louvain-Farben</strong> – schaltet die Community-Färbung ein oder aus, um die reine Struktur des Stress-Layouts zu sehen.
+</li>
+<li>
+<strong>Layout zurücksetzen</strong> – stellt alle Knotenpositionen auf die offline optimierten Koordinaten zurück (nach explorativem Verschieben).
+</li>
+<li>
+<strong>Ansicht zurücksetzen</strong> – stellt Zoom und Ausschnitt so ein, dass der ganze Graph wieder ins Bild passt.
+</li>
 </ul>
 </div>
 </details>
-
 <details class="acc">
-<summary><span class="acc-toggle"></span><span class="acc-title">Warum verschiebt Ziehen das Layout nicht dauerhaft?</span><span class="acc-tag tag-konzept">Konzept</span></summary>
+<summary>
+<span class="acc-toggle"></span><span class="acc-title">Warum verschiebt Ziehen das Layout nicht dauerhaft?</span><span class="acc-tag tag-konzept">Konzept</span>
+</summary>
 <div class="acc-body">
-<p>Die Positionen wurden <strong>offline per Stress-Majorization optimiert</strong> — im Browser wird kein Layout neu berechnet. Wenn du einen Knoten ziehst, verschiebst du ihn nur <strong>lokal zur Erkundung</strong>. Mit <strong>Layout zurücksetzen</strong> kehrst du zur optimierten Anordnung zurück. Genau so unterscheidet sich die mittlere Stufe von 3a: dort „wächst" das Layout live; hier ist es ein <strong>fertiges Optimierungsergebnis</strong>.</p>
+<p>
+Die Positionen wurden <strong>offline per Stress-Majorization optimiert</strong> — im Browser wird kein Layout neu berechnet. Wenn du einen Knoten ziehst, verschiebst du ihn nur <strong>lokal zur Erkundung</strong>. Mit <strong>Layout zurücksetzen</strong> kehrst du zur optimierten Anordnung zurück. Genau so unterscheidet sich die mittlere Stufe von 3a: dort „wächst” das Layout live; hier ist es ein <strong>fertiges Optimierungsergebnis</strong>.
+</p>
 </div>
 </details>
-
 <details class="acc">
-<summary><span class="acc-toggle"></span><span class="acc-title">Stress &amp; Majorization — Mini-Schematics</span><span class="acc-tag tag-konzept">Konzept</span></summary>
+<summary>
+<span class="acc-toggle"></span><span class="acc-title">Stress &amp; Majorization — Mini-Schematics</span><span class="acc-tag tag-konzept">Konzept</span>
+</summary>
 <div class="acc-body">
 <div class="schematic-grid">
-  <div class="schematic-card">
-    <h4 class="anchored">Pfaddistanz vs. Layout-Distanz</h4>
-    <svg viewbox="0 0 240 100" aria-hidden="true">
-      <line x1="30" y1="50" x2="90" y2="50" stroke="#2780e3" stroke-width="2"></line>
-      <circle cx="30" cy="50" r="10" fill="#2780e3"></circle>
-      <circle cx="90" cy="50" r="10" fill="#2780e3"></circle>
-      <text x="60" y="42" text-anchor="middle" font-size="9" fill="#64748b">d=1</text>
-      <line x1="120" y1="50" x2="210" y2="50" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3"></line>
-      <circle cx="120" cy="50" r="10" fill="#2780e3" opacity="0.5"></circle>
-      <circle cx="210" cy="50" r="10" fill="#2780e3" opacity="0.5"></circle>
-      <text x="165" y="42" text-anchor="middle" font-size="9" fill="#64748b">||p|| ≠ d</text>
-      <text x="165" y="72" text-anchor="middle" font-size="9" fill="#ff7f0e">Stress ↑</text>
-    </svg>
-    <p class="schematic-caption">Je größer die Abweichung zwischen Pfad- und Layout-Distanz, desto höher der Stress.</p>
-  </div>
-  <div class="schematic-card">
-    <h4 class="anchored">Majorization: iterativ verbessern</h4>
-    <svg viewbox="0 0 240 100" aria-hidden="true">
-      <circle cx="40" cy="50" r="12" fill="#2780e3" opacity="0.4"></circle>
-      <text x="40" y="54" text-anchor="middle" font-size="8" fill="#fff">Init</text>
-      <path d="M58 50 L82 50" stroke="#64748b" marker-end="url(#arr2)"></path>
-      <circle cx="110" cy="50" r="12" fill="#2780e3" opacity="0.7"></circle>
-      <text x="110" y="54" text-anchor="middle" font-size="8" fill="#fff">↓L</text>
-      <path d="M128 50 L152 50" stroke="#64748b" marker-end="url(#arr2)"></path>
-      <circle cx="180" cy="50" r="12" fill="#2780e3"></circle>
-      <text x="180" y="54" text-anchor="middle" font-size="8" fill="#fff">min</text>
-      <defs><marker id="arr2" markerwidth="6" markerheight="6" refx="5" refy="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#64748b"></path></marker></defs>
-    </svg>
-    <p class="schematic-caption">Startposition → Untergrenze berechnen → Positionen aktualisieren, bis Stress minimal.</p>
-  </div>
+<div class="schematic-card">
+<pre><code>&lt;h4&gt;Pfaddistanz vs. Layout-Distanz&lt;/h4&gt;
+&lt;svg viewBox="0 0 240 100" aria-hidden="true"&gt;
+  &lt;line x1="30" y1="50" x2="90" y2="50" stroke="#2780e3" stroke-width="2"/&gt;
+  &lt;circle cx="30" cy="50" r="10" fill="#2780e3"/&gt;
+  &lt;circle cx="90" cy="50" r="10" fill="#2780e3"/&gt;
+  &lt;text x="60" y="42" text-anchor="middle" font-size="9" fill="#64748b"&gt;d=1&lt;/text&gt;
+  &lt;line x1="120" y1="50" x2="210" y2="50" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3"/&gt;
+  &lt;circle cx="120" cy="50" r="10" fill="#2780e3" opacity="0.5"/&gt;
+  &lt;circle cx="210" cy="50" r="10" fill="#2780e3" opacity="0.5"/&gt;
+  &lt;text x="165" y="42" text-anchor="middle" font-size="9" fill="#64748b"&gt;||p|| ≠ d&lt;/text&gt;
+  &lt;text x="165" y="72" text-anchor="middle" font-size="9" fill="#ff7f0e"&gt;Stress ↑&lt;/text&gt;
+&lt;/svg&gt;
+&lt;p class="schematic-caption"&gt;Je größer die Abweichung zwischen Pfad- und Layout-Distanz, desto höher der Stress.&lt;/p&gt;</code></pre>
+</div>
+<div class="schematic-card">
+<pre><code>&lt;h4&gt;Majorization: iterativ verbessern&lt;/h4&gt;
+&lt;svg viewBox="0 0 240 100" aria-hidden="true"&gt;
+  &lt;circle cx="40" cy="50" r="12" fill="#2780e3" opacity="0.4"/&gt;
+  &lt;text x="40" y="54" text-anchor="middle" font-size="8" fill="#fff"&gt;Init&lt;/text&gt;
+  &lt;path d="M58 50 L82 50" stroke="#64748b" marker-end="url(#arr2)"/&gt;
+  &lt;circle cx="110" cy="50" r="12" fill="#2780e3" opacity="0.7"/&gt;
+  &lt;text x="110" y="54" text-anchor="middle" font-size="8" fill="#fff"&gt;↓L&lt;/text&gt;
+  &lt;path d="M128 50 L152 50" stroke="#64748b" marker-end="url(#arr2)"/&gt;
+  &lt;circle cx="180" cy="50" r="12" fill="#2780e3"/&gt;
+  &lt;text x="180" y="54" text-anchor="middle" font-size="8" fill="#fff"&gt;min&lt;/text&gt;
+  &lt;defs&gt;&lt;marker id="arr2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"&gt;&lt;path d="M0,0 L6,3 L0,6" fill="#64748b"/&gt;&lt;/marker&gt;&lt;/defs&gt;
+&lt;/svg&gt;
+&lt;p class="schematic-caption"&gt;Startposition → Untergrenze berechnen → Positionen aktualisieren, bis Stress minimal.&lt;/p&gt;</code></pre>
 </div>
 </div>
-</details>
-
-<details class="acc">
-<summary><span class="acc-toggle"></span><span class="acc-title">Wie das Layout entsteht: Stress-Majorization offline</span><span class="acc-tag tag-algo">Algorithmus</span></summary>
-<div class="acc-body">
-<p>Im Gegensatz zu kräftebasierten Layouts (Federn + Abstoßung wie in 3a) optimiert Stress-Majorization <strong>Distanzen</strong>: Für jedes Knotenpaar $(i,j)$ wird die euklidische Distanz $\|p_i - p_j\|$ der kürzesten Pfaddistanz $d_{i,j}$ angeglichen. Das Verfahren iteriert, bis der Stress $\mathcal{L}$ nicht mehr signifikant sinkt.</p>
-<p>Bei ~7.000 Knoten ist das offline auf der CPU in wenigen Minuten machbar — deutlich zu langsam für eine live Browser-Simulation, aber ideal für ein <strong>vorberechnetes</strong> Layout. Wir führen die Berechnung einmalig im Python-Skript aus und speichern die Koordinaten in JSON. Die Website lädt nur das Ergebnis.</p>
-<p>Gelernte Layout-Ansätze (Abschnitt 5) können dieselbe Stress-Idee nutzen — der Unterschied: dort lernt ein Netzwerk die Zuordnung, hier optimiert ein klassischer Algorithmus direkt.</p>
 </div>
 </details>
-
 <details class="acc">
-<summary><span class="acc-toggle"></span><span class="acc-title">Communities und Hubs: Louvain + In-Degree</span><span class="acc-tag tag-konzept">Konzept</span></summary>
+<summary>
+<span class="acc-toggle"></span><span class="acc-title">Wie das Layout entsteht: Stress-Majorization offline</span><span class="acc-tag tag-algo">Algorithmus</span>
+</summary>
 <div class="acc-body">
-<p>Farbe und Größe sind keine Deko, sondern zwei Analyse-Ebenen:</p>
+<p>
+Im Gegensatz zu kräftebasierten Layouts (Federn + Abstoßung wie in 3a) optimiert Stress-Majorization <strong>Distanzen</strong>: Für jedes Knotenpaar <span class="math inline">\((i,j)\)</span> wird die euklidische Distanz <span class="math inline">\(\|p_i - p_j\|\)</span> der kürzesten Pfaddistanz <span class="math inline">\(d_{i,j}\)</span> angeglichen. Das Verfahren iteriert, bis der Stress <span class="math inline">\(\mathcal{L}\)</span> nicht mehr signifikant sinkt.
+</p>
+<p>
+Bei ~7.000 Knoten ist das offline auf der CPU in wenigen Minuten machbar — deutlich zu langsam für eine live Browser-Simulation, aber ideal für ein <strong>vorberechnetes</strong> Layout. Wir führen die Berechnung einmalig im Python-Skript aus und speichern die Koordinaten in JSON. Die Website lädt nur das Ergebnis.
+</p>
+<p>
+Gelernte Layout-Ansätze (<a href="./gnn.html#gnn-topology">GNNs</a>) können dieselbe Stress-Idee nutzen — der Unterschied: dort lernt ein Netzwerk die Zuordnung, hier optimiert ein klassischer Algorithmus direkt. Für interaktive Constraints siehe die Wang-VSM-Demo oben.
+</p>
+</div>
+</details>
+<details class="acc">
+<summary>
+<span class="acc-toggle"></span><span class="acc-title">Klassisch vs.&nbsp;vektorisiert: Längen vs.&nbsp;Kantenvektoren</span><span class="acc-tag tag-konzept">Konzept</span>
+</summary>
+<div class="acc-body">
+<p>
+Die klassische Stress-Funktion (Gansner et al.) vergleicht nur <strong>Skalare</strong> — die euklidische Distanz <span class="math inline">\(\|p_i - p_j\|\)</span> mit der Zieldistanz <span class="math inline">\(d_{i,j}\)</span>:
+</p>
+<span class="math display">\[ \mathcal{L}_{\mathrm{klassisch}} = \sum_{i \neq j} w_{i,j} \left( \|p_i - p_j\| - d_{i,j} \right)^2 \]</span>
+<p>
+Wang et al.&nbsp;(2017) formulieren Stress über <strong>Kantenvektoren</strong> <span class="math inline">\(\mathbf{e}_{ij} = p_j - p_i\)</span>. Statt nur die Länge zu messen, lassen sich Richtungs- und Positions-Constraints direkt auf <span class="math inline">\(\mathbf{e}_{ij}\)</span> legen — z. B. „Cluster A links, Cluster B rechts” oder „Knoten <span class="math inline">\(k\)</span> bleibt an Position <span class="math inline">\(p_k^{\mathrm{fix}}\)</span>“. Alle Constraints fließen in dieselbe Stress-Summe ein; kein separates Optimierungsproblem pro Constraint-Typ.
+</p>
+<p>
+Das wiki-Vote-Layout oben nutzt die klassische Variante (NetworkX <code>spring_layout(…, method=“energy”)</code>). Die VSM-Demo zeigt die vektorisierte Erweiterung auf einem kleinen Teilgraphen — nicht die GPU-Implementierung des Papers.
+</p>
+</div>
+</details>
+<details class="acc">
+<summary>
+<span class="acc-toggle"></span><span class="acc-title">Ein Majorization-Schritt (Surrogat-Funktion)</span><span class="acc-tag tag-algo">Algorithmus</span>
+</summary>
+<div class="acc-body">
+<p>
+Stress-Majorization ersetzt die nichtlineare Stress-Funktion in jedem Schritt durch eine <strong>Untergrenze</strong> (Surrogat), die am aktuellen Layout tangential ist und deren Minimum analytisch berechenbar ist. Für Knoten <span class="math inline">\(i\)</span> im Schritt <span class="math inline">\(k\)</span>:
+</p>
+<span class="math display">\[ p_i^{(k+1)} = \frac{1}{\sum_j w_{ij}} \sum_{j \neq i} w_{ij} \left( p_j^{(k)} + \frac{d_{ij}}{\|p_i^{(k)} - p_j^{(k)}\|} \left( p_i^{(k)} - p_j^{(k)} \right) \right) \]</span>
+<p>
+Intuition: Jedes Knotenpaar „zieht” Knoten <span class="math inline">\(i\)</span> in Richtung der Zieldistanz <span class="math inline">\(d_{ij}\)</span> — wie eine Feder mit Soll-Länge. Fixierte Knoten (<span class="math inline">\(p_i^{(k+1)} = p_i^{(k)}\)</span>) wirken als Dirichlet-Randbedingungen.
+</p>
+<p>
+<strong>Mini-Beispiel (Demo-Graph, Schritt 1):</strong> Knoten 4 (Hub, blau) und Knoten 3 (Hub, orange) haben Pfaddistanz <span class="math inline">\(d_{4,3} = 2\)</span>. Liegen sie bei <span class="math inline">\(\|p_4 - p_3\| = 90\)</span> px und <span class="math inline">\(w_{4,3} = 0{,}25\)</span>, trägt das Paar <span class="math inline">\((90/36 - 2)^2 \cdot 0{,}25 \approx 0{,}69\)</span> zum Stress bei. Ein Majorization-Schritt zieht beide auf <span class="math inline">\(\approx 72\)</span> px (<span class="math inline">\(2 \times 36\)</span> px Skala) — der Stress-Term sinkt.
+</p>
+</div>
+</details>
+<details class="acc">
+<summary>
+<span class="acc-toggle"></span><span class="acc-title">Wang et al.&nbsp;(2017): interaktive Constraints &amp; Skalierung</span><span class="acc-tag tag-algo">Algorithmus</span>
+</summary>
+<div class="acc-body">
+<p>
+Wang et al.&nbsp;zeigen, dass vektorisierte Stress-Majorization (VSM) Constraints wie <strong>Cluster-Trennung</strong>, <strong>Knoten-Fixierung</strong> und <strong>Richtungsvorgaben</strong> in einer einheitlichen Stress-Formulierung vereint — und per GPU + Conjugate Gradient auf Graphen mit <span class="math inline">\(10^4\)</span>–<span class="math inline">\(10^5\)</span> Knoten interaktiv lauffähig ist.
+</p>
 <ul>
-<li><strong>Communities (Farbe)</strong> kommen vom <strong>Louvain-Algorithmus</strong>. Er sucht eine Aufteilung in Gruppen mit möglichst hoher <em>Modularität</em> – also viele Kanten <em>innerhalb</em> der Gruppen und wenige <em>zwischen</em> ihnen. Hier entstehen 15 Communities. Das ist der „globale" Ordnungshinweis, der im Ego-Netz aus 3a noch nicht nötig war.</li>
-<li><strong>In-Degree (Größe)</strong> ist die Zahl der <strong>eingehenden</strong> Kanten – bei wiki-Vote also: Für wie viele Personen wurde abgestimmt? Große Knoten sind einflussreiche Hubs. (Bei gerichteten Netzen unterscheidet man In- und Out-Degree; fürs Layout behandeln wir die Kanten aber <strong>ungerichtet</strong>, um nicht über 100.000 Pfeilspitzen zeichnen zu müssen.)</li>
+<li>
+<strong>Cluster-Trennung:</strong> Zusatzterm bestraft Überlappung zwischen Communities (im Demo: Toggle „Cluster-Trennung”).
+</li>
+<li>
+<strong>Fixierung:</strong> Gepinnte Knoten bleiben während der Iteration unverändert — nützlich für „Diese Gruppe soll hier bleiben”.
+</li>
+<li>
+<strong>Skalierung:</strong> Das Paper nutzt vektorisierte GPU-Kernels; unsere Demo rechnet klassisch auf <span class="math inline">\(n = 12\)</span> im Browser (didaktisch, nicht performant optimiert).
+</li>
+</ul>
+<p>
+Literatur: Wang et al., <em>Revisiting Stress Majorization as a Unified Framework for Interactive Constrained Graph Visualization</em>, IEEE TVCG 2017 — <a href="https://www.vis.uni-stuttgart.de/documentcenter/staff/sedlmaml/papers/wang2017graph.pdf">PDF</a>.
+</p>
+</div>
+</details>
+<details class="acc">
+<summary>
+<span class="acc-toggle"></span><span class="acc-title">Communities und Hubs: Louvain + In-Degree</span><span class="acc-tag tag-konzept">Konzept</span>
+</summary>
+<div class="acc-body">
+<p>
+Farbe und Größe sind keine Deko, sondern zwei Analyse-Ebenen:
+</p>
+<ul>
+<li>
+<strong>Communities (Farbe)</strong> kommen vom <strong>Louvain-Algorithmus</strong>. Er sucht eine Aufteilung in Gruppen mit möglichst hoher <em>Modularität</em> – also viele Kanten <em>innerhalb</em> der Gruppen und wenige <em>zwischen</em> ihnen. Hier entstehen 15 Communities. Das ist der „globale” Ordnungshinweis, der im Ego-Netz aus 3a noch nicht nötig war.
+</li>
+<li>
+<strong>In-Degree (Größe)</strong> ist die Zahl der <strong>eingehenden</strong> Kanten – bei wiki-Vote also: Für wie viele Personen wurde abgestimmt? Große Knoten sind einflussreiche Hubs. (Bei gerichteten Netzen unterscheidet man In- und Out-Degree; fürs Layout behandeln wir die Kanten aber <strong>ungerichtet</strong>, um nicht über 100.000 Pfeilspitzen zeichnen zu müssen.)
+</li>
 </ul>
 </div>
 </details>
-
 <details class="acc">
-<summary><span class="acc-toggle"></span><span class="acc-title">Warum Canvas statt SVG?</span><span class="acc-tag tag-impl">Implementierung</span></summary>
+<summary>
+<span class="acc-toggle"></span><span class="acc-title">Warum Canvas statt SVG?</span><span class="acc-tag tag-impl">Implementierung</span>
+</summary>
 <div class="acc-body">
-<p>In 3a (kleines Netz) war <strong>SVG</strong> ideal: Jeder Knoten ist ein eigenes DOM-Element, das man stylen und anklicken kann. Bei ~7.000 Knoten und ~100.000 Kanten wären das aber über hunderttausend DOM-Elemente – der Browser würde beim Zoomen und Scrollen einbrechen.</p>
-<p>Deshalb zeichnen wir hier auf ein <strong><code>&lt;canvas&gt;</code></strong>: eine einzige Zeichenfläche, auf die pro Bild alles in einem Durchgang gemalt wird (Kanten gebündelt, Knoten nach Farbe gruppiert). Das skaliert auf zehntausende Elemente. Der Preis: Es gibt keine einzelnen DOM-Knoten mehr, also müssen Interaktionen wie „über welchem Knoten ist die Maus?" selbst berechnet werden – dafür nutzen wir einen <strong>Quadtree</strong> (eine räumliche Suchstruktur), der den nächstgelegenen Knoten in $O(\log n)$ findet, statt alle 7.000 durchzuprobieren.</p>
+<p>
+In 3a (kleines Netz) war <strong>SVG</strong> ideal: Jeder Knoten ist ein eigenes DOM-Element, das man stylen und anklicken kann. Bei ~7.000 Knoten und ~100.000 Kanten wären das aber über hunderttausend DOM-Elemente – der Browser würde beim Zoomen und Scrollen einbrechen.
+</p>
+<p>
+Deshalb zeichnen wir hier auf ein <strong><code>&lt;canvas&gt;</code></strong>: eine einzige Zeichenfläche, auf die pro Bild alles in einem Durchgang gemalt wird (Kanten gebündelt, Knoten nach Farbe gruppiert). Das skaliert auf zehntausende Elemente. Der Preis: Es gibt keine einzelnen DOM-Knoten mehr, also müssen Interaktionen wie „über welchem Knoten ist die Maus?” selbst berechnet werden – dafür nutzen wir einen <strong>Quadtree</strong> (eine räumliche Suchstruktur), der den nächstgelegenen Knoten in <span class="math inline">\(O(\log n)\)</span> findet, statt alle 7.000 durchzuprobieren.
+</p>
 </div>
 </details>
-
 </div>
-</section></div>
+<p>:::</p>
 </section>
-</section>
+</div></section>
 <section id="c.-großer-datensatz" class="level2">
 <h2 class="anchored" data-anchor-id="c.-großer-datensatz">4c. Großer Datensatz</h2>
 <p>Stell dir vor, du öffnest Facebook im November 2017 und siehst nicht einzelne Nutzer, sondern nur offizielle, verifizierte Seiten. Regierungen, Politiker, TV-Sender, Konzerne. Wer ist mit wem vernetzt?</p>
@@ -923,7 +1054,7 @@ Eine Kante entsteht nur bei gegenseitigem Like, also ein bewusstes, wechselseiti
   Die Antwort liegt in einer Kombination aus Layout, Clustering und Datenvereinfachung.
 </p>
 </section>
-
+</section>
 <section id="mit-forceatlas2-und-louvain" class="level1">
 <h1>Mit ForceAtlas2 und Louvain</h1>
 <p>22.470 Knoten und 171.002 Kanten. Das sind die Größenordnungen, an denen jede naive Visualisierungsstrategie scheitert.</p>
@@ -1292,6 +1423,7 @@ Feature-Ähnlichkeit, Klassifikation
   <a href="#gnn-playground-widget">Simulator</a>
   <a href="#gnn-quiz-widget">Quiz</a>
 </nav>
+<script src="js/site.js" defer=""></script>
 <script src="js/gnn-section.js" defer=""></script>
 <script src="js/gnn-playground.js" defer=""></script>
 <p>Du kennst bereits <strong>CNNs</strong> und <strong>Fully Connected Networks</strong>: Bei Bildern liegen Pixel auf einem regulären Gitter, Faltungen nutzen lokale Nachbarschaft mit <strong>geteilten Gewichten</strong>. Bei Graphen fehlt genau dieses Gitter — und genau deshalb scheitern naïve Übertragungen.</p>
@@ -1356,11 +1488,6 @@ Feature-Ähnlichkeit, Klassifikation
 <h3 class="anchored" data-anchor-id="embedding-projection-heading">Das Einbettungsproblem</h3>
 <p><strong>Einbetten</strong> heißt: Struktur aus dem Graphen in einen Vektorraum (oder die Zeichnungsebene) überführen, ohne sie zu zerstören. Das ist grundsätzlich <strong>verlustbehaftet</strong> — wie jede Projektion von hochdimensionaler Struktur in 2D (<a href="https://distill.pub/2016/misread-tsne/">Distill: How to Use t-SNE</a> warnt vor Overinterpretation solcher Plots).</p>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 18%">
-<col style="width: 56%">
-</colgroup>
 <thead>
 <tr class="header">
 <th>Ansatz</th>
@@ -1372,7 +1499,7 @@ Feature-Ähnlichkeit, Klassifikation
 <tr class="odd">
 <td><strong>Klassisches Layout</strong></td>
 <td>Optimiere 2D-Positionen direkt (z. B. Stress in 3b)</td>
-<td>Abschnitt 3b</td>
+<td><a href="./medium.html#stress-majorization">Stress-Majorization</a></td>
 </tr>
 <tr class="even">
 <td><strong>GNN-Repräsentation</strong></td>
@@ -1512,7 +1639,7 @@ Feature-Ähnlichkeit, Klassifikation
 <p>GNNs ersetzen nicht automatisch klassisches Layout — sie <strong>repräsentieren</strong> Knoten so, dass Graph-Struktur in den Feature-Vektoren steckt. Für Visualisierung heißt das:</p>
 <ul>
 <li><strong>Embeddings</strong> können mit PCA/UMAP in 2D projiziert werden (explorativ, nicht als Beweis).</li>
-<li><strong>Layout-Training</strong> kann dieselbe Stress-Idee wie in <a href="#stress-majorization">3b</a> nutzen — dann lernt das Netz Koordinaten statt sie per Majorization zu optimieren.</li>
+<li><strong>Layout-Training</strong> kann dieselbe Stress-Idee wie in <a href="./medium.html#stress-majorization">3b</a> nutzen — dann lernt das Netz Koordinaten statt sie per Majorization zu optimieren.</li>
 <li>Der Vorteil liegt oft in <strong>downstream tasks</strong> (Klassifikation, Link Prediction) und generalisierbaren Repräsentationen — nicht in „schneller als Canvas".</li>
 </ul>
 </div>
@@ -1576,8 +1703,8 @@ Feature-Ähnlichkeit, Klassifikation
     <p style="font-size:0.88rem;color:#64748b;">Tipp: Tasten <kbd>1</kbd>–<kbd>3</kbd> wählen Antworten.</p>
   </div>
 </div>
-</section></div>
 </section>
+</div>
 </section>
 <section id="rezeptbuch" class="level2">
 <h2 class="anchored" data-anchor-id="rezeptbuch">6. Rezeptbuch</h2>
@@ -1984,7 +2111,7 @@ Feature-Ähnlichkeit, Klassifikation
 
 </section>
 </section>
-
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
