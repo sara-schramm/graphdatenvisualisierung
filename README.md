@@ -1,111 +1,100 @@
 # Graphdatenvisualisierung
-Sara, Silvia, Adam
 
-## 🚀 Schnellanleitung - Website zum Laufen bringen
+Diese Anleitung beschreibt die notwendigen Schritte, um das Repository nach dem ersten Klonen lokal auszuführen.
 
-### Voraussetzungen
-
-Bevor du startest, stelle sicher, dass **Quarto** installiert ist:
-
-- **Quarto** – zum Rendern der Website (Download: [quarto.org](https://quarto.org/docs/get-started/))
-
-### Schritt 1: Repository klonen
+## 1. Repository klonen
 
 ```bash
-git clone ...
+git clone <repo-url>
 cd graphdatenvisualisierung
 ```
 
-### Schritt 2: Website lokal anschauen
+## 2. Quarto installieren
 
-Mit folgendem Befehl kannst du die Website live mit Auto-Reload starten:
+Für das Starten der Website wird **Quarto** benötigt:
+
+- Download und Installation: [https://quarto.org/docs/get-started/](https://quarto.org/docs/get-started/)
+
+Prüfen, ob Quarto installiert ist:
+
+```bash
+quarto --version
+```
+
+## 3. Python installieren
+
+Für vorberechnete Inhalte und Python-Abhängigkeiten wird **Python 3** benötigt.
+
+Prüfen, ob Python verfügbar ist:
+
+```bash
+python3 --version
+```
+
+## 4. Virtuelle Umgebung anlegen
+
+Im Projektordner eine virtuelle Umgebung erstellen:
+
+```bash
+python3 -m venv .venv
+```
+
+## 5. Virtuelle Umgebung aktivieren
+
+### macOS / Linux
+
+```bash
+source .venv/bin/activate
+```
+
+### Windows (PowerShell)
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+### Windows (CMD)
+
+```cmd
+.venv\Scripts\activate.bat
+```
+
+## 6. Python-Abhängigkeiten installieren
+
+Die benötigten Pakete aus `requirements.txt` installieren:
+
+```bash
+pip install -r requirements.txt
+```
+
+## 7. Website lokal starten
+
+Die Website mit Quarto starten:
 
 ```bash
 quarto preview
 ```
 
-Dies öffnet automatisch deine Website im Browser unter `http://localhost` und aktualisiert die Seite bei jeder Änderung an den Dateien.
+Danach ist die Website lokal im Browser verfügbar und wird bei Änderungen automatisch neu geladen.
 
-### Schritt 3: Website rendern
+## 8. Hinweise zu den Daten
 
-Um die Website zu kompilieren und den Output-Ordner zu generieren:
+Die für die Website benötigten Ressourcen und Visualisierungsdateien sind bereits im Repository enthalten. Für den ersten Start ist daher keine zusätzliche Datenvorverarbeitung notwendig.
 
-```bash
-quarto render
-```
 
-Die fertige Website befindet sich dann im Ordner `_site/` oder `docs/` (abhängig der Konfiguration in `_quarto.yml`).
+## 9. Falls `quarto preview` nicht funktioniert
 
-## 📋 Wichtige Quarto-Befehle
+Folgende Punkte prüfen:
 
-| Befehl | Beschreibung |
-|--------|-------------|
-| `quarto preview` | Website lokal mit Live-Reload öffnen |
-| `quarto render` | Website rendern und kompilieren |
-| `quarto render --to html` | Nur HTML-Format rendern |
-| `quarto render --to pdf` | In PDF konvertieren (falls konfiguriert) |
-| `quarto update` | Quarto auf die neueste Version aktualisieren |
+- Ist Quarto installiert?
+- Ist die virtuelle Umgebung aktiviert?
+- Wurden die Abhängigkeiten mit `pip install -r requirements.txt` installiert?
+- Befindet man sich im Projektordner?
 
-## 🛠️ Typischer Workflow
+## 10. Optional: anderen Port verwenden
 
-1. **Entwickeln:** Starte `quarto preview` und bearbeite deine `.qmd`-Dateien
-2. **Testen:** Deine Änderungen erscheinen automatisch im Browser
-3. **Deployen:** Führe `quarto render` aus, um die finale Version zu erstellen
+Falls der Standard-Port bereits belegt ist:
 
-## 📁 Projektstruktur
-
-- `_quarto.yml` – Konfigurationsdatei für das Quarto-Projekt
-- `*.qmd` – Quarto Markdown-Dateien (enthält Text, Code und Visualisierungen)
-- `_output/` – Generierte Website (nach `quarto render`)
-- `assets/js/force-graph.js` – D3 v7 + Canvas Renderer für den interaktiven Graphen (Abschnitt 3b)
-- `assets/data/social_graph.json` – vorberechneter Graph (Layout + Communities), wird von der Website geladen
-- `scripts/preprocess_graph.py` – erzeugt die JSON-Datei aus den Rohdaten (einmalig, lokal)
-
-## 🔁 Interaktiver Graph: Daten vorbereiten (einmalig)
-
-Der interaktive Graph in Abschnitt 3b nutzt den `wiki-Vote`-Datensatz (SNAP,
-~7.000 Knoten / ~100.000 Kanten). Layout und Communities werden **offline**
-vorberechnet und als `assets/data/social_graph.json` eingecheckt – die Website
-und die CI laden nur diese fertige Datei (kein Kaggle-Login, keine schweren
-Abhängigkeiten beim Rendern nötig).
-
-Die JSON-Datei ist bereits im Repo. Nur falls sie neu erzeugt werden soll:
-
-```bash
-# 1. Virtuelle Umgebung + Abhängigkeiten
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
-# 2. Rohdaten herunterladen (Quelle: SNAP, gespiegelt im Kaggle-Dataset "graphs-social")
-mkdir -p data
-curl -sSL https://snap.stanford.edu/data/wiki-Vote.txt.gz -o data/wiki-Vote.txt.gz
-
-# 3. Vorverarbeitung (ForceAtlas2-Layout + Louvain-Communities -> JSON)
-python scripts/preprocess_graph.py
-```
-
-Der Ordner `data/` mit den Rohdaten ist per `.gitignore` ausgeschlossen.
-
-## ❓ Troubleshooting
-
-**Quarto ist nicht installiert?**
-```bash
-# Quarto installieren (je nach OS)
-# Unter Windows: https://quarto.org/docs/get-started/
-# Unter macOS: brew install quarto
-# Unter Linux: https://quarto.org/docs/get-started/
-```
-
-**Port bereits in Verwendung?**
 ```bash
 quarto preview --port 3000
 ```
-
-**Cache-Probleme?**
-```bash
-rm -r .quarto
-quarto render
-```
-
----
