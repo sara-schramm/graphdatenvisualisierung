@@ -10,7 +10,11 @@ Soziale Netzwerke gehören zu den anschaulichsten Beispielen für Graphdaten. Me
 
 Ein solches Netzwerk besteht aus tausenden bis Millionen von Verbindungen. Je mehr Knoten und Kanten hinzukommen, desto schneller wird die Struktur unlesbar. Das Problem ist nicht nur die reine Datenmenge, sondern die Tatsache, dass **Daten keine räumliche Ordnung besitzen**, sie enthalten nur Beziehungen.
 
+::: {.callout-note}
+## Kernidee
+
 Graphdatenvisualisierung versucht deshalb, Beziehungen so im Raum anzuordnen, dass Muster sichtbar werden. Ziel ist nicht nur, alle Daten darzustellen, sondern sie lesbar zu machen. Dazu werden unterschiedliche Layouts, Filter, Interaktionen und Rendering-Techniken verwendet.
+:::
 
 ## 2. Was ist Graphdatenvisualisierung?
 
@@ -19,7 +23,7 @@ Ein Graph besteht aus zwei Grundelementen:
 - Knoten (z. B. Personen, Seiten, Accounts)
 - Kanten (Beziehungen zwischen ihnen, z. B. Freundschaften, Likes, Follows)
 
-Ziel der Graphdatenvisualisierung ist es, diese Struktur räumlich sinnvoll anzuordnen, sodass Muster sichtbar werden. Im Gegensatz zu Karten, Gebäuden oder anderen geografischen Daten gibt es für ein Netzwerk keine natürliche räumliche Ordnung. Die Positionen der Knoten müssen erst durch eine Visualisierung festgelegt werden.
+Ziel der Graphdatenvisualisierung ist es, diese Struktur räumlich sinnvoll anzuordnen, sodass Muster sichtbar werden. Im Gegensatz zu Karten, Gebäuden oder anderen geografischen Daten gibt es für ein Netzwerk **keine natürliche räumliche Ordnung**. Die Positionen der Knoten müssen erst durch eine Visualisierung festgelegt werden.
 
 Die wichtigsten Fragen in der Visualisierung sind:
 
