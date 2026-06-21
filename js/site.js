@@ -144,23 +144,9 @@
     });
   }
 
-  function initIntroStats() {
-    var el = document.querySelector("[data-intro-stats]");
-    if (!el) return;
-    var targets = [
-      { label: "Knoten", value: 7115 },
-      { label: "Kanten", value: 103663 },
-      { label: "Communities", value: 15 }
-    ];
-    el.innerHTML = targets.map(function (t) {
-      return '<span class="stat-pill"><strong>' + t.value.toLocaleString("de-DE") + "</strong> " + t.label + "</span>";
-    }).join(" ");
-  }
-
   function initAll() {
     document.querySelectorAll(".quiz-root").forEach(initQuiz);
     initReveal();
-    initIntroStats();
   }
 
   if (document.readyState === "loading") {

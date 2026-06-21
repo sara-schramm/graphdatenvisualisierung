@@ -1,5 +1,11 @@
 ## 4b. mittlerer Datensatz
+
 ```{=html}
+<div data-medium-stats class="graph-stats reveal-on-scroll">
+  <span class="stat-pill"><strong>7.115</strong> Knoten</span>
+  <span class="stat-pill"><strong>103.663</strong> Kanten</span>
+  <span class="stat-pill"><strong>15</strong> Communities</span>
+</div>
 <div class="section-medium">
 ```
 
@@ -271,7 +277,3 @@ $$ p_i^{(k+1)} = \frac{1}{\sum_j w_{ij}} \sum_{j \neq i} w_{ij} \left( p_j^{(k)}
 <p>Deshalb zeichnen wir hier auf ein <strong><code>&lt;canvas&gt;</code></strong>: eine einzige Zeichenfläche, auf die pro Bild alles in einem Durchgang gemalt wird (Kanten gebündelt, Knoten nach Farbe gruppiert). Das skaliert auf zehntausende Elemente. Der Preis: Es gibt keine einzelnen DOM-Knoten mehr, also müssen Interaktionen wie „über welchem Knoten ist die Maus?" selbst berechnet werden – dafür nutzen wir einen <strong>Quadtree</strong> (eine räumliche Suchstruktur), der den nächstgelegenen Knoten in $O(\log n)$ findet, statt alle 7.000 durchzuprobieren.</p>
 </div>
 </details>
-
-:::
-
-:::

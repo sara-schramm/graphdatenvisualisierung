@@ -6,10 +6,6 @@
 
 ## 1. Intro (Warum Soziale Netzwerke schwer zu zeichnen sind)
 
-```{=html}
-<div data-intro-stats class="intro-stats reveal-on-scroll"></div>
-```
-
 Soziale Netzwerke gehören zu den anschaulichsten Beispielen für Graphdaten. Menschen, Webseiten, Accounts oder Gruppen lassen sich als Knoten darstellen, ihre Beziehungen als Kanten. Genau diese Einfachheit macht Graphen so attraktiv: Viele wichtige Fragen lassen sich damit direkt formulieren, etwa wer mit wem verbunden ist, welche Gruppen entstehen oder welche Knoten besonders zentral sind.
 
 Ein solches Netzwerk besteht aus tausenden bis Millionen von Verbindungen. Je mehr Knoten und Kanten hinzukommen, desto schneller wird die Struktur unlesbar. Das Problem ist nicht nur die reine Datenmenge, sondern die Tatsache, dass **Daten keine räumliche Ordnung besitzen**, sie enthalten nur Beziehungen.
