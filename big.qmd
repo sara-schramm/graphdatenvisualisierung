@@ -112,7 +112,7 @@ Das ist das **Facebook Large Page-Page Network**, ein sozialer Graph aus gegense
 </p>
 ```
 
-# Mit ForceAtlas2 und Louvain
+### Mit ForceAtlas2 und Louvain
 
 22.470 Knoten und 171.002 Kanten. Das sind die Größenordnungen, an denen jede naive Visualisierungsstrategie scheitert.
 
@@ -333,7 +333,7 @@ $$Q = \frac{1}{2m} \sum_{i,j} \left[ A_{ij} - \frac{deg(i) \cdot deg(j)}{2m} \ri
 
 ---
 
-## Pipeline: vom Datensatz zur interaktiven Visualisierung
+### Pipeline: vom Datensatz zur interaktiven Visualisierung
 
 ```{=html}
 <div style="margin: 1.5rem 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #e5e4e0; font-size: 0.875rem;">
@@ -380,7 +380,7 @@ $$Q = \frac{1}{2m} \sum_{i,j} \left[ A_{ij} - \frac{deg(i) \cdot deg(j)}{2m} \ri
 </details>
 ```
 
-## Alternative Ansätze im Vergleich
+### Alternative Ansätze im Vergleich
 
 FA2 und Louvain sind nicht die einzigen Antworten auf dieses Problem. Zwei weitere Algorithmen werden für große Graphen regelmäßig vorgeschlagen, beide mit eigenen Stärken und eigenen Grenzen für diesen Anwendungsfall.
 
@@ -463,7 +463,7 @@ Scharfe Cluster, klare Trennung, auf den ersten Blick ein überzeugendes Bild. U
 </details>
 ```
 ---
-## Layout-Algorithmen im Vergleich
+### Layout-Algorithmen im Vergleich
 
 <table style="width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.9rem;">
   <thead>
@@ -497,7 +497,7 @@ Scharfe Cluster, klare Trennung, auf den ersten Blick ein überzeugendes Bild. U
 </table>
 
 
-## FA2 als Standard für diesen Anwendungsfall
+### FA2 als Standard für diesen Anwendungsfall
 
 FA2 ist nicht der schnellste Algorithmus und liefert nicht die schärfsten Cluster. Er ist aber der einzige Algorithmus in diesem Vergleich, der Verbindungsstruktur respektiert, Community-Muster sichtbar macht und dabei im Browser interaktiv bleibt.
 

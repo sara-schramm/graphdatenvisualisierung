@@ -1,4 +1,4 @@
-# Graphdatenvisualisierung
+# Graphdatenvisualisierung im Web
 
 ```{=html}
 <script src="js/site.js" defer></script>

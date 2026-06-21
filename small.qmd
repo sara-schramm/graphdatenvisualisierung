@@ -18,7 +18,7 @@ Die 77 Figuren sind durch 254 Kanten miteinander verbunden, die jeweils eine gem
 
 Durch diese Struktur entsteht ein klassisches Netzwerk aus Entitäten und Beziehungen, das sich besonders gut für die Visualisierung von Graphalgorithmen eignet. Der Datensatz ist bewusst klein gehalten, sodass sich jeder einzelne Schritt eines Layout-Verfahrens gut nachvollziehen lässt. Dadurch kann beobachtet werden, wie aus einer reinen Liste von Knoten und Kanten schrittweise eine räumliche Struktur entsteht und sich Muster, Cluster und zentrale Figuren im Verlauf der Berechnung herausbilden.
 
-## Die Rohdaten
+### Die Rohdaten
 
 Noch bevor ein Algorithmus arbeitet, besteht ein Graph lediglich aus einer Liste von Knoten und Kanten. Zu diesem Zeitpunkt gibt es **keine räumliche Ordnung ** und **keine visuelle Struktur **, sondern ausschließlich die Information darüber, welche Elemente miteinander verbunden sind.
 
@@ -40,7 +40,7 @@ Eine Liste aller Verbindungen aus dem Roman Les Misérables ist hier dargestellt
 
 Diese Liste dient als Ausgangspunkt, um die reine Datenstruktur vor jeder räumlichen Anordnung sichtbar zu machen.
 
-## Schritt 2 - Was passiert damit?
+### Schritt 2 - Was passiert damit?
 
 Die gleichen Knoten werden nun zufällig im Raum verteilt. Obwohl alle Informationen über die Verbindungen vollständig vorhanden sind, entsteht dabei keine sinnvolle räumliche Struktur.
 
@@ -77,7 +77,7 @@ Zusammenhänge, Cluster oder zentrale Knoten lassen sich dadurch kaum erkennen, 
 Damit wird deutlich, dass ein Graph ohne geeigneten Layout-Algorithmus zwar vollständig definiert ist, aber visuell kaum interpretierbar bleibt.
 </div> </details>
 
-## Schritt 3 – Die Idee eines Force-Directed Layouts
+### Schritt 3 – Die Idee eines Force-Directed Layouts
 
 Wie kann aus einer ungeordneten Punktmenge eine lesbare Struktur entstehen?
 
@@ -152,7 +152,7 @@ In der folgenden Animation ist das Verhalten der Kräfte sichtbar. Versuche die 
 </div>
 </details>
 
-## Schritt 4 – Implementierung von D3
+### Schritt 4 – Implementierung von D3
 
 D3 (Data-Driven Documents) ist eine JavaScript-Bibliothek zur Visualisierung von Daten im Web. Sie dient dazu, Daten direkt mit grafischen Elementen im Browser zu verbinden und diese dynamisch darzustellen.
 
@@ -254,7 +254,7 @@ const simulation = d3.forceSimulation(nodes)
   </div>
 </div> </details>
 
-## Schritt 5 – Das Ergebnis
+### Schritt 5 – Das Ergebnis
 
 SVG (Scalable Vector Graphics) ist ein vektorbasiertes Grafikformat im Browser, das grafische Elemente wie Kreise, Linien oder Pfade als einzelne, adressierbare Objekte darstellt. Dadurch lassen sich Visualisierungen flexibel aufbauen und dynamisch verändern, ohne sie neu zu rendern.
 
@@ -296,7 +296,7 @@ Die Farben zeigen, welche Knoten im Les-Misérables-Datensatz derselben Communit
 </div>
 </details>
 
-## Schritt 6 – Die Grenze
+### Schritt 6 – Die Grenze
 
 Das gleiche Verfahren funktioniert nicht nur für kleine Netzwerke, sondern lässt sich grundsätzlich auf größere Datenmengen anwenden. Genau hier zeigt sich jedoch eine entscheidende Schwäche.
 
