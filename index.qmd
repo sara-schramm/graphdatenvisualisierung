@@ -9,7 +9,7 @@ Soziale Netzwerke gehören zu den anschaulichsten Beispielen für Graphdaten. Me
 
 Ein solches Netzwerk besteht aus tausenden bis Millionen von Verbindungen. Je mehr Knoten und Kanten hinzukommen, desto schneller wird die Struktur unlesbar. Das Problem ist nicht nur die reine Datenmenge, sondern die Tatsache, dass **Daten keine räumliche Ordnung besitzen**, sie enthalten nur Beziehungen.
 
-Graphdatenvisualisierung versucht deshalb, Beziehungen so im Raum anzuordnen, dass Muster sichtbar werden. Ziel ist nicht nur, alle Daten darzustellen, sondern sie lesbar zu machen. Dazu werden unterschiedliche Layouts, Filter, Interaktionen und Rendering-Techniken verwendet.ehungen.
+Graphdatenvisualisierung versucht deshalb, Beziehungen so im Raum anzuordnen, dass Muster sichtbar werden. Ziel ist nicht nur, alle Daten darzustellen, sondern sie lesbar zu machen. Dazu werden unterschiedliche Layouts, Filter, Interaktionen und Rendering-Techniken verwendet.
 
 ## 2. Was ist Graphdatenvisualisierung?
 
@@ -451,7 +451,10 @@ Dual-Ansicht wie [GNN-101](https://github.com/Visual-Intelligence-UMN/GNN-101): 
 
 12. Yunhai Wang, Yanyan Wang, Yinqi Sun, Lifeng Zhu, Kecheng Lu Chi-Wing Fu, Michael Sedlmair, Oliver Deussen, and Baoquan Chen - Revisiting Stress Majorization as a Unified Framework for Interactive Constrained Graph Visualization [vis.uni-stuttgart.de](https://www.vis.uni-stuttgart.de/documentcenter/staff/sedlmaml/papers/wang2017graph.pdf)
 
+
 **Datensatz:**
+
+  - Les Misérables Character Dataset [json-File](https://raw.githubusercontent.com/christophergandrud/d3Network/master/JSONdata/miserables.json)
   - Facebook Large Page-Page Network – Rozemberczki et al. 2021. [Kaggle](https://www.kaggle.com/datasets/wolfram77/graphs-social/data) · [DOI: 10.1093/comnet/cnab014](https://doi.org/10.1093/comnet/cnab014)
   - Wiki-Vote [Kaggle](https://www.kaggle.com/datasets/vimanshmahajan/wiki-vote)
 :::
