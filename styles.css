@@ -345,6 +345,13 @@ circle {
   color: var(--gv-text);
 }
 
+.graph-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0 1.25rem;
+}
+
 .compare-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));

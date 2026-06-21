@@ -204,7 +204,6 @@ window.Quarto = {
 <script src="js/site.js" defer=""></script>
 <section id="intro-warum-soziale-netzwerke-schwer-zu-zeichnen-sind" class="level2">
 <h2 class="anchored" data-anchor-id="intro-warum-soziale-netzwerke-schwer-zu-zeichnen-sind">1. Intro (Warum Soziale Netzwerke schwer zu zeichnen sind)</h2>
-<div data-intro-stats="" class="intro-stats reveal-on-scroll"></div>
 <p>Soziale Netzwerke gehören zu den anschaulichsten Beispielen für Graphdaten. Menschen, Webseiten, Accounts oder Gruppen lassen sich als Knoten darstellen, ihre Beziehungen als Kanten. Genau diese Einfachheit macht Graphen so attraktiv: Viele wichtige Fragen lassen sich damit direkt formulieren, etwa wer mit wem verbunden ist, welche Gruppen entstehen oder welche Knoten besonders zentral sind.</p>
 <p>Ein solches Netzwerk besteht aus tausenden bis Millionen von Verbindungen. Je mehr Knoten und Kanten hinzukommen, desto schneller wird die Struktur unlesbar. Das Problem ist nicht nur die reine Datenmenge, sondern die Tatsache, dass <strong>Daten keine räumliche Ordnung besitzen</strong>, sie enthalten nur Beziehungen.</p>
 <p>Graphdatenvisualisierung versucht deshalb, Beziehungen so im Raum anzuordnen, dass Muster sichtbar werden. Ziel ist nicht nur, alle Daten darzustellen, sondern sie lesbar zu machen. Dazu werden unterschiedliche Layouts, Filter, Interaktionen und Rendering-Techniken verwendet.</p>
@@ -620,6 +619,11 @@ Mit den Plus- und Minus-Buttons lässt sich die Größe des Netzwerks verändern
 </section>
 <section id="b.-mittlerer-datensatz" class="level2">
 <h2 class="anchored" data-anchor-id="b.-mittlerer-datensatz">4b. mittlerer Datensatz</h2>
+<div data-medium-stats="" class="graph-stats reveal-on-scroll">
+  <span class="stat-pill"><strong>7.115</strong> Knoten</span>
+  <span class="stat-pill"><strong>103.663</strong> Kanten</span>
+  <span class="stat-pill"><strong>15</strong> Communities</span>
+</div>
 <div class="section-medium">
 <p>Im kleinen Beispiel stand <em>eine</em> Person im Mittelpunkt: Max und sein Ego-Netz. Jetzt drehen wir die Perspektive um und betrachten ein <strong>vollständiges soziales Netzwerk ohne Mittelpunkt</strong> – das Wikipedia-Abstimmungsnetzwerk <code>wiki-Vote</code> mit rund <strong>7.000 Nutzer:innen und über 100.000 Beziehungen</strong>. Hier gibt es kein Zentrum, um das wir die Knoten anordnen könnten.</p>
 <section id="warum-ein-globales-layout-statt-eines-ego-layouts" class="level3">
@@ -657,7 +661,7 @@ Mit den Plus- und Minus-Buttons lässt sich die Größe des Netzwerks verändern
 </div>
 </section>
 <section id="layout-graphalg" class="level3">
-<h3 class="anchored" data-anchor-id="layout-graphalg">Layout + GraphAlg</h3>
+<h3 class="anchored">Layout + GraphAlg</h3>
 <p>Technisch motiviert diese Größenordnung den Wechsel zu <strong>Canvas</strong>: Statt tausender DOM-Knoten zeichnen wir alles in ein einziges <code>&lt;canvas&gt;</code>-Element und rendern nur bei Interaktion neu. Das Layout wird <strong>einmalig offline</strong> per Stress-Majorization vorberechnet, sodass die Seite sofort lädt. Im Browser kannst du den Graphen erkunden (Zoomen, Nachbarschaft hervorheben, Knoten kurz verschieben) — ohne das Layout neu zu berechnen. Probiere es aus:</p>
 <div class="force-graph" data-src="graph_medium/stress/social_graph.json" tabindex="0" aria-label="Interaktiver wiki-Vote Graph">
   <div class="fg-onboarding" hidden="">
@@ -944,10 +948,6 @@ Deshalb zeichnen wir hier auf ein <strong><code>&lt;canvas&gt;</code></strong>: 
 </p>
 </div>
 </details>
-</div>
-<p>:::</p>
-</section>
-</div></section>
 <section id="c.-großer-datensatz" class="level2">
 <h2 class="anchored" data-anchor-id="c.-großer-datensatz">4c. Großer Datensatz</h2>
 <p>Stell dir vor, du öffnest Facebook im November 2017 und siehst nicht einzelne Nutzer, sondern nur offizielle, verifizierte Seiten. Regierungen, Politiker, TV-Sender, Konzerne. Wer ist mit wem vernetzt?</p>
@@ -1053,7 +1053,6 @@ Eine Kante entsteht nur bei gegenseitigem Like, also ein bewusstes, wechselseiti
 <p style="text-align:left; font-size:0.95rem; color:#888; margin:0 0 2rem;">
   Die Antwort liegt in einer Kombination aus Layout, Clustering und Datenvereinfachung.
 </p>
-</section>
 </section>
 <section id="mit-forceatlas2-und-louvain" class="level1">
 <h1>Mit ForceAtlas2 und Louvain</h1>
@@ -2111,6 +2110,10 @@ Feature-Ähnlichkeit, Klassifikation
 
 </section>
 </section>
+</section>
+</div>
+</section>
+</div></section>
 </section>
 
 </main> <!-- /main -->
