@@ -269,13 +269,13 @@ Eine Kante entsteht nur bei gegenseitigem Like, also ein bewusstes, wechselseiti
 <p style="text-align:left; font-size:0.95rem; color:#888; margin:0 0 2rem;">
   Die Antwort liegt in einer Kombination aus Layout, Clustering und Datenvereinfachung.
 </p>
-</section>
-<section id="mit-forceatlas2-und-louvain" class="level1">
-<h1>Mit ForceAtlas2 und Louvain</h1>
+<section id="mit-forceatlas2-und-louvain" class="level3">
+<h3 class="anchored" data-anchor-id="mit-forceatlas2-und-louvain">Mit ForceAtlas2 und Louvain</h3>
 <p>22.470 Knoten und 171.002 Kanten. Das sind die Größenordnungen, an denen jede naive Visualisierungsstrategie scheitert.</p>
 <p>Verteilt man alle Knoten gleichmäßig und zeichnet alle Kanten, entsteht ein Hairball, ein dichter schwarzer Klumpen, aus dem keine Struktur ablesbar ist. Das ist kein Darstellungsproblem, sondern ein Informationsproblem. Die relevante Frage lautet nicht, wie sich das zeichnen lässt, sondern welche Struktur überhaupt vorhanden ist und wie sie sichtbar wird.</p>
 <p>Drei Schritte führen von der reinen Struktur zur interaktiven Exploration. Erst Positionen aus der Verbindungsstruktur ableiten, dann Bedeutung durch Farbe hinzufügen, dann Interaktion ermöglichen, mit der sich der Graph gezielt befragen lässt.</p>
 <hr>
+</section>
 <section id="forceatlas2-struktur-sichtbar-machen" class="level3">
 <h3 class="anchored" data-anchor-id="forceatlas2-struktur-sichtbar-machen">ForceAtlas2: Struktur sichtbar machen</h3>
 <p>Eine Facebook-Seite hat keine natürliche Position im Raum. ForceAtlas2 erzeugt Koordinaten aus der Struktur des Graphen selbst. Verbundene Knoten ziehen sich an, alle Knotenpaare stoßen sich ab, und das System läuft iterativ in ein Kräftegleichgewicht. Der Algorithmus zählt zu den kräftebasierten Layouts, wurde aber gezielt für große, skalenfreie Netzwerke entwickelt, also für Graphen, in denen wenige Knoten extrem viele Verbindungen haben und der Rest nur wenige.</p>
@@ -451,8 +451,8 @@ Die Interaktionsstruktur folgt Shneidermans Mantra. Overview first, zoom and fil
 </details>
 <hr>
 </section>
-<section id="pipeline-vom-datensatz-zur-interaktiven-visualisierung" class="level2">
-<h2 class="anchored" data-anchor-id="pipeline-vom-datensatz-zur-interaktiven-visualisierung">Pipeline: vom Datensatz zur interaktiven Visualisierung</h2>
+<section id="pipeline-vom-datensatz-zur-interaktiven-visualisierung" class="level3">
+<h3 class="anchored" data-anchor-id="pipeline-vom-datensatz-zur-interaktiven-visualisierung">Pipeline: vom Datensatz zur interaktiven Visualisierung</h3>
 <div style="margin: 1.5rem 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #e5e4e0; font-size: 0.875rem;">
 
   <div style="background: white; padding: 1.25rem 1rem;">
@@ -493,9 +493,10 @@ Die Interaktionsstruktur folgt Shneidermans Mantra. Overview first, zoom and fil
 </div>
 </details>
 </section>
-<section id="alternative-ansätze-im-vergleich" class="level2">
-<h2 class="anchored" data-anchor-id="alternative-ansätze-im-vergleich">Alternative Ansätze im Vergleich</h2>
+<section id="alternative-ansätze-im-vergleich" class="level3">
+<h3 class="anchored" data-anchor-id="alternative-ansätze-im-vergleich">Alternative Ansätze im Vergleich</h3>
 <p>FA2 und Louvain sind nicht die einzigen Antworten auf dieses Problem. Zwei weitere Algorithmen werden für große Graphen regelmäßig vorgeschlagen, beide mit eigenen Stärken und eigenen Grenzen für diesen Anwendungsfall.</p>
+</section>
 <section id="sfdp-scalable-force-directed-placement" class="level3">
 <h3 class="anchored" data-anchor-id="sfdp-scalable-force-directed-placement">SFDP: Scalable Force-Directed Placement</h3>
 <iframe src="graph_big/visuals/sfdp_graph.html" width="100%" height="600px" style="border: 1px solid #e5e4e0;" loading="lazy">
@@ -551,9 +552,8 @@ Die Interaktionsstruktur folgt Shneidermans Mantra. Overview first, zoom and fil
 </details>
 <hr>
 </section>
-</section>
-<section id="layout-algorithmen-im-vergleich" class="level2">
-<h2 class="anchored" data-anchor-id="layout-algorithmen-im-vergleich">Layout-Algorithmen im Vergleich</h2>
+<section id="layout-algorithmen-im-vergleich" class="level3">
+<h3 class="anchored" data-anchor-id="layout-algorithmen-im-vergleich">Layout-Algorithmen im Vergleich</h3>
 <table style="width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.9rem;">
 <thead>
 <tr style="border-bottom:2px solid #2C2C2A;">
@@ -617,8 +617,8 @@ Feature-Ähnlichkeit, Klassifikation
 </tbody>
 </table>
 </section>
-<section id="fa2-als-standard-für-diesen-anwendungsfall" class="level2">
-<h2 class="anchored" data-anchor-id="fa2-als-standard-für-diesen-anwendungsfall">FA2 als Standard für diesen Anwendungsfall</h2>
+<section id="fa2-als-standard-für-diesen-anwendungsfall" class="level3">
+<h3 class="anchored" data-anchor-id="fa2-als-standard-für-diesen-anwendungsfall">FA2 als Standard für diesen Anwendungsfall</h3>
 <p>FA2 ist nicht der schnellste Algorithmus und liefert nicht die schärfsten Cluster. Er ist aber der einzige Algorithmus in diesem Vergleich, der Verbindungsstruktur respektiert, Community-Muster sichtbar macht und dabei im Browser interaktiv bleibt.</p>
 <p>Für Graphen, bei denen die Kanten die eigentliche Information tragen, ist ForceAtlas2 der pragmatische Standard für interaktive Web-Visualisierungen.</p>
 

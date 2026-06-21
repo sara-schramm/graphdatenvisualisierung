@@ -184,9 +184,8 @@ Abbildung: Hauptcharaktere aus dem Roman “Les Misérables”
 <p>Die 77 Figuren sind durch 254 Kanten miteinander verbunden, die jeweils eine gemeinsame Szene oder eine direkte Interaktion zwischen zwei Charakteren darstellen. Die Verbindungen sind ungerichtet, das heißt, sie besitzen keine feste Richtung, sondern beschreiben lediglich die Existenz einer Beziehung zwischen zwei Figuren.</p>
 <p>Durch diese Struktur entsteht ein klassisches Netzwerk aus Entitäten und Beziehungen, das sich besonders gut für die Visualisierung von Graphalgorithmen eignet. Der Datensatz ist bewusst klein gehalten, sodass sich jeder einzelne Schritt eines Layout-Verfahrens gut nachvollziehen lässt. Dadurch kann beobachtet werden, wie aus einer reinen Liste von Knoten und Kanten schrittweise eine räumliche Struktur entsteht und sich Muster, Cluster und zentrale Figuren im Verlauf der Berechnung herausbilden.</p>
 </section>
-</section>
-<section id="die-rohdaten" class="level2">
-<h2 class="anchored" data-anchor-id="die-rohdaten">Die Rohdaten</h2>
+<section id="die-rohdaten" class="level3">
+<h3 class="anchored" data-anchor-id="die-rohdaten">Die Rohdaten</h3>
 <p>Noch bevor ein Algorithmus arbeitet, besteht ein Graph lediglich aus einer Liste von Knoten und Kanten. Zu diesem Zeitpunkt gibt es <strong>keine räumliche Ordnung </strong> und <strong>keine visuelle Struktur </strong>, sondern ausschließlich die Information darüber, welche Elemente miteinander verbunden sind.</p>
 <p>Ein Graph beschreibt somit zunächst nur Beziehungen zwischen Objekten, jedoch nicht deren Position im Raum. Die räumliche Anordnung entsteht erst durch einen späteren Layout-Algorithmus.</p>
 <p>Das bedeutet konkret:</p>
@@ -204,8 +203,8 @@ Abbildung: Übersicht der Rohdaten als Kantenliste (alle Verbindungen zwischen K
 </p>
 <p>Diese Liste dient als Ausgangspunkt, um die reine Datenstruktur vor jeder räumlichen Anordnung sichtbar zu machen.</p>
 </section>
-<section id="schritt-2---was-passiert-damit" class="level2">
-<h2 class="anchored" data-anchor-id="schritt-2---was-passiert-damit">Schritt 2 - Was passiert damit?</h2>
+<section id="schritt-2---was-passiert-damit" class="level3">
+<h3 class="anchored" data-anchor-id="schritt-2---was-passiert-damit">Schritt 2 - Was passiert damit?</h3>
 <p>Die gleichen Knoten werden nun zufällig im Raum verteilt. Obwohl alle Informationen über die Verbindungen vollständig vorhanden sind, entsteht dabei keine sinnvolle räumliche Struktur.</p>
 <p>Jeder Knoten erhält lediglich eine beliebige Position innerhalb der Zeichenfläche, unabhängig davon, ob er stark oder schwach mit anderen Knoten verbunden ist. Dadurch wird die eigentliche Informationsstruktur des Graphen nicht sichtbar gemacht, sondern durch die zufällige Platzierung überdeckt.</p>
 <p>In dieser Darstellung findest du auch unsere Hauptfiguren wieder, klicke auf den Button, um sie sichtbar zu machen.</p>
@@ -241,8 +240,8 @@ Abbildung: Zufällige Anordnung der Knoten zur ersten visuellen Orientierung.
 </div>
 </details>
 </section>
-<section id="schritt-3-die-idee-eines-force-directed-layouts" class="level2">
-<h2 class="anchored" data-anchor-id="schritt-3-die-idee-eines-force-directed-layouts">Schritt 3 – Die Idee eines Force-Directed Layouts</h2>
+<section id="schritt-3-die-idee-eines-force-directed-layouts" class="level3">
+<h3 class="anchored" data-anchor-id="schritt-3-die-idee-eines-force-directed-layouts">Schritt 3 – Die Idee eines Force-Directed Layouts</h3>
 <p>Wie kann aus einer ungeordneten Punktmenge eine lesbare Struktur entstehen?</p>
 <p>Die Grundidee besteht darin, den Graphen nicht mehr als reine Sammlung von Punkten und Verbindungen zu betrachten, sondern als ein dynamisches System, das sich wie ein physikalisches Modell verhält. Die einzelnen Knoten besitzen dabei keine festen Positionen, sondern reagieren aufeinander, sobald Kräfte zwischen ihnen wirken. Im Zentrum stehen zwei gegensätzliche Effekte, die gleichzeitig auftreten.</p>
 <p>Einerseits ziehen sich Knoten, die durch eine Kante verbunden sind, gegenseitig an. Diese „Anziehung“ sorgt dafür, dass verwandte oder direkt verbundene Elemente näher zusammenrücken.</p>
@@ -359,8 +358,8 @@ Das Ergebnis ist ein <strong>kompromissoptimiertes Layout</strong>, das Struktur
 </div>
 </details>
 </section>
-<section id="schritt-4-implementierung-von-d3" class="level2">
-<h2 class="anchored" data-anchor-id="schritt-4-implementierung-von-d3">Schritt 4 – Implementierung von D3</h2>
+<section id="schritt-4-implementierung-von-d3" class="level3">
+<h3 class="anchored" data-anchor-id="schritt-4-implementierung-von-d3">Schritt 4 – Implementierung von D3</h3>
 <p>D3 (Data-Driven Documents) ist eine JavaScript-Bibliothek zur Visualisierung von Daten im Web. Sie dient dazu, Daten direkt mit grafischen Elementen im Browser zu verbinden und diese dynamisch darzustellen.</p>
 <p>Im Kern bedeutet das, dass nicht statische Grafiken erstellt werden, sondern eine direkte Kopplung zwischen Daten und DOM-Elementen (z. B. SVG oder HTML) entsteht. Wenn sich die Daten verändern, aktualisiert sich automatisch auch die visuelle Darstellung.</p>
 <p>Die zentrale Idee lässt sich so zusammenfassen:</p>
@@ -452,8 +451,8 @@ Die gesamte Simulation wird zur Mitte der Zeichenfläche gezogen. Dadurch bleibt
 </div>
 </details>
 </section>
-<section id="schritt-5-das-ergebnis" class="level2">
-<h2 class="anchored" data-anchor-id="schritt-5-das-ergebnis">Schritt 5 – Das Ergebnis</h2>
+<section id="schritt-5-das-ergebnis" class="level3">
+<h3 class="anchored" data-anchor-id="schritt-5-das-ergebnis">Schritt 5 – Das Ergebnis</h3>
 <p>SVG (Scalable Vector Graphics) ist ein vektorbasiertes Grafikformat im Browser, das grafische Elemente wie Kreise, Linien oder Pfade als einzelne, adressierbare Objekte darstellt. Dadurch lassen sich Visualisierungen flexibel aufbauen und dynamisch verändern, ohne sie neu zu rendern.</p>
 <p>Nach mehreren Iterationen der Force-Simulation stabilisiert sich die Struktur des Graphen. Die Knoten bewegen sich so lange, bis sich die Kräfte zwischen Anziehung und Abstoßung weitgehend ausgleichen.</p>
 <p>In diesem Zustand wird die Struktur des Datensatzes sichtbar. Aus einer reinen Liste von Beziehungen entsteht ein räumliches Muster mit klar erkennbarer Ordnung.</p>
@@ -490,8 +489,8 @@ Farben markieren soziale Gruppen innerhalb des Netzwerks. Beim Hover über einen
 </div>
 </details>
 </section>
-<section id="schritt-6-die-grenze" class="level2">
-<h2 class="anchored" data-anchor-id="schritt-6-die-grenze">Schritt 6 – Die Grenze</h2>
+<section id="schritt-6-die-grenze" class="level3">
+<h3 class="anchored" data-anchor-id="schritt-6-die-grenze">Schritt 6 – Die Grenze</h3>
 <p>Das gleiche Verfahren funktioniert nicht nur für kleine Netzwerke, sondern lässt sich grundsätzlich auf größere Datenmengen anwenden. Genau hier zeigt sich jedoch eine entscheidende Schwäche.</p>
 <p>Mit wachsender Größe verändert sich das Verhalten des Graphen deutlich:</p>
 <p>77 → 154 → 308 → 616 → 1232 Knoten</p>
@@ -529,6 +528,7 @@ Mit den Plus- und Minus-Buttons lässt sich die Größe des Netzwerks verändern
 <script src="graph-small/graph-small.js"></script>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
