@@ -170,9 +170,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="a.-kleiner-datensatz">4a. Kleiner Datensatz</h2>
 <section id="les-misérables" class="level3">
 <h3 class="anchored" data-anchor-id="les-misérables">Les Misérables</h3>
-Der Datensatz basiert auf den Beziehungen der Figuren aus dem Roman Les Misérables. Er umfasst insgesamt 77 Knoten, wobei jeder Knoten eine einzelne Figur aus der Geschichte repräsentiert. Untenstehend sind die Hauptcharaktere dargestellt:
+Der Datensatz basiert auf den Beziehungen aller Figuren aus dem Roman Les Misérables. Er umfasst insgesamt 77 Knoten, wobei jeder Knoten eine einzelne Figur aus der Geschichte repräsentiert. Untenstehend sind die Hauptcharaktere dargestellt:
 <div class="image-container">
-<p><img src="assets/data/les_miserables.jpg" alt="Les Misérables Charaktere"></p>
+<img src="assets/data/les_miserables.jpg" alt="Les Misérables Charaktere" style="width:500px; max-width:100%; height:auto; display:block; margin:0 auto;">
+<p style="text-align:center; font-size:12px; color:#888; margin:8px 0 16px;">
+Abbildung: Hauptcharaktere aus dem Roman “Les Misérables”
+</p>
 </div>
 <p>Die 77 Figuren sind durch 254 Kanten miteinander verbunden, die jeweils eine gemeinsame Szene oder eine direkte Interaktion zwischen zwei Charakteren darstellen. Die Verbindungen sind ungerichtet, das heißt, sie besitzen keine feste Richtung, sondern beschreiben lediglich die Existenz einer Beziehung zwischen zwei Figuren.</p>
 <p>Durch diese Struktur entsteht ein klassisches Netzwerk aus Entitäten und Beziehungen, das sich besonders gut für die Visualisierung von Graphalgorithmen eignet. Der Datensatz ist bewusst klein gehalten, sodass sich jeder einzelne Schritt eines Layout-Verfahrens gut nachvollziehen lässt. Dadurch kann beobachtet werden, wie aus einer reinen Liste von Knoten und Kanten schrittweise eine räumliche Struktur entsteht und sich Muster, Cluster und zentrale Figuren im Verlauf der Berechnung herausbilden.</p>
@@ -180,43 +183,22 @@ Der Datensatz basiert auf den Beziehungen der Figuren aus dem Roman Les Misérab
 </section>
 <section id="die-rohdaten" class="level2">
 <h2 class="anchored" data-anchor-id="die-rohdaten">Die Rohdaten</h2>
-<p>Noch bevor ein Algorithmus arbeitet, besteht ein Graph lediglich aus einer Liste von Knoten und Kanten. Zu diesem Zeitpunkt gibt es keine räumliche Ordnung und keine visuelle Struktur, sondern ausschließlich die Information darüber, welche Elemente miteinander verbunden sind.</p>
+<p>Noch bevor ein Algorithmus arbeitet, besteht ein Graph lediglich aus einer Liste von Knoten und Kanten. Zu diesem Zeitpunkt gibt es <strong>keine räumliche Ordnung </strong> und <strong>keine visuelle Struktur </strong>, sondern ausschließlich die Information darüber, welche Elemente miteinander verbunden sind.</p>
 <p>Ein Graph beschreibt somit zunächst nur Beziehungen zwischen Objekten, jedoch nicht deren Position im Raum. Die räumliche Anordnung entsteht erst durch einen späteren Layout-Algorithmus.</p>
 <p>Das bedeutet konkret:</p>
 <ul>
 <li>es existieren keine Koordinaten</li>
 <li>es gibt keine geometrische Struktur</li>
-<li>die Darstellung besteht ausschließlich aus Verbindungen zwischen Knoten.</li>
+<li>die Darstellung besteht ausschließlich aus Verbindungen zwischen Knoten</li>
 </ul>
-<p>Eine Liste aller Verbindungen aus dem Roman Les Misérables ist hier dargestellt</p>
+<p>Eine Liste aller Verbindungen aus dem Roman Les Misérables ist hier dargestellt:</p>
 <div id="graph-step1">
 
 </div>
-<p>Abbildung 1: Übersicht der Rohdaten als Kantenliste (alle Verbindungen zwischen Knoten).</p>
-<details class="acc">
-<summary>
-<span class="acc-toggle"></span> <span class="acc-title">Wie D3 einen Graphen intern speichert</span> <span class="acc-tag tag-impl">Implementierung</span>
-</summary>
-<div class="acc-body">
-<p>Ein Graph wird typischerweise als JSON gespeichert.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"nodes"</span><span class="fu">:</span> <span class="ot">[</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"A"</span> <span class="fu">}</span><span class="ot">,</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"B"</span> <span class="fu">}</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"links"</span><span class="fu">:</span> <span class="ot">[</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"source"</span><span class="fu">:</span> <span class="st">"A"</span><span class="fu">,</span> <span class="dt">"target"</span><span class="fu">:</span> <span class="st">"B"</span> <span class="fu">}</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Dabei gilt:</p>
-<ul>
-<li>nodes enthält alle Elemente des Graphen</li>
-<li>links beschreibt die Beziehungen zwischen diesen Elementen</li>
-<li>source und target definieren jeweils eine Verbindung zwischen zwei Knoten</li>
-</ul>
-<p>Während der Simulation ersetzt D3 diese abstrakten Verweise intern durch konkrete Objekte mit zusätzlichen Eigenschaften wie x, y, vx und vy. Dadurch kann der Graph dynamisch berechnet und animiert werden.</p>
-</div>
-</details>
+<p style="text-align:left; font-size:12px; color:#888; margin:8px 0 16px;">
+Abbildung: Übersicht der Rohdaten als Kantenliste (alle Verbindungen zwischen Knoten).
+</p>
+<p>Diese Liste dient als Ausgangspunkt, um die reine Datenstruktur vor jeder räumlichen Anordnung sichtbar zu machen.</p>
 </section>
 <section id="schritt-2---was-passiert-damit" class="level2">
 <h2 class="anchored" data-anchor-id="schritt-2---was-passiert-damit">Schritt 2 - Was passiert damit?</h2>
@@ -226,7 +208,19 @@ Der Datensatz basiert auf den Beziehungen der Figuren aus dem Roman Les Misérab
 <div id="graph-step2">
 
 </div>
-<p>Abbildung 2: Zufällige Anordnung der Knoten zur ersten visuellen Orientierung.</p>
+<p style="text-align:left; font-size:12px; color:#888; margin:8px 0 16px;">
+Abbildung: Zufällige Anordnung der Knoten zur ersten visuellen Orientierung.
+</p>
+<details class="acc">
+<summary>
+<span class="acc-toggle"></span><span class="acc-title">Hauptfiguren einblenden und Namen per Hover erkunden</span><span class="acc-tag tag-ux">Interaktionsdesign</span>
+</summary>
+<div class="acc-body">
+<p>
+Über den Button können die Hauptfiguren ein- und ausgeblendet werden. Beim Hovern erscheint ein Tooltip mit dem Namen der Figur, sodass die zufällige Verteilung direkt zu erkennen ist.
+</p>
+</div>
+</details>
 <details class="acc">
 <summary>
 <span class="acc-toggle"></span> <span class="acc-title">Warum zufällige Koordinaten keine Information enthalten</span> <span class="acc-tag tag-konzept">Konzept</span>
@@ -254,7 +248,19 @@ In der folgenden Animation ist das Verhalten der Kräfte sichtbar. Versuche die 
 <div id="graph-step3">
 
 </div>
-<p>Abbildung 3: Animierte Darstellung der physischen Kräfte.</p>
+<p style="text-align:left; font-size:12px; color:#888; margin:8px 0 16px;">
+Abbildung: Animierte Darstellung der physischen Kräfte.
+</p>
+<details class="acc">
+<summary>
+<span class="acc-toggle"></span><span class="acc-title">Knoten per Drag verschieben und Kräfte direkt beobachten</span><span class="acc-tag tag-ux">Interaktionsdesign</span>
+</summary>
+<div class="acc-body">
+<p>
+Die Knoten lassen sich greifen und verschieben. Das Netzwerk reagiert sofort auf Anziehungs- und Abstoßungskräfte, sodass die physikalischen Kräfte des Force-Directed Layouts unmittelbar erfahrbar sind.
+</p>
+</div>
+</details>
 <details class="acc">
 <summary>
 <span class="acc-toggle"></span> <span class="acc-title">Die Kräfte hinter dem Layout</span> <span class="acc-tag tag-algo">Algorithmus</span>
@@ -361,6 +367,30 @@ Das Ergebnis ist ein <strong>kompromissoptimiertes Layout</strong>, das Struktur
 </li>
 <li>Änderungen an Daten führen sofort zu visuellen Updates</li>
 </ul>
+<details class="acc">
+<summary>
+<span class="acc-toggle"></span> <span class="acc-title">Wie D3 einen Graphen intern speichert</span> <span class="acc-tag tag-impl">Implementierung</span>
+</summary>
+<div class="acc-body">
+<p>Ein Graph wird typischerweise als JSON gespeichert.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"nodes"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"A"</span> <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"B"</span> <span class="fu">}</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"links"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"source"</span><span class="fu">:</span> <span class="st">"A"</span><span class="fu">,</span> <span class="dt">"target"</span><span class="fu">:</span> <span class="st">"B"</span> <span class="fu">}</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Dabei gilt:</p>
+<ul>
+<li>nodes enthält alle Elemente des Graphen</li>
+<li>links beschreibt die Beziehungen zwischen diesen Elementen</li>
+<li>source und target definieren jeweils eine Verbindung zwischen zwei Knoten</li>
+</ul>
+<p>Während der Simulation ersetzt D3 diese abstrakten Verweise intern durch konkrete Objekte mit zusätzlichen Eigenschaften wie x, y, vx und vy. Dadurch kann der Graph dynamisch berechnet und animiert werden.</p>
+</div>
+</details>
 <p>Besonders im Bereich von Graphen ist D3 sehr leistungsfähig, da es:</p>
 <ul>
 <li>Knoten und Kanten direkt aus JSON-Strukturen erzeugt<br>
@@ -373,7 +403,19 @@ Das Ergebnis ist ein <strong>kompromissoptimiertes Layout</strong>, das Struktur
 <div id="graph-step4">
 
 </div>
-<p>Abbildung 4: Klassische Force-Directed Visualisierung des gesamten Netzwerks mit physikalischer Simulation.</p>
+<p style="text-align:left; font-size:12px; color:#888; margin:8px 0 16px;">
+Abbildung: Klassische Force-Directed Visualisierung des gesamten Netzwerks mit physikalischer Simulation.
+</p>
+<details class="acc">
+<summary>
+<span class="acc-toggle"></span><span class="acc-title">Hauptfiguren umschalten und Namen im Gesamtnetzwerk prüfen</span><span class="acc-tag tag-ux">Interaktionsdesign</span>
+</summary>
+<div class="acc-body">
+<p>
+Die vollständige Netzwerkstruktur wird als Force-Simulation dargestellt. Über den Toggle lassen sich die Hauptfiguren hervorheben, und per Hover können einzelne Knoten identifiziert werden.
+</p>
+</div>
+</details>
 <details class="acc">
 <summary>
 <span class="acc-toggle"></span> <span class="acc-title">Welche Kräfte D3 berechnet</span> <span class="acc-tag tag-impl">Implementierung</span>
@@ -430,7 +472,19 @@ Die gesamte Simulation wird zur Mitte der Zeichenfläche gezogen. Dadurch bleibt
 <div id="graph-step5">
 
 </div>
-<p>Abbildung 5: Interaktive Netzwerkanalyse mit Gruppenkolorierung, Hover-Highlighting und Detailanzeige.</p>
+<p style="text-align:left; font-size:12px; color:#888; margin:8px 0 16px;">
+Abbildung: Interaktive Netzwerkanalyse mit Gruppenkolorierung, Hover-Highlighting und Detailanzeige.
+</p>
+<details class="acc">
+<summary>
+<span class="acc-toggle"></span><span class="acc-title">Communities farblich lesen und Nachbarschaften per Hover hervorheben</span><span class="acc-tag tag-ux">Interaktionsdesign</span>
+</summary>
+<div class="acc-body">
+<p>
+Farben markieren soziale Gruppen innerhalb des Netzwerks. Beim Hover über einen Knoten werden seine direkten Verbindungen hervorgehoben und nicht relevante Elemente abgeschwächt, wodurch lokale Nachbarschaften und zentrale Figuren leichter erkennbar werden.
+</p>
+</div>
+</details>
 </section>
 <section id="schritt-6-die-grenze" class="level2">
 <h2 class="anchored" data-anchor-id="schritt-6-die-grenze">Schritt 6 – Die Grenze</h2>
@@ -438,7 +492,7 @@ Die gesamte Simulation wird zur Mitte der Zeichenfläche gezogen. Dadurch bleibt
 <p>Mit wachsender Größe verändert sich das Verhalten des Graphen deutlich:</p>
 <p>77 → 154 → 308 → 616 → 1232 Knoten</p>
 <p>Je mehr Elemente hinzugefügt werden, desto stärker überlagern sich Knoten und Kanten. Die klare Struktur beginnt sich aufzulösen, bis die Darstellung kaum noch interpretierbar ist.</p>
-<p>Es entsteht ein sogenannter <em>Hairball</em> – ein dichtes Gewirr aus Linien und Punkten, in dem kaum noch einzelne Strukturen erkennbar sind.</p>
+<p>Es entsteht ein sogenannter <strong>Hairball</strong>, ein dichtes Gewirr aus Linien und Punkten, in dem kaum noch einzelne Strukturen erkennbar sind.</p>
 <p>Die Ursachen dafür sind strukturell:</p>
 <ul>
 <li>zu viele Knoten im gleichen Raum<br>
@@ -453,7 +507,19 @@ Die gesamte Simulation wird zur Mitte der Zeichenfläche gezogen. Dadurch bleibt
 <div id="graph-step6">
 
 </div>
-<p>Abbildung 6: Skalierbarer Force-Directed Graph mit wählbarer Netzwerkgröße und dynamischer Erweiterung.</p>
+<p style="text-align:left; font-size:12px; color:#888; margin:8px 0 16px;">
+Abbildung: Skalierbarer Force-Directed Graph mit wählbarer Netzwerkgröße und dynamischer Erweiterung.
+</p>
+<details class="acc">
+<summary>
+<span class="acc-toggle"></span><span class="acc-title">Netzwerkgröße anpassen</span><span class="acc-tag tag-ux">Interaktionsdesign</span>
+</summary>
+<div class="acc-body">
+<p>
+Mit den Plus- und Minus-Buttons lässt sich die Größe des Netzwerks verändern. So kann interaktiv beobachtet werden, ab wann die Darstellung unübersichtlich wird und die Leistung schwächer wird.
+</p>
+</div>
+</details>
 <p>Im nächsten Abschnitt betrachten wir deshalb einen deutlich größeren Datensatz.</p>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="graph-small/graph-small.js"></script>

@@ -45,7 +45,6 @@
             .attr("y", d => (d.y ?? 0) - 20)
             .attr("opacity", 1)
 
-
         return icons;
     }
 
@@ -128,6 +127,20 @@
   }
 
   // -----------------------------
+  // Tooltip
+  // -----------------------------
+  function getSharedTooltip() {
+    let tooltip = d3.select("#tooltip");
+    if (tooltip.empty()) {
+      tooltip = d3.select("body")
+        .append("div")
+        .attr("id", "tooltip")
+        .style("display", "none");
+    }
+    return tooltip;
+  }
+
+  // -----------------------------
   // Helper: Drag
   // -----------------------------
   function drag(simulation) {
@@ -200,10 +213,7 @@
       if (typeof t === 'number') degree[t]++;
     });
 
-    const tooltip = d3.select("body")
-      .append("div")
-      .attr("id", "tooltip")
-      .style("display", "none");
+    const tooltip = getSharedTooltip();
 
     const svg = el.append("svg")
       .attr("viewBox", [0, 0, width, height]);
@@ -373,12 +383,14 @@
     const el = d3.select("#graph-step4");
     if (el.empty()) return;
 
+    const tooltip = getSharedTooltip();
+
     const svg = el.append("svg")
       .attr("viewBox", [0, 0, width, height]);
 
-    const nodeRadius = 3;
+    const nodeRadius = 5;
     const sim = d3.forceSimulation(graphData.nodes)
-      .force("link", d3.forceLink(graphData.links).distance(30))
+      .force("link", d3.forceLink(graphData.links).distance(60))
       .force("charge", d3.forceManyBody())
       .force("collide", d3.forceCollide(nodeRadius * 2))
       .force("center", d3.forceCenter(width/2, height/2));
@@ -416,7 +428,25 @@
     const iconNodes = graphData.nodes.filter(d => characterIconMap[d.name]);
     const iconGroup = createCharacterIcons(svg, iconNodes);
 
+    iconGroup.selectAll("image")
+      .on("mouseover", (event, d) => {
+        tooltip
+          .style("display", "block")
+          .html(d.name || d.id || "unbekannt")
+          .style("left", (event.pageX + 10) + "px")
+          .style("top", (event.pageY + 10) + "px");
+      })
+      .on("mousemove", (event) => {
+        tooltip
+          .style("left", (event.pageX + 10) + "px")
+          .style("top", (event.pageY + 10) + "px");
+      })
+      .on("mouseout", () => {
+        tooltip.style("display", "none");
+      });
+
     const hideSelection = node.filter(d => characterIconMap[d.name]);
+    hideSelection.attr("opacity", 0);
     createCharacterToggle(el, iconGroup, hideSelection);
     
     sim.on("tick", () => {
@@ -426,9 +456,9 @@
         d.y = Math.max(nodeRadius, Math.min(height - nodeRadius, d.y));
       });
 
-iconGroup.selectAll("image")
-      .attr("x", d => d.x - 20)
-      .attr("y", d => d.y - 20);
+      iconGroup.selectAll("image")
+        .attr("x", d => d.x - 20)
+        .attr("y", d => d.y - 20);
 
       link
         .attr("x1", d => d.source.x)
@@ -452,16 +482,7 @@ function initStep5() {
   const svg = el.append("svg")
     .attr("viewBox", [0, 0, width, height]);
 
-  const tooltip = d3.select("body")
-    .append("div")
-    .attr("class", "tooltip")
-    .style("position", "absolute")
-    .style("display", "none")
-    .style("background", "rgba(0,0,0,0.7)")
-    .style("color", "#fff")
-    .style("padding", "6px 8px")
-    .style("border-radius", "4px")
-    .style("font-size", "12px");
+  const tooltip = getSharedTooltip();
 
   // Knoten + Links direkt verwenden
   const nodes = graphData.nodes.map((d, i) => ({

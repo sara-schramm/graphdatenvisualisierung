@@ -203,6 +203,9 @@ window.Quarto = {
   <div style="position:relative; width:100%; height:210px;">
     <canvas id="ds-chart" role="img" aria-label="Balkendiagramm der Knotenverteilung: Government 6880, Company 6495, Politician 5768, TV Show 3327">Government 6880, Company 6495, Politician 5768, TV Show 3327.</canvas>
   </div>
+  <p style="text-align:left; font-size:12px; color:#888; margin:8px 0 16px;">
+  Balkendiagramm der Knotenverteilung: Government 6880, Company 6495, Politician 5768, TV Show 3327"&gt;Government 6880, Company 6495, Politician 5768, TV Show 3327.
+</p>
 
 </div>
 
@@ -255,11 +258,11 @@ Eine Kante entsteht nur bei gegenseitigem Like, also ein bewusstes, wechselseiti
 </p>
 </div>
 </details>
-<p style="text-align:center; font-size:1.3rem; font-weight:600; margin:3rem 0 1rem; color:#2C2C2A;">
+<p style="text-align:left; font-size:1.3rem; font-weight:600; margin:3rem 0 1rem; color:#2C2C2A;">
   Wie macht man Struktur in einem 22.000-Knoten-Graphen sichtbar?
 </p>
 
-<p style="text-align:center; font-size:0.95rem; color:#888; margin:0 0 2rem;">
+<p style="text-align:left; font-size:0.95rem; color:#888; margin:0 0 2rem;">
   Die Antwort liegt in einer Kombination aus Layout, Clustering und Datenvereinfachung.
 </p>
 </section>
@@ -275,7 +278,7 @@ Eine Kante entsteht nur bei gegenseitigem Like, also ein bewusstes, wechselseiti
 <p>Nach 800 Iterationen sieht das Gleichgewicht so aus.</p>
 <iframe src="graph_big/visuals/fa2_greygraph.html" width="100%" height="600px" style="border: 1px solid #e5e4e0;" loading="lazy">
 </iframe>
-<p style="text-align:center; font-size:12px; color:#888; margin:8px 0 16px;">
+<p style="text-align:left; font-size:12px; color:#888; margin:8px 0 16px;">
   22.470 Knoten · ForceAtlas2 · 800 Iterationen · Knotengröße = Degree (Anzahl direkter Verbindungen)
 </p>
 <p>Ein dichter Kern aus stark vernetzten Seiten, dünn verbundene Knoten am Rand, einzelne Ausreißer weit außen. Diese Ausreißer sind kein Fehler im Layout. ForceAtlas2 schiebt Seiten mit sehr wenigen Likes konsequent vom Hauptcluster weg, und das ist bereits eine Aussage über den Datensatz selbst.</p>
@@ -362,7 +365,7 @@ positions = forceatlas2.forceatlas2_networkx_layout(G, pos=None, iterations=800)
 <p>Das Layout kodiert Verbindungsstruktur, aber keine Inhalte. Die vier Kategorien, Politiker, Regierung, TV-Sender und Unternehmen, hat Facebook selbst vergeben. ForceAtlas2 hat sie nie gesehen, der Algorithmus kennt nur Kanten.</p>
 <iframe src="graph_big/visuals/fa2_categorygraph.html" width="100%" height="600px" style="border: 1px solid #e5e4e0;" loading="lazy">
 </iframe>
-<p style="text-align:center; font-size:12px; color:#888; margin:8px 0 16px;">
+<p style="text-align:left; font-size:12px; color:#888; margin:8px 0 16px;">
   Gleiche Positionen · Färbung nach Facebook-Kategorie
 </p>
 <p>Gleichfarbige Knoten stehen häufig beisammen, obwohl die Farbe das Layout nicht beeinflusst hat. Seiten derselben Kategorie verlinken sich offenbar häufiger gegenseitig, und FA2 hat diese Struktur allein aus den Kanten rekonstruiert.</p>
