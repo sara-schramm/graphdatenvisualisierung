@@ -1,9 +1,4 @@
-title: "Graphdatenvisualisierung im Web"
-author: "Sara, Silvia, Adam"
-format: html
-jupyter: python3
-bibliography: references.bib
-
+# Graphdatenvisualisierung
 
 ```{=html}
 <script src="js/site.js" defer></script>
@@ -34,29 +29,61 @@ Die wichtigsten Fragen in der Visualisierung sind:
 
 Je nach Größe und Ziel der Visualisierung werden unterschiedliche Methoden verwendet:
 
-- Knoten und Kanten können als Punkte und Linien dargestellt werden.
-- Cluster können durch Farben oder Umrisse markiert werden.
-- Hubs können durch größere Knoten hervorgehoben werden.
-- Gerichtete Kanten können als Pfeile codiert werden.
+
+```{=html}
+<div style="margin: 1.5rem 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #e5e4e0; font-size: 0.875rem;">
+
+  <div style="background: white; padding: 1.25rem 1rem;">
+    <p style="font-weight: 500; margin: 0 0 6px; color: #2C2C2A;">Knoten und Kanten können als Punkte und Linien dargestellt werden.</p>
+  </div>
+
+  <div style="background: white; padding: 1.25rem 1rem;">
+    <p style="font-weight: 500; margin: 0 0 6px; color: #2C2C2A;">Cluster können durch Farben oder Umrisse markiert werden.</p>
+  </div>
+
+  <div style="background: white; padding: 1.25rem 1rem;">
+    <p style="font-weight: 500; margin: 0 0 6px; color: #2C2C2A;">Hubs können durch größere Knoten hervorgehoben werden.</p>
+  </div>
+
+  <div style="background: white; padding: 1.25rem 1rem;">
+    <p style="font-weight: 500; margin: 0 0 6px; color: #2C2C2A;">Gerichtete Kanten können als Pfeile codiert werden.</p>
+  </div>
+
+</div>
+```
 
 ## 3. Herausforderung: Wann wird ein Graph unlesbar?
 Mit wachsender Größe entstehen vier zentrale Probleme:
 
-1. Kanten überlagern sich
+**1. Kanten überlagern sich: ** 
 Bei vielen Kanten entsteht ein dichtes Netz aus Linien, das kaum noch einzelne Verbindungen unterscheidbar macht. Dieses Phänomen wird als Hairball-Effekt bezeichnet.
 
-2. Cluster verschwinden
+
+<iframe
+  src="graph_big/visuals/hairball.html"
+  width="100%"
+  height="400px"
+  style="border: 1px solid #e5e4e0;"
+  loading="lazy">
+</iframe>
+<p style="text-align:left; font-size:12px; color:#888; margin:8px 0 16px;">
+  Abbildung: Hairball-Effekt
+</p>
+
+
+
+**2. Cluster verschwinden: **
 In kleinen Netzwerken sind Gruppen oft noch gut sichtbar. In größeren Netzwerken überlagern sich Clusters, und die Struktur wird schwerer lesbar.
 
-3. Orientierung geht verloren
+**3. Orientierung geht verloren: **
 Bei vielen Knoten ohne natürliche räumliche Ordnung verlieren Nutzer schnell die Orientierung. Es ist nicht klar, wo sich wichtige Akteure befinden, welche Gruppen existieren und welche Knoten besonders verbunden sind.
 
-4. Interaktion bricht zusammen
+**4. Interaktion bricht zusammen: **
 Bei kleinen Graphen lassen sich einzelne Knoten noch direkt untersuchen, etwa durch Hover, Labels oder Drag. Bei sehr großen Graphen werden Interaktionen wie Zoom, Hover oder Nachbarschaft-Ansicht technisch anspruchsvoll oder brechen an Performance-Grenzen.
 
 Ab einem gewissen Punkt reicht eine einfache Darstellung daher nicht mehr aus. Dann braucht man effizientere Rendering-Techniken (Canvas, WebGL), Filter, Aggregation oder andere Formen der Reduktion.
 
-Im folgenden werden drei unterschiedliche Ansätze aufgezeigt, wie sich Graphdatenvisualisierung im Web mit wachsender Netzgröße verändert. An drei unterschiedlich großen Social Graphen wird gezeigt, wann eine Visualisierung noch gut lesbar ist, wann sie an Grenzen stößt und welche Methoden jeweils sinnvoll sind.
+Im folgenden werden drei unterschiedliche Ansätze aufgezeigt, wie sich Graphdatenvisualisierung im Web mit wachsender Netzgröße verändert. An drei unterschiedlich großen Social Graphen wird gezeigt, **wann eine Visualisierung noch gut lesbar ist **, **wann sie an Grenzen stößt** und **welche Methoden jeweils sinnvoll sind **.
 
 
 {{< include small.qmd >}}

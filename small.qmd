@@ -2,12 +2,16 @@
 
 ### Les Misérables
 
-Der Datensatz basiert auf den Beziehungen der Figuren aus dem Roman Les Misérables. Er umfasst insgesamt 77 Knoten, wobei jeder Knoten eine einzelne Figur aus der Geschichte repräsentiert. Untenstehend sind die Hauptcharaktere dargestellt:
+Der Datensatz basiert auf den Beziehungen aller Figuren aus dem Roman Les Misérables. Er umfasst insgesamt 77 Knoten, wobei jeder Knoten eine einzelne Figur aus der Geschichte repräsentiert. Untenstehend sind die Hauptcharaktere dargestellt:
 <div class="image-container">
 
 <img src="assets/data/les_miserables.jpg"
-     alt="Les Misérables Charaktere">
-
+     alt="Les Misérables Charaktere"
+     style="width:500px; max-width:100%; height:auto; display:block; margin:0 auto;"
+     >
+<p style="text-align:center; font-size:12px; color:#888; margin:8px 0 16px;">
+  Abbildung: Hauptcharaktere aus dem Roman "Les Misérables"
+</p>
 </div>
 
 Die 77 Figuren sind durch 254 Kanten miteinander verbunden, die jeweils eine gemeinsame Szene oder eine direkte Interaktion zwischen zwei Charakteren darstellen. Die Verbindungen sind ungerichtet, das heißt, sie besitzen keine feste Richtung, sondern beschreiben lediglich die Existenz einer Beziehung zwischen zwei Figuren.
@@ -16,7 +20,7 @@ Durch diese Struktur entsteht ein klassisches Netzwerk aus Entitäten und Bezieh
 
 ## Die Rohdaten
 
-Noch bevor ein Algorithmus arbeitet, besteht ein Graph lediglich aus einer Liste von Knoten und Kanten. Zu diesem Zeitpunkt gibt es keine räumliche Ordnung und keine visuelle Struktur, sondern ausschließlich die Information darüber, welche Elemente miteinander verbunden sind.
+Noch bevor ein Algorithmus arbeitet, besteht ein Graph lediglich aus einer Liste von Knoten und Kanten. Zu diesem Zeitpunkt gibt es **keine räumliche Ordnung ** und **keine visuelle Struktur **, sondern ausschließlich die Information darüber, welche Elemente miteinander verbunden sind.
 
 Ein Graph beschreibt somit zunächst nur Beziehungen zwischen Objekten, jedoch nicht deren Position im Raum. Die räumliche Anordnung entsteht erst durch einen späteren Layout-Algorithmus.
 
@@ -24,47 +28,17 @@ Das bedeutet konkret:
 
 - es existieren keine Koordinaten
 - es gibt keine geometrische Struktur
-- die Darstellung besteht ausschließlich aus Verbindungen zwischen Knoten.
+- die Darstellung besteht ausschließlich aus Verbindungen zwischen Knoten
 
-Eine Liste aller Verbindungen aus dem Roman Les Misérables ist hier dargestellt
+Eine Liste aller Verbindungen aus dem Roman Les Misérables ist hier dargestellt:
 
 <div id="graph-step1"></div>
 
-Abbildung 1: Übersicht der Rohdaten als Kantenliste (alle Verbindungen zwischen Knoten).
+<p style="text-align:left; font-size:12px; color:#888; margin:8px 0 16px;">
+  Abbildung: Übersicht der Rohdaten als Kantenliste (alle Verbindungen zwischen Knoten).
+</p>
 
-<details class="acc">
-
-<summary>
-
-<span class="acc-toggle"></span>
-<span class="acc-title">Wie D3 einen Graphen intern speichert</span>
-<span class="acc-tag tag-impl">Implementierung</span>
-</summary>
-
-<div class="acc-body">
-
-Ein Graph wird typischerweise als JSON gespeichert.
-
-```json
-{
-  "nodes": [
-    { "id": "A" },
-    { "id": "B" }
-  ],
-  "links": [
-    { "source": "A", "target": "B" }
-  ]
-}
-```
-
-Dabei gilt:
-
-- nodes enthält alle Elemente des Graphen
-- links beschreibt die Beziehungen zwischen diesen Elementen
-- source und target definieren jeweils eine Verbindung zwischen zwei Knoten
-
-Während der Simulation ersetzt D3 diese abstrakten Verweise intern durch konkrete Objekte mit zusätzlichen Eigenschaften wie x, y, vx und vy. Dadurch kann der Graph dynamisch berechnet und animiert werden.
-</div> </details>
+Diese Liste dient als Ausgangspunkt, um die reine Datenstruktur vor jeder räumlichen Anordnung sichtbar zu machen.
 
 ## Schritt 2 - Was passiert damit?
 
@@ -75,8 +49,17 @@ Jeder Knoten erhält lediglich eine beliebige Position innerhalb der Zeichenflä
 In dieser Darstellung findest du auch unsere Hauptfiguren wieder, klicke auf den Button, um sie sichtbar zu machen.
 
 <div id="graph-step2"></div>
+<p style="text-align:left; font-size:12px; color:#888; margin:8px 0 16px;">
+  Abbildung: Zufällige Anordnung der Knoten zur ersten visuellen Orientierung.
+</p>
 
-Abbildung 2: Zufällige Anordnung der Knoten zur ersten visuellen Orientierung.
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Hauptfiguren einblenden und Namen per Hover erkunden</span><span class="acc-tag tag-ux">Interaktionsdesign</span></summary>
+<div class="acc-body">
+<p>Über den Button können die Hauptfiguren ein- und ausgeblendet werden. Beim Hovern erscheint ein Tooltip mit dem Namen der Figur, sodass die zufällige Verteilung direkt zu erkennen ist.</p>
+
+</div>
+</details>
 
 <details class="acc"> <summary>
 <span class="acc-toggle"></span>
@@ -110,7 +93,16 @@ Durch das Zusammenspiel dieser beiden Kräfte entsteht eine kontinuierliche Bewe
 In der folgenden Animation ist das Verhalten der Kräfte sichtbar. Versuche die Knoten näher aneinander zu bringen und erkenne was passiert.
 <div id="graph-step3"></div>
 
-Abbildung 3: Animierte Darstellung der physischen Kräfte.
+<p style="text-align:left; font-size:12px; color:#888; margin:8px 0 16px;">
+  Abbildung: Animierte Darstellung der physischen Kräfte.
+</p>
+
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Knoten per Drag verschieben und Kräfte direkt beobachten</span><span class="acc-tag tag-ux">Interaktionsdesign</span></summary>
+<div class="acc-body">
+<p>Die Knoten lassen sich greifen und verschieben. Das Netzwerk reagiert sofort auf Anziehungs- und Abstoßungskräfte, sodass die physikalischen Kräfte des Force-Directed Layouts unmittelbar erfahrbar sind.</p>
+</div>
+</details>
 
 <details class="acc">
 <summary>
@@ -172,6 +164,40 @@ Die zentrale Idee lässt sich so zusammenfassen:
 - Elemente werden aus Daten heraus erzeugt, nicht manuell gezeichnet  
 - Änderungen an Daten führen sofort zu visuellen Updates  
 
+<details class="acc">
+
+<summary>
+
+<span class="acc-toggle"></span>
+<span class="acc-title">Wie D3 einen Graphen intern speichert</span>
+<span class="acc-tag tag-impl">Implementierung</span>
+</summary>
+
+<div class="acc-body">
+
+Ein Graph wird typischerweise als JSON gespeichert.
+
+```json
+{
+  "nodes": [
+    { "id": "A" },
+    { "id": "B" }
+  ],
+  "links": [
+    { "source": "A", "target": "B" }
+  ]
+}
+```
+
+Dabei gilt:
+
+- nodes enthält alle Elemente des Graphen
+- links beschreibt die Beziehungen zwischen diesen Elementen
+- source und target definieren jeweils eine Verbindung zwischen zwei Knoten
+
+Während der Simulation ersetzt D3 diese abstrakten Verweise intern durch konkrete Objekte mit zusätzlichen Eigenschaften wie x, y, vx und vy. Dadurch kann der Graph dynamisch berechnet und animiert werden.
+</div> </details>
+
 Besonders im Bereich von Graphen ist D3 sehr leistungsfähig, da es:
 
 - Knoten und Kanten direkt aus JSON-Strukturen erzeugt  
@@ -181,7 +207,17 @@ Besonders im Bereich von Graphen ist D3 sehr leistungsfähig, da es:
 Dadurch eignet sich D3 besonders gut für **interaktive Netzwerkvisualisierungen im Browser**, bei denen sich Strukturen dynamisch entwickeln und erkunden lassen.
 
 <div id="graph-step4"></div>
-Abbildung 4: Klassische Force-Directed Visualisierung des gesamten Netzwerks mit physikalischer Simulation.
+
+<p style="text-align:left; font-size:12px; color:#888; margin:8px 0 16px;">
+  Abbildung: Klassische Force-Directed Visualisierung des gesamten Netzwerks mit physikalischer Simulation.
+</p>
+
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Hauptfiguren umschalten und Namen im Gesamtnetzwerk prüfen</span><span class="acc-tag tag-ux">Interaktionsdesign</span></summary>
+<div class="acc-body">
+<p>Die vollständige Netzwerkstruktur wird als Force-Simulation dargestellt. Über den Toggle lassen sich die Hauptfiguren hervorheben, und per Hover können einzelne Knoten identifiziert werden.</p>
+</div>
+</details>
 
 <details class="acc">
 <summary>
@@ -249,7 +285,16 @@ Die Farben zeigen, welche Knoten im Les-Misérables-Datensatz derselben Communit
 
 <div id="graph-step5"></div>
 
-Abbildung 5: Interaktive Netzwerkanalyse mit Gruppenkolorierung, Hover-Highlighting und Detailanzeige.
+<p style="text-align:left; font-size:12px; color:#888; margin:8px 0 16px;">
+  Abbildung: Interaktive Netzwerkanalyse mit Gruppenkolorierung, Hover-Highlighting und Detailanzeige.
+</p>
+
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Communities farblich lesen und Nachbarschaften per Hover hervorheben</span><span class="acc-tag tag-ux">Interaktionsdesign</span></summary>
+<div class="acc-body">
+<p>Farben markieren soziale Gruppen innerhalb des Netzwerks. Beim Hover über einen Knoten werden seine direkten Verbindungen hervorgehoben und nicht relevante Elemente abgeschwächt, wodurch lokale Nachbarschaften und zentrale Figuren leichter erkennbar werden.</p>
+</div>
+</details>
 
 ## Schritt 6 – Die Grenze
 
@@ -261,7 +306,7 @@ Mit wachsender Größe verändert sich das Verhalten des Graphen deutlich:
 
 Je mehr Elemente hinzugefügt werden, desto stärker überlagern sich Knoten und Kanten. Die klare Struktur beginnt sich aufzulösen, bis die Darstellung kaum noch interpretierbar ist.
 
-Es entsteht ein sogenannter *Hairball* – ein dichtes Gewirr aus Linien und Punkten, in dem kaum noch einzelne Strukturen erkennbar sind.
+Es entsteht ein sogenannter **Hairball**, ein dichtes Gewirr aus Linien und Punkten, in dem kaum noch einzelne Strukturen erkennbar sind.
 
 Die Ursachen dafür sind strukturell:
 
@@ -275,7 +320,16 @@ Erhöhe die Anzahl der Knoten und siehe was passiert? Ab wann wird es ein Proble
 
 <div id="graph-step6"></div>
 
-Abbildung 6: Skalierbarer Force-Directed Graph mit wählbarer Netzwerkgröße und dynamischer Erweiterung.
+<p style="text-align:left; font-size:12px; color:#888; margin:8px 0 16px;">
+  Abbildung: Skalierbarer Force-Directed Graph mit wählbarer Netzwerkgröße und dynamischer Erweiterung.
+</p>
+
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Netzwerkgröße anpassen</span><span class="acc-tag tag-ux">Interaktionsdesign</span></summary>
+<div class="acc-body">
+<p>Mit den Plus- und Minus-Buttons lässt sich die Größe des Netzwerks verändern. So kann interaktiv beobachtet werden, ab wann die Darstellung unübersichtlich wird und die Leistung schwächer wird.</p>
+</div>
+</details>
 
 Im nächsten Abschnitt betrachten wir deshalb einen deutlich größeren Datensatz.
 
