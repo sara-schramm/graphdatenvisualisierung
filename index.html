@@ -206,7 +206,19 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="intro-warum-soziale-netzwerke-schwer-zu-zeichnen-sind">1. Intro (Warum Soziale Netzwerke schwer zu zeichnen sind)</h2>
 <p>Soziale Netzwerke gehören zu den anschaulichsten Beispielen für Graphdaten. Menschen, Webseiten, Accounts oder Gruppen lassen sich als Knoten darstellen, ihre Beziehungen als Kanten. Genau diese Einfachheit macht Graphen so attraktiv: Viele wichtige Fragen lassen sich damit direkt formulieren, etwa wer mit wem verbunden ist, welche Gruppen entstehen oder welche Knoten besonders zentral sind.</p>
 <p>Ein solches Netzwerk besteht aus tausenden bis Millionen von Verbindungen. Je mehr Knoten und Kanten hinzukommen, desto schneller wird die Struktur unlesbar. Das Problem ist nicht nur die reine Datenmenge, sondern die Tatsache, dass <strong>Daten keine räumliche Ordnung besitzen</strong>, sie enthalten nur Beziehungen.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Kernidee
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p>Graphdatenvisualisierung versucht deshalb, Beziehungen so im Raum anzuordnen, dass Muster sichtbar werden. Ziel ist nicht nur, alle Daten darzustellen, sondern sie lesbar zu machen. Dazu werden unterschiedliche Layouts, Filter, Interaktionen und Rendering-Techniken verwendet.</p>
+</div>
+</div>
 </section>
 <section id="was-ist-graphdatenvisualisierung" class="level2">
 <h2 class="anchored" data-anchor-id="was-ist-graphdatenvisualisierung">2. Was ist Graphdatenvisualisierung?</h2>
@@ -215,7 +227,7 @@ window.Quarto = {
 <li>Knoten (z. B. Personen, Seiten, Accounts)</li>
 <li>Kanten (Beziehungen zwischen ihnen, z. B. Freundschaften, Likes, Follows)</li>
 </ul>
-<p>Ziel der Graphdatenvisualisierung ist es, diese Struktur räumlich sinnvoll anzuordnen, sodass Muster sichtbar werden. Im Gegensatz zu Karten, Gebäuden oder anderen geografischen Daten gibt es für ein Netzwerk keine natürliche räumliche Ordnung. Die Positionen der Knoten müssen erst durch eine Visualisierung festgelegt werden.</p>
+<p>Ziel der Graphdatenvisualisierung ist es, diese Struktur räumlich sinnvoll anzuordnen, sodass Muster sichtbar werden. Im Gegensatz zu Karten, Gebäuden oder anderen geografischen Daten gibt es für ein Netzwerk <strong>keine natürliche räumliche Ordnung</strong>. Die Positionen der Knoten müssen erst durch eine Visualisierung festgelegt werden.</p>
 <p>Die wichtigsten Fragen in der Visualisierung sind:</p>
 <ul>
 <li>Welche Knoten sind besonders zentral?</li>
@@ -270,7 +282,7 @@ Der Datensatz basiert auf den Beziehungen aller Figuren aus dem Roman Les Misér
 Abbildung: Hauptcharaktere aus dem Roman “Les Misérables”
 </p>
 </div>
-<p>Die 77 Figuren sind durch 254 Kanten miteinander verbunden, die jeweils eine gemeinsame Szene oder eine direkte Interaktion zwischen zwei Charakteren darstellen. Die Verbindungen sind ungerichtet, das heißt, sie besitzen keine feste Richtung, sondern beschreiben lediglich die Existenz einer Beziehung zwischen zwei Figuren.</p>
+<p>Die <strong>77 Figuren</strong> sind durch <strong>254 Kanten</strong> miteinander verbunden, die jeweils eine gemeinsame Szene oder eine direkte Interaktion zwischen zwei Charakteren darstellen. Die Verbindungen sind <strong>ungerichtet</strong>, das heißt, sie besitzen keine feste Richtung, sondern beschreiben lediglich die Existenz einer Beziehung zwischen zwei Figuren.</p>
 <p>Durch diese Struktur entsteht ein klassisches Netzwerk aus Entitäten und Beziehungen, das sich besonders gut für die Visualisierung von Graphalgorithmen eignet. Der Datensatz ist bewusst klein gehalten, sodass sich jeder einzelne Schritt eines Layout-Verfahrens gut nachvollziehen lässt. Dadurch kann beobachtet werden, wie aus einer reinen Liste von Knoten und Kanten schrittweise eine räumliche Struktur entsteht und sich Muster, Cluster und zentrale Figuren im Verlauf der Berechnung herausbilden.</p>
 </section>
 <section id="die-rohdaten" class="level3">
@@ -294,7 +306,7 @@ Abbildung: Übersicht der Rohdaten als Kantenliste (alle Verbindungen zwischen K
 </section>
 <section id="schritt-2---was-passiert-damit" class="level3">
 <h3 class="anchored" data-anchor-id="schritt-2---was-passiert-damit">Schritt 2 - Was passiert damit?</h3>
-<p>Die gleichen Knoten werden nun zufällig im Raum verteilt. Obwohl alle Informationen über die Verbindungen vollständig vorhanden sind, entsteht dabei keine sinnvolle räumliche Struktur.</p>
+<p>Die gleichen Knoten werden nun <strong>zufällig im Raum verteilt</strong>. Obwohl alle Informationen über die Verbindungen vollständig vorhanden sind, entsteht dabei keine sinnvolle räumliche Struktur.</p>
 <p>Jeder Knoten erhält lediglich eine beliebige Position innerhalb der Zeichenfläche, unabhängig davon, ob er stark oder schwach mit anderen Knoten verbunden ist. Dadurch wird die eigentliche Informationsstruktur des Graphen nicht sichtbar gemacht, sondern durch die zufällige Platzierung überdeckt.</p>
 <p>In dieser Darstellung findest du auch unsere Hauptfiguren wieder, klicke auf den Button, um sie sichtbar zu machen.</p>
 <div id="graph-step2">
@@ -332,11 +344,11 @@ Abbildung: Zufällige Anordnung der Knoten zur ersten visuellen Orientierung.
 <section id="schritt-3-die-idee-eines-force-directed-layouts" class="level3">
 <h3 class="anchored" data-anchor-id="schritt-3-die-idee-eines-force-directed-layouts">Schritt 3 – Die Idee eines Force-Directed Layouts</h3>
 <p>Wie kann aus einer ungeordneten Punktmenge eine lesbare Struktur entstehen?</p>
-<p>Die Grundidee besteht darin, den Graphen nicht mehr als reine Sammlung von Punkten und Verbindungen zu betrachten, sondern als ein dynamisches System, das sich wie ein physikalisches Modell verhält. Die einzelnen Knoten besitzen dabei keine festen Positionen, sondern reagieren aufeinander, sobald Kräfte zwischen ihnen wirken. Im Zentrum stehen zwei gegensätzliche Effekte, die gleichzeitig auftreten.</p>
-<p>Einerseits ziehen sich Knoten, die durch eine Kante verbunden sind, gegenseitig an. Diese „Anziehung“ sorgt dafür, dass verwandte oder direkt verbundene Elemente näher zusammenrücken.</p>
-<p>Andererseits stoßen sich alle Knoten gegenseitig ab, unabhängig davon, ob sie verbunden sind oder nicht. Diese „Abstoßung“ verhindert, dass alle Punkte in einem einzigen Cluster kollabieren.</p>
-<p>Durch das Zusammenspiel dieser beiden Kräfte entsteht eine kontinuierliche Bewegung im System. Die Knoten verschieben sich Schritt für Schritt, bis sich ein Zustand einstellt, in dem sich die Kräfte weitgehend ausgleichen. In diesem Gleichgewicht gibt es keine dominante Bewegung mehr, und die Struktur wirkt stabil und lesbar. Das Ergebnis ist keine vorgegebene Anordnung, sondern eine emergente Struktur, die sich aus den zugrunde liegenden Beziehungen selbst entwickelt.</p>
-In der folgenden Animation ist das Verhalten der Kräfte sichtbar. Versuche die Knoten näher aneinander zu bringen und erkenne was passiert.
+<p>Die Grundidee besteht darin, den Graphen nicht mehr als reine Sammlung von Punkten und Verbindungen zu betrachten, sondern als ein <strong>dynamisches System, das sich wie ein physikalisches Modell verhält</strong>. Die einzelnen Knoten besitzen dabei keine festen Positionen, sondern <strong>reagieren aufeinander</strong>, sobald Kräfte zwischen ihnen wirken. Im Zentrum stehen zwei gegensätzliche Effekte, die gleichzeitig auftreten.</p>
+<p>Einerseits ziehen sich Knoten, die durch eine Kante verbunden sind, gegenseitig an. Diese <strong>„Anziehung“</strong> sorgt dafür, dass verwandte oder direkt verbundene Elemente näher zusammenrücken.</p>
+<p>Andererseits stoßen sich alle Knoten gegenseitig ab, unabhängig davon, ob sie verbunden sind oder nicht. Diese <strong>„Abstoßung“</strong> verhindert, dass alle Punkte in einem einzigen Cluster kollabieren.</p>
+<p>Durch das <strong>Zusammenspiel dieser beiden Kräfte</strong> entsteht eine kontinuierliche Bewegung im System. Die Knoten verschieben sich Schritt für Schritt, bis sich ein Zustand einstellt, in dem sich die Kräfte weitgehend ausgleichen. In diesem Gleichgewicht gibt es keine dominante Bewegung mehr, und die Struktur wirkt stabil und lesbar. Das Ergebnis ist keine vorgegebene Anordnung, sondern eine <strong>emergente Struktur</strong>, die sich aus den zugrunde liegenden Beziehungen selbst entwickelt.</p>
+In der folgenden Animation ist das Verhalten der Kräfte sichtbar. Versuche die Knoten näher aneinander zu bringen und entdecke was passiert.
 <div id="graph-step3">
 
 </div>
@@ -450,7 +462,7 @@ Das Ergebnis ist ein <strong>kompromissoptimiertes Layout</strong>, das Struktur
 <section id="schritt-4-implementierung-von-d3" class="level3">
 <h3 class="anchored" data-anchor-id="schritt-4-implementierung-von-d3">Schritt 4 – Implementierung von D3</h3>
 <p>D3 (Data-Driven Documents) ist eine JavaScript-Bibliothek zur Visualisierung von Daten im Web. Sie dient dazu, Daten direkt mit grafischen Elementen im Browser zu verbinden und diese dynamisch darzustellen.</p>
-<p>Im Kern bedeutet das, dass nicht statische Grafiken erstellt werden, sondern eine direkte Kopplung zwischen Daten und DOM-Elementen (z. B. SVG oder HTML) entsteht. Wenn sich die Daten verändern, aktualisiert sich automatisch auch die visuelle Darstellung.</p>
+<p>Im Kern bedeutet das, dass nicht statische Grafiken erstellt werden, sondern eine <strong>direkte Kopplung zwischen Daten und DOM-Elementen</strong> (z. B. SVG oder HTML) entsteht. Wenn sich die Daten verändern, aktualisiert sich automatisch auch die visuelle Darstellung.</p>
 <p>Die zentrale Idee lässt sich so zusammenfassen:</p>
 <ul>
 <li>Daten steuern die Darstellung vollständig<br>
@@ -476,11 +488,11 @@ Das Ergebnis ist ein <strong>kompromissoptimiertes Layout</strong>, das Struktur
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Dabei gilt:</p>
 <ul>
-<li>nodes enthält alle Elemente des Graphen</li>
-<li>links beschreibt die Beziehungen zwischen diesen Elementen</li>
-<li>source und target definieren jeweils eine Verbindung zwischen zwei Knoten</li>
+<li><strong>nodes</strong> enthält alle Elemente des Graphen</li>
+<li><strong>links</strong> beschreibt die Beziehungen zwischen diesen Elementen</li>
+<li><strong>source</strong> und target definieren jeweils eine Verbindung zwischen zwei Knoten</li>
 </ul>
-<p>Während der Simulation ersetzt D3 diese abstrakten Verweise intern durch konkrete Objekte mit zusätzlichen Eigenschaften wie x, y, vx und vy. Dadurch kann der Graph dynamisch berechnet und animiert werden.</p>
+<p>Während der Simulation ersetzt D3 diese abstrakten Verweise intern durch konkrete Objekte mit zusätzlichen Eigenschaften wie x, y, vx und vy. Dadurch kann der Graph <strong>dynamisch berechnet</strong> und animiert werden.</p>
 </div>
 </details>
 <p>Besonders im Bereich von Graphen ist D3 sehr leistungsfähig, da es:</p>
@@ -542,9 +554,9 @@ Die gesamte Simulation wird zur Mitte der Zeichenfläche gezogen. Dadurch bleibt
 </section>
 <section id="schritt-5-das-ergebnis" class="level3">
 <h3 class="anchored" data-anchor-id="schritt-5-das-ergebnis">Schritt 5 – Das Ergebnis</h3>
-<p>SVG (Scalable Vector Graphics) ist ein vektorbasiertes Grafikformat im Browser, das grafische Elemente wie Kreise, Linien oder Pfade als einzelne, adressierbare Objekte darstellt. Dadurch lassen sich Visualisierungen flexibel aufbauen und dynamisch verändern, ohne sie neu zu rendern.</p>
+<p>SVG (Scalable Vector Graphics) ist ein <strong>vektorbasiertes Grafikformat im Browser</strong>, das grafische Elemente wie Kreise, Linien oder Pfade als einzelne, adressierbare Objekte darstellt. Dadurch lassen sich Visualisierungen <strong>flexibel aufbauen und dynamisch verändern</strong>, ohne sie neu zu rendern.</p>
 <p>Nach mehreren Iterationen der Force-Simulation stabilisiert sich die Struktur des Graphen. Die Knoten bewegen sich so lange, bis sich die Kräfte zwischen Anziehung und Abstoßung weitgehend ausgleichen.</p>
-<p>In diesem Zustand wird die Struktur des Datensatzes sichtbar. Aus einer reinen Liste von Beziehungen entsteht ein räumliches Muster mit klar erkennbarer Ordnung.</p>
+<p>In diesem Zustand wird die Struktur des Datensatzes sichtbar. Aus einer reinen Liste von Beziehungen entsteht ein <strong>räumliches Muster mit klar erkennbarer Ordnung</strong>.</p>
 <p>Typische Strukturen treten hervor:</p>
 <ul>
 <li>dicht verbundene Cluster</li>
@@ -580,10 +592,10 @@ Farben markieren soziale Gruppen innerhalb des Netzwerks. Beim Hover über einen
 </section>
 <section id="schritt-6-die-grenze" class="level3">
 <h3 class="anchored" data-anchor-id="schritt-6-die-grenze">Schritt 6 – Die Grenze</h3>
-<p>Das gleiche Verfahren funktioniert nicht nur für kleine Netzwerke, sondern lässt sich grundsätzlich auf größere Datenmengen anwenden. Genau hier zeigt sich jedoch eine entscheidende Schwäche.</p>
+<p>Das gleiche Verfahren funktioniert nicht nur für kleine Netzwerke, sondern lässt sich grundsätzlich auf größere Datenmengen anwenden. Genau hier zeigt sich jedoch eine <strong>entscheidende Schwäche</strong>.</p>
 <p>Mit wachsender Größe verändert sich das Verhalten des Graphen deutlich:</p>
 <p>77 → 154 → 308 → 616 → 1232 Knoten</p>
-<p>Je mehr Elemente hinzugefügt werden, desto stärker überlagern sich Knoten und Kanten. Die klare Struktur beginnt sich aufzulösen, bis die Darstellung kaum noch interpretierbar ist.</p>
+<p>Je mehr Elemente hinzugefügt werden, desto stärker überlagern sich Knoten und Kanten. Die klare Struktur beginnt sich aufzulösen, bis die Darstellung <strong>kaum noch interpretierbar</strong> ist.</p>
 <p>Es entsteht ein sogenannter <strong>Hairball</strong>, ein dichtes Gewirr aus Linien und Punkten, in dem kaum noch einzelne Strukturen erkennbar sind.</p>
 <p>Die Ursachen dafür sind strukturell:</p>
 <ul>
@@ -595,7 +607,7 @@ Farben markieren soziale Gruppen innerhalb des Netzwerks. Beim Hover über einen
 </li>
 <li>begrenzte Auflösung des Bildschirms</li>
 </ul>
-<p>Was passiert, wenn der Roman eine Fortsetzung bekommen würde und irgendwann aus 77 Figuren mehreren zehntausend Charakter werden? Erhöhe die Anzahl der Knoten und siehe was passiert? Ab wann wird es ein Problem?</p>
+<p><strong>Was passiert, wenn der Roman eine Fortsetzung bekommen würde und irgendwann aus 77 Figuren mehreren zehntausend Charakter werden?</strong> Erhöhe die Anzahl der Knoten und siehe was passiert? Ab wann wird es ein Problem?</p>
 <div id="graph-step6">
 
 </div>
