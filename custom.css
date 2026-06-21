@@ -111,6 +111,11 @@
   box-shadow: none;
 }
 
+.section-medium .vsm-demo {
+  border-color: #e5e4e0;
+  box-shadow: none;
+}
+
 .section-medium .force-graph,
 .section-gnn .gnn-playground {
   border: 1px solid #e5e4e0;

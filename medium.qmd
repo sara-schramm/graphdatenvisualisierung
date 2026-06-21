@@ -17,7 +17,7 @@ Ab der mittleren Größenordnung wird Layout zur **Optimierung von Distanzen**, 
 
 $$ \mathcal{L} = \sum_{i \neq j} w_{i,j} \left( \|p_i - p_j\|_2 - d_{i,j} \right)^2 $$
 
-Hier ist $d_{i,j}$ die **kürzeste Pfaddistanz** zwischen Knoten $i$ und $j$ im Graphen, $p_i$ die **Position** von Knoten $i$ in der Zeichnung, und $w_{i,j}$ ein Gewicht (typisch $1/d_{i,j}^2$). **Stress-Majorization** minimiert diese Funktion iterativ — ein Verfahren, das auch in gelernten Layout-Ansätzen als Trainingsziel auftaucht (siehe Abschnitt 5).
+Hier ist $d_{i,j}$ die **kürzeste Pfaddistanz** zwischen Knoten $i$ und $j$ im Graphen, $p_i$ die **Position** von Knoten $i$ in der Zeichnung, und $w_{i,j}$ ein Gewicht (typisch $1/d_{i,j}^2$). **Stress-Majorization** minimiert diese Funktion iterativ — ein Verfahren, das auch in gelernten Layout-Ansätzen als Trainingsziel auftaucht (siehe [GNNs](gnn.qmd#gnn-topology)).
 
 ```{=html}
 <div id="stress-majorization-demo" class="stress-demo reveal-on-scroll">
@@ -108,8 +108,39 @@ Technisch motiviert diese Größenordnung den Wechsel zu **Canvas**: Statt tause
 <script src="js/force-graph.js"></script>
 ```
 
+Das wiki-Vote-Layout oben wurde offline mit klassischer Stress-Majorization berechnet (Gansner/NetworkX). Wang et al. (2017) erweitern dasselbe Prinzip zu **vektorisierter** Stress-Majorization: Kanten werden als **Vektoren** modelliert, sodass Constraints (z. B. Cluster-Trennung, Fixierung) ohne separates Optimierungsproblem in dieselbe Stress-Funktion einfließen. Probiere einen Majorization-Schritt interaktiv aus:
+
 ```{=html}
-<div class="acc-stack">
+<div id="wang-vsm-demo" class="vsm-demo stress-demo reveal-on-scroll" data-src="graph_medium/stress/vsm_demo.json">
+  <p><strong>Interaktiv:</strong> Ein Majorization-Schritt auf einem wiki-Vote-Teilgraph (12 Knoten, 2 Communities). Klick auf einen Knoten = fixieren. <a href="#stress-majorization">Stress-Funktion</a> · Quellen #12.</p>
+  <div class="vsm-demo-layout stress-demo-layout">
+    <svg viewBox="0 0 320 200" width="320" height="200" aria-label="VSM-Demo Layout"></svg>
+    <div class="stress-metrics vsm-metrics">
+      <div class="stress-bar-row">
+        <label><span>Gesamt-Stress</span><span data-vsm-stress>0</span></label>
+        <div class="stress-bar" data-vsm-stress-bar><span style="width:40%"></span></div>
+      </div>
+      <div class="vsm-sparkline-row">
+        <label><span>Verlauf</span></label>
+        <svg data-vsm-sparkline viewBox="0 0 120 28" width="120" height="28" aria-hidden="true"></svg>
+      </div>
+      <div class="vsm-controls">
+        <button type="button" class="vsm-btn primary" data-vsm-step>Nächster Majorization-Schritt</button>
+        <button type="button" class="vsm-btn" data-vsm-converge>Bis Konvergenz</button>
+        <button type="button" class="vsm-btn" data-vsm-reset>Zurücksetzen</button>
+        <label class="vsm-toggle">
+          <input type="checkbox" data-vsm-cluster>
+          <span>Constraint: Cluster-Trennung</span>
+        </label>
+      </div>
+      <p class="vsm-status" data-vsm-status>Lade Graphdaten …</p>
+    </div>
+  </div>
+</div>
+<script src="js/stress-vsm.js"></script>
+```
+
+::: {.acc-stack}
 
 <details class="acc">
 <summary><span class="acc-toggle"></span><span class="acc-title">So liest du den Graphen</span><span class="acc-tag tag-ux">Interaktionsdesign</span></summary>
@@ -185,7 +216,40 @@ Technisch motiviert diese Größenordnung den Wechsel zu **Canvas**: Statt tause
 <div class="acc-body">
 <p>Im Gegensatz zu kräftebasierten Layouts (Federn + Abstoßung wie in 3a) optimiert Stress-Majorization <strong>Distanzen</strong>: Für jedes Knotenpaar $(i,j)$ wird die euklidische Distanz $\|p_i - p_j\|$ der kürzesten Pfaddistanz $d_{i,j}$ angeglichen. Das Verfahren iteriert, bis der Stress $\mathcal{L}$ nicht mehr signifikant sinkt.</p>
 <p>Bei ~7.000 Knoten ist das offline auf der CPU in wenigen Minuten machbar — deutlich zu langsam für eine live Browser-Simulation, aber ideal für ein <strong>vorberechnetes</strong> Layout. Wir führen die Berechnung einmalig im Python-Skript aus und speichern die Koordinaten in JSON. Die Website lädt nur das Ergebnis.</p>
-<p>Gelernte Layout-Ansätze (Abschnitt 5) können dieselbe Stress-Idee nutzen — der Unterschied: dort lernt ein Netzwerk die Zuordnung, hier optimiert ein klassischer Algorithmus direkt.</p>
+<p>Gelernte Layout-Ansätze (<a href="gnn.qmd#gnn-topology">GNNs</a>) können dieselbe Stress-Idee nutzen — der Unterschied: dort lernt ein Netzwerk die Zuordnung, hier optimiert ein klassischer Algorithmus direkt. Für interaktive Constraints siehe die Wang-VSM-Demo oben.</p>
+</div>
+</details>
+
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Klassisch vs. vektorisiert: Längen vs. Kantenvektoren</span><span class="acc-tag tag-konzept">Konzept</span></summary>
+<div class="acc-body">
+<p>Die klassische Stress-Funktion (Gansner et al.) vergleicht nur <strong>Skalare</strong> — die euklidische Distanz $\|p_i - p_j\|$ mit der Zieldistanz $d_{i,j}$:</p>
+$$ \mathcal{L}_{\mathrm{klassisch}} = \sum_{i \neq j} w_{i,j} \left( \|p_i - p_j\| - d_{i,j} \right)^2 $$
+<p>Wang et al. (2017) formulieren Stress über <strong>Kantenvektoren</strong> $\mathbf{e}_{ij} = p_j - p_i$. Statt nur die Länge zu messen, lassen sich Richtungs- und Positions-Constraints direkt auf $\mathbf{e}_{ij}$ legen — z. B. „Cluster A links, Cluster B rechts" oder „Knoten $k$ bleibt an Position $p_k^{\mathrm{fix}}$". Alle Constraints fließen in dieselbe Stress-Summe ein; kein separates Optimierungsproblem pro Constraint-Typ.</p>
+<p>Das wiki-Vote-Layout oben nutzt die klassische Variante (NetworkX <code>spring_layout(..., method="energy")</code>). Die VSM-Demo zeigt die vektorisierte Erweiterung auf einem kleinen Teilgraphen — nicht die GPU-Implementierung des Papers.</p>
+</div>
+</details>
+
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Ein Majorization-Schritt (Surrogat-Funktion)</span><span class="acc-tag tag-algo">Algorithmus</span></summary>
+<div class="acc-body">
+<p>Stress-Majorization ersetzt die nichtlineare Stress-Funktion in jedem Schritt durch eine <strong>Untergrenze</strong> (Surrogat), die am aktuellen Layout tangential ist und deren Minimum analytisch berechenbar ist. Für Knoten $i$ im Schritt $k$:</p>
+$$ p_i^{(k+1)} = \frac{1}{\sum_j w_{ij}} \sum_{j \neq i} w_{ij} \left( p_j^{(k)} + \frac{d_{ij}}{\|p_i^{(k)} - p_j^{(k)}\|} \left( p_i^{(k)} - p_j^{(k)} \right) \right) $$
+<p>Intuition: Jedes Knotenpaar „zieht" Knoten $i$ in Richtung der Zieldistanz $d_{ij}$ — wie eine Feder mit Soll-Länge. Fixierte Knoten ($p_i^{(k+1)} = p_i^{(k)}$) wirken als Dirichlet-Randbedingungen.</p>
+<p><strong>Mini-Beispiel (Demo-Graph, Schritt 1):</strong> Knoten 4 (Hub, blau) und Knoten 3 (Hub, orange) haben Pfaddistanz $d_{4,3} = 2$. Liegen sie bei $\|p_4 - p_3\| = 90$ px und $w_{4,3} = 0{,}25$, trägt das Paar $(90/36 - 2)^2 \cdot 0{,}25 \approx 0{,}69$ zum Stress bei. Ein Majorization-Schritt zieht beide auf $\approx 72$ px ($2 \times 36$ px Skala) — der Stress-Term sinkt.</p>
+</div>
+</details>
+
+<details class="acc">
+<summary><span class="acc-toggle"></span><span class="acc-title">Wang et al. (2017): interaktive Constraints &amp; Skalierung</span><span class="acc-tag tag-algo">Algorithmus</span></summary>
+<div class="acc-body">
+<p>Wang et al. zeigen, dass vektorisierte Stress-Majorization (VSM) Constraints wie <strong>Cluster-Trennung</strong>, <strong>Knoten-Fixierung</strong> und <strong>Richtungsvorgaben</strong> in einer einheitlichen Stress-Formulierung vereint — und per GPU + Conjugate Gradient auf Graphen mit $10^4$–$10^5$ Knoten interaktiv lauffähig ist.</p>
+<ul>
+<li><strong>Cluster-Trennung:</strong> Zusatzterm bestraft Überlappung zwischen Communities (im Demo: Toggle „Cluster-Trennung").</li>
+<li><strong>Fixierung:</strong> Gepinnte Knoten bleiben während der Iteration unverändert — nützlich für „Diese Gruppe soll hier bleiben".</li>
+<li><strong>Skalierung:</strong> Das Paper nutzt vektorisierte GPU-Kernels; unsere Demo rechnet klassisch auf $n = 12$ im Browser (didaktisch, nicht performant optimiert).</li>
+</ul>
+<p>Literatur: Wang et al., <em>Revisiting Stress Majorization as a Unified Framework for Interactive Constrained Graph Visualization</em>, IEEE TVCG 2017 — <a href="https://www.vis.uni-stuttgart.de/documentcenter/staff/sedlmaml/papers/wang2017graph.pdf">PDF</a>.</p>
 </div>
 </details>
 
@@ -208,9 +272,6 @@ Technisch motiviert diese Größenordnung den Wechsel zu **Canvas**: Statt tause
 </div>
 </details>
 
-</div>
-```
+:::
 
-```{=html}
-</div>
-```
+:::

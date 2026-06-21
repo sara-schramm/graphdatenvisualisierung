@@ -3,6 +3,7 @@ project:
   output-dir: _output
   resources:
     - graph_medium/stress/social_graph.json
+    - graph_medium/stress/vsm_demo.json
     - assets
     - graph_big/visuals/fa2_graphbig.html
     - graph_big/visuals/fa2_categorygraph.html
@@ -27,6 +28,8 @@ website:
         text: Mittlerer Datensatz
       - href: big.qmd
         text: Großer Datensatz
+      - href: gnn.qmd
+        text: GNNs
       - href: cookbook.qmd
         text: Rezeptbuch
 
