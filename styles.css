@@ -270,7 +270,6 @@ circle {
   margin-top: 0.5rem;
 }
 
-----------
 /* ── Design tokens ─────────────────────────────────────────────── */
 :root {
   --gv-primary: #2780e3;
@@ -1389,6 +1388,7 @@ circle {
 .stress-metrics {
   flex: 1;
   min-width: 180px;
+  max-width: 320px;
   font-size: 0.85rem;
 }
 
@@ -1406,7 +1406,8 @@ circle {
 
 .stress-bar {
   height: 10px;
-  background: var(--gv-border);
+  width: 100%;
+  background: var(--gv-border, #e2e8f0);
   border-radius: 5px;
   overflow: hidden;
 }
@@ -1414,9 +1415,77 @@ circle {
 .stress-bar span {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, var(--gv-success), var(--gv-accent));
+  min-width: 0;
+  background: linear-gradient(90deg, #2ca02c, #ff7f0e);
+  background: linear-gradient(90deg, var(--gv-success, #2ca02c), var(--gv-accent, #ff7f0e));
   border-radius: 5px;
   transition: width 0.35s ease;
+}
+
+/* ── VSM demo (Wang et al. 2017) ───────────────────────────────── */
+.vsm-demo .vsm-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.vsm-btn {
+  font-size: 0.78rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--gv-border);
+  border-radius: var(--gv-radius-sm);
+  background: #fff;
+  color: var(--gv-text);
+  cursor: pointer;
+}
+
+.vsm-btn.primary {
+  background: #2780e3;
+  border-color: #2780e3;
+  color: #fff;
+}
+
+.vsm-btn:hover {
+  background: #fafaf8;
+}
+
+.vsm-btn.primary:hover {
+  background: #1d6fcc;
+}
+
+.vsm-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  color: var(--gv-text-muted);
+  cursor: pointer;
+}
+
+.vsm-sparkline-row {
+  margin-bottom: 0.65rem;
+}
+
+.vsm-sparkline-row label {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--gv-text-muted);
+  margin-bottom: 0.2rem;
+}
+
+.vsm-status {
+  font-size: 0.75rem;
+  color: var(--gv-text-muted);
+  margin: 0.5rem 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vsm-btn,
+  .stress-bar span {
+    transition: none;
+  }
 }
 
 /* ── Quiz ──────────────────────────────────────────────────────── */

@@ -768,7 +768,7 @@
       window.setTimeout(initAll, 50);
       return;
     }
-    document.querySelectorAll(".stress-demo").forEach(initStressDemo);
+    document.querySelectorAll(".stress-demo:not(.vsm-demo)").forEach(initStressDemo);
     document.querySelectorAll(".force-graph").forEach(initForceGraph);
   }
 
