@@ -1,1 +1,1 @@
-Sitemap: https://sara-schramm.github.io/graphdatenvisualisierung/sitemap.xml
+Sitemap: https://VC10-Graphdatenvisualisierung.github.io/graphdatenvisualisierung/sitemap.xml
